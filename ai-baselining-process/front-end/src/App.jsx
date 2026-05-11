@@ -55,6 +55,11 @@ const initialForm = {
   individualActivitiesOther: "",
   toolsOther: "",
   processStepsOther: "",
+  connectedSystemsOther: "",
+  governanceControlsOther: "",
+  techEnablementOther: "",
+  impactMetricsOther: "",
+  transitionL3Other: "",
   // Pillar-specific fields (PRD-002)
   literacyAwareness: "",
   literacyBarriers: [],
@@ -251,15 +256,15 @@ const PILLAR_QUESTIONS = {
     {
       id: "integration", title: "Operational Process AI Integration", icon: "workflow",
       questions: [
-        { id: "processSteps", label: "Which process steps are connected through AI?", type: "toggle", field: "processSteps", options: ["Intake","Classification","Analysis","Reporting","Documentation","Monitoring","Decision support","Communication","Quality review","Prioritization"] },
-        { id: "connectedSystems", label: "Which systems or tools does the AI-enabled workflow connect with?", type: "toggle", field: "connectedSystems", options: ["CRM systems","ERP systems","Ticketing tools","Data warehouses","Communication platforms","APIs / middleware","Workflow automation tools","Databases"] },
+        { id: "processSteps", label: "Which process steps are connected through AI?", type: "toggle", field: "processSteps", options: ["Intake","Classification","Analysis","Reporting","Documentation","Monitoring","Decision support","Communication","Quality review","Prioritization","Other"], otherField: "processStepsOther" },
+        { id: "connectedSystems", label: "Which systems or tools does the AI-enabled workflow connect with?", type: "toggle", field: "connectedSystems", options: ["CRM systems","ERP systems","Ticketing tools","Data warehouses","Communication platforms","APIs / middleware","Workflow automation tools","Databases","Other"], otherField: "connectedSystemsOther" },
         { id: "impactMeasured", label: "How is AI impact measured operationally?", type: "select", field: "impactMeasured", options: ["Informally tracked","Measured with operational metrics","Measured with KPIs and SLAs"] },
       ],
     },
     {
       id: "governance", title: "AI Governance", icon: "shield",
       questions: [
-        { id: "governanceControls", label: "Which governance controls are implemented?", type: "toggle", field: "governanceControls", options: ["Human validation","Audit trail","Approval workflows","Risk documentation","Traceability","Monitoring","Escalation procedures"] },
+        { id: "governanceControls", label: "Which governance controls are implemented?", type: "toggle", field: "governanceControls", options: ["Human validation","Audit trail","Approval workflows","Risk documentation","Traceability","Monitoring","Escalation procedures","Other"], otherField: "governanceControlsOther" },
         { id: "auditability", label: "Are AI outputs traceable or auditable?", type: "select", field: "auditability", options: ["No","Partially","Yes — consistently"] },
         { id: "risksDocumented", label: "Are risks documented and actively managed?", type: "select", field: "risksDocumented", options: ["No","Informally","Yes — formally"] },
         { id: "approvalCriteria", label: "Are approval criteria defined for AI-generated outputs or actions?", type: "select", field: "approvalCriteria", options: ["No","Partially defined","Yes — formally defined"] },
@@ -268,22 +273,21 @@ const PILLAR_QUESTIONS = {
     {
       id: "technology", title: "Technology & Data Enablement", icon: "database",
       questions: [
-        { id: "techEnablement", label: "Which reusable enterprise capabilities exist?", type: "toggle", field: "techEnablement", options: ["APIs","Agents","Enterprise integrations","Shared orchestration workflows","Monitoring dashboards"] },
+        { id: "techEnablement", label: "Which reusable enterprise capabilities exist?", type: "toggle", field: "techEnablement", options: ["APIs","Agents","Enterprise integrations","Shared orchestration workflows","Monitoring dashboards","Other"], otherField: "techEnablementOther" },
         { id: "technologyEnterpriseIntegration", label: "How reliable is the technical environment?", type: "select", field: "technologyEnterpriseIntegration", options: ["Reliable and repeatable","Operationally scalable"] },
       ],
     },
     {
       id: "outcome", title: "Outcome & Value Measurement", icon: "layers",
       questions: [
-        { id: "impactMetrics", label: "Which metrics are used to measure impact?", type: "toggle", field: "impactMetrics", options: ["Cycle time","Error rate","Quality score","Productivity","Cost savings","Customer satisfaction","SLA adherence"] },
+        { id: "impactMetrics", label: "Which metrics are used to measure impact?", type: "toggle", field: "impactMetrics", options: ["Cycle time","Error rate","Quality score","Productivity","Cost savings","Customer satisfaction","SLA adherence","Other"], otherField: "impactMetricsOther" },
         { id: "performanceMonitored", label: "Is performance of the AI-supported workflow monitored?", type: "select", field: "performanceMonitored", options: ["No","Ad hoc","Yes — systematically"] },
       ],
     },
     {
       id: "transition", title: "Transition & Evidence", icon: "route",
       questions: [
-        { id: "transitionL3", label: "What is missing to move this process toward adaptive or autonomous operations?", type: "toggle", field: "transitionL3", options: ["Autonomous decision logic","Self-monitoring workflows","Agentic orchestration","Continuous learning capability","Enterprise-wide integration","Advanced governance controls","Real-time data access"] },
-        { id: "evidenceL3", label: "What evidence supports the detected maturity level?", type: "textarea", field: "evidenceL3", placeholder: "Describe examples, artefacts, or observations that confirm orchestrated AI systems." },
+        { id: "transitionL3", label: "What is missing to move this process toward adaptive or autonomous operations?", type: "toggle", field: "transitionL3", options: ["Autonomous decision logic","Self-monitoring workflows","Agentic orchestration","Continuous learning capability","Enterprise-wide integration","Advanced governance controls","Real-time data access","Other"], otherField: "transitionL3Other" },
       ],
     },
   ],
