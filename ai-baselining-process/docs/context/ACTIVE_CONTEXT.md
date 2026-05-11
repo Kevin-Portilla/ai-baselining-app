@@ -7,6 +7,24 @@
 
 ---
 
+## PRD-004: Enterprise Assessment Redesign
+
+**File:** `docs/requirements/PRD-004-enterprise-assessment-redesign.md`  
+**Status:** Active — supersedes PRD-003
+
+Key changes introduced by PRD-004:
+- 5-section global survey flow (metadata → AI detection → dynamic branch → validation/evidence → final questions)
+- Constrained option sets per maturity level — no contradiction or drift between levels
+- All levels (0–4) now include a Transition &amp; Evidence subsection
+- New Final Questions section shown to all active respondents
+- Needs Validation path expanded to 5 questions (uncertainty, outputs seen, contact, review, context)
+- Section 1: updated role types, frequencies, criticalities; tribe name corrected to "Intelligent Automation"
+- 30+ new form fields for level-specific, validation, and final question data
+- PILLAR_QUESTIONS restructured: each level has 5–6 pillar sections (literacy, integration, governance, technology, outcome, transition/evidence)
+- Standalone Outcome JSX block (PRD-003) removed — Outcome embedded inside PILLAR_QUESTIONS for Levels 1–4
+
+---
+
 ## Current Objective
 
 Initialize and configure the ACE Framework v2.6.2 for the AI Operations Baseline App migration into a React + Vite local development environment.
@@ -27,8 +45,11 @@ Initialize and configure the ACE Framework v2.6.2 for the AI Operations Baseline
 - Initial ACE roles and skills loaded
 
 ### In Progress
-- **[PRD-002] Pillar-based questions per maturity level** — restructuring branching sections into 4 framework pillars (Literacy, Integration, Governance, Technology) with level-specific questions per pillar. See `docs/requirements/PRD-002-pillar-based-questions.md`.
-- **[PRD-003] Fixed question logic: maturity-constrained survey redesign** — 7-section global flow, dual-signal AI detection (integration + operational dependency), constrained option sets per maturity level, new Section 1 metadata fields (squad, processType, clientData, mainSystems), new Outcome/Value section for all scored levels. See `docs/requirements/PRD-003-fixed-question-logic.md`.
+- **[PRD-004] Enterprise assessment redesign** — 5-section global flow, constrained maturity progression, all levels with Transition &amp; Evidence subsection, Final Questions section, expanded Needs Validation path (5 questions), 30+ new form fields. See `docs/requirements/PRD-004-enterprise-assessment-redesign.md`.
+
+### Completed
+- **[PRD-002] Pillar-based questions per maturity level** — restructured branching into 4 framework pillars per level. See `docs/requirements/PRD-002-pillar-based-questions.md`.
+- **[PRD-003] Fixed question logic: maturity-constrained survey redesign** — dual-signal AI detection, constrained option sets, Outcome/Value section. See `docs/requirements/PRD-003-fixed-question-logic.md`.
 - Front-end migration validation
 - Branching logic implementation
 - Maturity calculation validation
