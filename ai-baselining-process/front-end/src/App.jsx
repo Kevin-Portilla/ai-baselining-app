@@ -60,6 +60,9 @@ const initialForm = {
   techEnablementOther: "",
   impactMetricsOther: "",
   transitionL3Other: "",
+  aiActionsOther: "",
+  humanOversightAreasOther: "",
+  safeguardsOther: "",
   // Pillar-specific fields (PRD-002)
   literacyAwareness: "",
   literacyBarriers: [],
@@ -304,14 +307,14 @@ const PILLAR_QUESTIONS = {
       id: "integration", title: "Operational Process AI Integration", icon: "workflow",
       questions: [
         { id: "autonomyLevel", label: "What level of autonomy does AI have in this process?", type: "select", field: "autonomyLevel", options: ["AI recommends actions","AI executes some actions autonomously","AI adapts operational behavior dynamically"] },
-        { id: "aiActions", label: "What actions can AI perform in the process?", type: "toggle", field: "aiActions", options: ["Route or classify items","Generate outputs","Trigger workflows","Notify stakeholders","Make decisions within defined parameters","Monitor and alert","Adapt behavior based on feedback"] },
-        { id: "humanOversightAreas", label: "Where is human oversight required?", type: "toggle", field: "humanOversightAreas", options: ["Final approval","Exception handling","Risk escalation","Quality review","Strategic decisions","Override / correction"] },
+        { id: "aiActions", label: "What actions can AI perform in the process?", type: "toggle", field: "aiActions", options: ["Route or classify items","Generate outputs","Trigger workflows","Notify stakeholders","Make decisions within defined parameters","Monitor and alert","Adapt behavior based on feedback","Other"], otherField: "aiActionsOther" },
+        { id: "humanOversightAreas", label: "Where is human oversight required?", type: "toggle", field: "humanOversightAreas", options: ["Final approval","Exception handling","Risk escalation","Quality review","Strategic decisions","Override / correction","Other"], otherField: "humanOversightAreasOther" },
       ],
     },
     {
       id: "governance", title: "AI Governance", icon: "shield",
       questions: [
-        { id: "governanceControls", label: "Which advanced governance capabilities exist?", type: "toggle", field: "governanceControls", options: ["Continuous monitoring","Automated controls","Auditability","Confidence thresholds","Escalation automation","Human override","Risk lifecycle management"] },
+        { id: "governanceControls", label: "Which advanced governance capabilities exist?", type: "toggle", field: "governanceControls", options: ["Continuous monitoring","Automated controls","Auditability","Confidence thresholds","Escalation automation","Human override","Risk lifecycle management","Other"], otherField: "governanceControlsOther" },
         { id: "continuousMonitoring", label: "Is performance monitored continuously?", type: "select", field: "continuousMonitoring", options: ["No","Partially","Yes — continuously"] },
         { id: "humanOverride", label: "Is there a human override mechanism?", type: "select", field: "humanOverride", options: ["No","Available but rarely used","Yes — clearly defined and tested"] },
         { id: "escalationPaths", label: "Are escalation paths defined for incorrect or risky AI actions?", type: "select", field: "escalationPaths", options: ["No","Partially","Yes — clearly defined"] },
@@ -320,7 +323,7 @@ const PILLAR_QUESTIONS = {
     {
       id: "technology", title: "Technology & Data Enablement", icon: "database",
       questions: [
-        { id: "techEnablement", label: "Which adaptive capabilities exist?", type: "toggle", field: "techEnablement", options: ["Agents","Autonomous workflows","Adaptive orchestration","Continuous learning systems","Enterprise monitoring"] },
+        { id: "techEnablement", label: "Which adaptive capabilities exist?", type: "toggle", field: "techEnablement", options: ["Agents","Autonomous workflows","Adaptive orchestration","Continuous learning systems","Enterprise monitoring","Other"], otherField: "techEnablementOther" },
         { id: "technologyEnterpriseIntegration", label: "How adaptive is the platform ecosystem?", type: "select", field: "technologyEnterpriseIntegration", options: ["AI integrated enterprise-wide","AI-enabled continuous optimization","Adaptive operational architecture"] },
       ],
     },
@@ -328,13 +331,7 @@ const PILLAR_QUESTIONS = {
       id: "outcome", title: "Outcome & Value Measurement", icon: "layers",
       questions: [
         { id: "processAdaptation", label: "Can the process learn, improve, or adapt based on data or feedback?", type: "select", field: "processAdaptation", options: ["No","Partially","Yes — with feedback loops","Yes — with continuous improvement cycles"] },
-        { id: "safeguards", label: "Which safeguards are in place?", type: "toggle", field: "safeguards", options: ["Human override","Confidence thresholds","Audit logging","Rollback capabilities","Anomaly detection","Performance benchmarking"] },
-      ],
-    },
-    {
-      id: "transition", title: "Evidence", icon: "clipboard",
-      questions: [
-        { id: "evidenceL4", label: "What evidence supports the detected maturity level?", type: "textarea", field: "evidenceL4", placeholder: "Describe examples, artefacts, or observations that confirm adaptive or autonomous AI operations." },
+        { id: "safeguards", label: "Which safeguards are in place?", type: "toggle", field: "safeguards", options: ["Human override","Confidence thresholds","Audit logging","Rollback capabilities","Anomaly detection","Performance benchmarking","Other"], otherField: "safeguardsOther" },
       ],
     },
   ],
