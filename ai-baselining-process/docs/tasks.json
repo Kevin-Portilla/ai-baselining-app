@@ -1,0 +1,38 @@
+[
+  {
+    "id": "TASK-001",
+    "title": "Create Vite React project",
+    "status": "completed",
+    "phase": "EXECUTE"
+  },
+  {
+    "id": "TASK-002",
+    "title": "Install Tailwind, shadcn/ui, and Framer Motion",
+    "status": "completed",
+    "phase": "EXECUTE"
+  },
+  {
+    "id": "TASK-003",
+    "title": "Configure Tailwind and path aliases",
+    "status": "completed",
+    "phase": "EXECUTE"
+  },
+  {
+    "id": "TASK-004",
+    "title": "Migrate App.jsx from ChatGPT canvas",
+    "status": "completed",
+    "phase": "EXECUTE"
+  },
+  {
+    "id": "TASK-005",
+    "title": "Validate branching logic and maturity calculation",
+    "status": "pending",
+    "phase": "VERIFY"
+  },
+  {
+    "id": "TASK-006",
+    "title": "Validate JSON export and reset behavior",
+    "status": "pending",
+    "phase": "VERIFY"
+  }
+]
