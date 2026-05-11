@@ -307,6 +307,7 @@ const PILLAR_QUESTIONS = {
       id: "integration", title: "Operational Process AI Integration", icon: "workflow",
       questions: [
         { id: "autonomyLevel", label: "What level of autonomy does AI have in this process?", type: "select", field: "autonomyLevel", options: ["AI recommends actions","AI executes some actions autonomously","AI adapts operational behavior dynamically"] },
+        { id: "techEnablement", label: "Which advanced technology capabilities support this process?", type: "toggle", field: "techEnablement", options: ["Agentic orchestration platform","Real-time data pipelines","Model fine-tuning","RAG (Retrieval-Augmented Generation)","Vector databases","Custom evaluation harness","Autonomous decision routing","Multi-model AI","Other"], otherField: "techEnablementOther" },
         { id: "aiActions", label: "What actions can AI perform in the process?", type: "toggle", field: "aiActions", options: ["Route or classify items","Generate outputs","Trigger workflows","Notify stakeholders","Make decisions within defined parameters","Monitor and alert","Adapt behavior based on feedback","Other"], otherField: "aiActionsOther" },
         { id: "humanOversightAreas", label: "Where is human oversight required?", type: "toggle", field: "humanOversightAreas", options: ["Final approval","Exception handling","Risk escalation","Quality review","Strategic decisions","Override / correction","Other"], otherField: "humanOversightAreasOther" },
       ],
@@ -323,15 +324,7 @@ const PILLAR_QUESTIONS = {
     {
       id: "technology", title: "Technology & Data Enablement", icon: "database",
       questions: [
-        { id: "techEnablement", label: "Which advanced technology capabilities support this process?", type: "toggle", field: "techEnablement", options: ["Agentic orchestration platform","Real-time data pipelines","Model fine-tuning","RAG (Retrieval-Augmented Generation)","Vector databases","Custom evaluation harness","Autonomous decision routing","Multi-model AI","Other"], otherField: "techEnablementOther" },
         { id: "technologyEnterpriseIntegration", label: "How adaptive is the platform ecosystem?", type: "select", field: "technologyEnterpriseIntegration", options: ["AI integrated enterprise-wide","AI-enabled continuous optimization","Adaptive operational architecture"] },
-      ],
-    },
-    {
-      id: "outcome", title: "Outcome & Value Measurement", icon: "layers",
-      questions: [
-        { id: "processAdaptation", label: "Can the process learn, improve, or adapt based on data or feedback?", type: "select", field: "processAdaptation", options: ["No","Partially","Yes — with feedback loops","Yes — with continuous improvement cycles"] },
-        { id: "safeguards", label: "Which safeguards are in place?", type: "toggle", field: "safeguards", options: ["Human override","Confidence thresholds","Audit logging","Rollback capabilities","Anomaly detection","Performance benchmarking","Other"], otherField: "safeguardsOther" },
       ],
     },
   ],
