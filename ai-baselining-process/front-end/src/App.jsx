@@ -188,26 +188,6 @@ const PILLAR_QUESTIONS = {
         { id: "barriers", label: "Which process areas could potentially benefit from AI?", type: "toggle", field: "barriers", options: ["Documentation","Reporting","Analysis","Classification","Communication","Monitoring","Decision support","Development","Testing","Governance","Other"] },
       ],
     },
-    {
-      id: "governance", title: "AI Governance", icon: "shield",
-      questions: [
-        { id: "governanceDataHandling", label: "Is there any possibility of informal or unreported AI usage in this process?", type: "select", field: "governanceDataHandling", options: ["No","Yes","Not sure"] },
-        { id: "governanceRisks", label: "What governance risks are most concerning today?", type: "toggle", field: "governanceRisks", options: ["Invisible AI usage","Sensitive data exposure","No validation practices","Compliance concerns","Lack of traceability"] },
-      ],
-    },
-    {
-      id: "technology", title: "Technology & Data Enablement", icon: "database",
-      questions: [
-        { id: "integrationDocumentation", label: "What AI capabilities currently exist?", type: "select", field: "integrationDocumentation", options: ["No AI tools","Isolated experimentation only"] },
-        { id: "technologyDataReadiness", label: "How prepared is process data for future AI usage?", type: "select", field: "technologyDataReadiness", options: ["Not structured","Partially structured but inconsistent"] },
-      ],
-    },
-    {
-      id: "evidence", title: "Evidence", icon: "clipboard",
-      questions: [
-        { id: "evidenceL0", label: "What evidence supports that this process has no AI usage today?", type: "textarea", field: "evidenceL0", placeholder: "Describe observations, confirmations, or artefacts that confirm no AI is in use." },
-      ],
-    },
   ],
 
   individual: [
@@ -398,17 +378,6 @@ const PILLAR_QUESTIONS = {
     },
   ],
 };
-
-// ── Final Questions — shown to all active respondents ─────────────────────────
-
-const FINAL_QUESTIONS = [
-  { id: "maturityAccurate", label: "Does the detected maturity level seem accurate?", type: "select", field: "maturityAccurate", options: ["Yes — accurate","Partially accurate","No — too low","No — too high"] },
-  { id: "strongestDimension", label: "Which dimension is strongest today?", type: "select", field: "strongestDimension", options: ["AI Literacy & Readiness","Operational Process AI Integration","AI Governance","Technology & Data Enablement"] },
-  { id: "weakestDimension", label: "Which dimension is weakest today?", type: "select", field: "weakestDimension", options: ["AI Literacy & Readiness","Operational Process AI Integration","AI Governance","Technology & Data Enablement"] },
-  { id: "nextLevelNeeds", label: "What would be needed to move this process to the next maturity level?", type: "toggle", field: "nextLevelNeeds", options: ["More training","Better tooling","Governance framework","Process documentation","Leadership support","Data readiness","Integration work","Dedicated budget"] },
-  { id: "deeperAssessment", label: "Should this process be considered for deeper assessment or scaling?", type: "select", field: "deeperAssessment", options: ["No","Possibly","Yes — recommended"] },
-  { id: "additionalComments", label: "Additional comments or examples", type: "textarea", field: "additionalComments", placeholder: "Any additional context, examples, or observations." },
-];
 
 // ── Dimensions ───────────────────────────────────────────────────────────────
 
@@ -1015,30 +984,6 @@ export default function App() {
                       </div>
                     )}
 
-                    {/* ── Final Questions (all active respondents) ── */}
-                    {isActive && (
-                      <div className="rounded-2xl border border-slate-200 p-5 space-y-5">
-                        <p className="text-base font-bold text-slate-900">Final Questions</p>
-                        <p className="text-xs text-slate-500 -mt-2">These questions apply regardless of maturity level.</p>
-                        {FINAL_QUESTIONS.map((q) => {
-                          if (q.type === "select") {
-                            return <FormSelect key={q.id} label={q.label} value={form[q.field]} onChange={(v) => updateField(q.field, v)} options={q.options} placeholder="Select..." />;
-                          }
-                          if (q.type === "toggle") {
-                            return <ToggleGrid key={q.id} label={q.label} options={q.options} value={form[q.field]} onChange={(v) => updateField(q.field, v)} />;
-                          }
-                          if (q.type === "textarea") {
-                            return (
-                              <div key={q.id}>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">{q.label}</label>
-                                <textarea className="w-full border border-slate-200 rounded-xl p-3 text-sm min-h-[80px] resize-y focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder={q.placeholder} value={form[q.field]} onChange={(e) => updateField(q.field, e.target.value)} />
-                              </div>
-                            );
-                          }
-                          return null;
-                        })}
-                      </div>
-                    )}
 
                   </motion.div>
                 )}
