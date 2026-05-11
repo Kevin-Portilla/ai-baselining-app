@@ -69,7 +69,6 @@ const initialForm = {
   technologyReuse: "",
   technologyEnterpriseIntegration: "",
   // PRD-003 new fields
-  squad: "",
   processType: "",
   clientData: "",
   mainSystems: "",
@@ -786,7 +785,6 @@ export default function App() {
       form.frequency,
       form.criticality,
       form.evidence,
-      form.squad,
       form.processType,
       form.clientData,
       form.mainSystems,
@@ -955,27 +953,14 @@ export default function App() {
                 />
               </div>
 
-              {/* Row 1b: Team / Squad | Process Type */}
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Team / Squad
-                  </label>
-                  <input
-                    className="w-full border border-slate-200 rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Example: SecureNow Delivery Squad"
-                    value={form.squad}
-                    onChange={(e) => updateField("squad", e.target.value)}
-                  />
-                </div>
-                <FormSelect
-                  label="Process Type"
-                  value={form.processType}
-                  onChange={(v) => updateField("processType", v)}
-                  options={processTypeOptions}
-                  placeholder="Select..."
-                />
-              </div>
+              {/* Row 1b: Process Type */}
+              <FormSelect
+                label="Process Type"
+                value={form.processType}
+                onChange={(v) => updateField("processType", v)}
+                options={processTypeOptions}
+                placeholder="Select..."
+              />
 
               {/* Row 2: Process name | Execution frequency */}
               <div className="grid md:grid-cols-2 gap-4">
@@ -1093,8 +1078,8 @@ export default function App() {
                       </div>
                     )}
 
-                    {/* ── Outcome & Value Measurement ── */}
-                    {isActive && !isNeedsValidation && (
+                    {/* ── Outcome & Value Measurement — L2, L3, L4 only ── */}
+                    {["connected", "orchestrated", "adaptive"].includes(currentSection) && (
                       <div className="rounded-2xl border border-slate-200 p-5 space-y-5">
                         <p className="text-base font-bold text-slate-900">Outcome & Value Measurement</p>
                         <FormSelect
