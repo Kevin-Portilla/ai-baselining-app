@@ -755,21 +755,25 @@ const PILLAR_QUESTIONS = {
 
 const dimensions = [
   {
+    pillar: "literacy",
     title: "AI Literacy & Readiness",
     icon: "brain",
     desc: "Knowledge, confidence, and readiness to use AI responsibly in daily work.",
   },
   {
+    pillar: "integration",
     title: "Operational Process AI Integration",
     icon: "workflow",
     desc: "How AI is embedded into workflow steps, operating procedures, and execution.",
   },
   {
+    pillar: "governance",
     title: "AI Governance",
     icon: "shield",
     desc: "Controls, risk management, validation, traceability, and responsible use.",
   },
   {
+    pillar: "technology",
     title: "Technology & Data Enablement",
     icon: "database",
     desc: "Tools, data readiness, reusable components, integrations, and scalability.",
@@ -972,16 +976,7 @@ const ToggleGrid = ({ label, options, value, onChange, otherValue, onOtherChange
 // PillarSection — renders one pillar's questions for a given maturity level
 const PillarSection = ({ pillar, form, updateField }) => {
   return (
-    <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 space-y-4">
-      {/* Pillar header */}
-      <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white text-sm font-bold shrink-0">
-          <Icon type={pillar.icon} />
-        </div>
-        <p className="font-semibold text-sm text-slate-900">{pillar.title}</p>
-      </div>
-
-      {/* Questions */}
+    <div className="space-y-4">
       <div className="space-y-4">
         {pillar.questions.map((q) => {
           if (q.type === "select") {
@@ -1053,6 +1048,33 @@ export default function App() {
     return Math.round((fields.filter(Boolean).length / fields.length) * 100);
   }, [form]);
 
+  const pillarActive = useMemo(() => ({
+    literacy: !!(form.literacyAwareness || form.literacyBarriers.length),
+    integration: !!(
+      form.individualActivities.length ||
+      form.processSteps.length ||
+      form.integrationDocumentation ||
+      form.integrationScope ||
+      form.integrationImprovements.length ||
+      form.impactMeasured
+    ),
+    governance: !!(
+      form.governanceControls.length ||
+      form.governanceRisks.length ||
+      form.governanceDataHandling ||
+      form.governanceRiskManagement ||
+      form.humanValidation
+    ),
+    technology: !!(
+      form.tools.length ||
+      form.techEnablement.length ||
+      form.technologyCurrentTools.length ||
+      form.technologyDataReadiness ||
+      form.technologyReuse ||
+      form.technologyEnterpriseIntegration
+    ),
+  }), [form]);
+
   const updateField = (field, value) =>
     setForm((prev) => ({ ...prev, [field]: value }));
 
@@ -1122,24 +1144,33 @@ export default function App() {
       {/* ── Dimension Cards ── */}
       <div className="max-w-7xl mx-auto px-6 mb-8">
         <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
-          {dimensions.map((d, i) => (
+          {dimensions.map((d, i) => {
+            const active = pillarActive[d.pillar];
+            return (
             <motion.div
               key={d.title}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: i * 0.06 }}
             >
-              <Card className="rounded-2xl h-full">
+              <Card className={cn("rounded-2xl h-full transition-all duration-300", active && "border-blue-500 shadow-md shadow-blue-100")}>
                 <CardContent className="p-5">
-                  <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700 text-sm font-bold mb-3">
+                  <div className={cn("w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold mb-3 transition-all duration-300", active ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-700")}>
                     <Icon type={d.icon} />
                   </div>
                   <p className="font-bold text-sm text-slate-900 leading-snug">{d.title}</p>
-                  <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">{d.desc}</p>
+                  <p className={cn("text-xs mt-1.5 leading-relaxed transition-colors duration-300", active ? "text-blue-600" : "text-slate-500")}>{d.desc}</p>
+                  {active && (
+                    <div className="mt-3 flex items-center gap-1.5 text-xs text-blue-600 font-medium">
+                      <span className="w-2 h-2 rounded-full bg-blue-500 inline-block" />
+                      In progress
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </motion.div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
