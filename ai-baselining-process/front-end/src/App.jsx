@@ -162,13 +162,6 @@ const clientDataOptions = [
   "Partially — some steps involve sensitive data",
 ];
 
-const aiDependencyOptions = [
-  "No dependency — process runs without AI",
-  "Individual productivity support only",
-  "Some workflow activities depend on AI",
-  "Multiple operational activities depend on AI",
-  "The process is designed around AI-driven execution",
-];
 
 // ── PILLAR_QUESTIONS — level × pillar question definitions (PRD-004) ──────────
 
@@ -203,7 +196,6 @@ const PILLAR_QUESTIONS = {
       questions: [
         { id: "individualActivities", label: "What individual AI activities are currently performed?", type: "toggle", field: "individualActivities", options: ["Writing / rewriting","Summarization","Brainstorming","Documentation","Reporting","Code assistance","Communication support","Basic analysis","Other"], otherField: "individualActivitiesOther" },
         { id: "integrationScope", label: "How integrated is AI within the official workflow?", type: "select", field: "integrationScope", options: ["Personal productivity only","Isolated activities","Some repeatable individual usage"] },
-        { id: "impactL1", label: "Is the impact of this AI usage measured?", type: "select", field: "impactL1", options: ["No","Informally","Partially"] },
       ],
     },
     {
@@ -218,20 +210,6 @@ const PILLAR_QUESTIONS = {
       id: "technology", title: "Technology & Data Enablement", icon: "database",
       questions: [
         { id: "tools", label: "Which AI tools are currently used?", type: "toggle", field: "tools", options: ["ChatGPT","Microsoft Copilot","GitHub Copilot","Claude","Gemini","Internal tools","Other"], otherField: "toolsOther" },
-        { id: "technologyReuse", label: "How are prompts or outputs reused?", type: "select", field: "technologyReuse", options: ["No reuse","Individual informal reuse","Shared informally inside team"] },
-      ],
-    },
-    {
-      id: "outcome", title: "Outcome & Value Measurement", icon: "layers",
-      questions: [
-        { id: "outcomeImpact", label: "What measurable impact has AI produced so far?", type: "select", field: "outcomeImpact", options: ["No impact identified","Perceived improvements only","Small local improvements"] },
-      ],
-    },
-    {
-      id: "transition", title: "Transition & Evidence", icon: "route",
-      questions: [
-        { id: "transitionL1", label: "What would help move this usage toward a more repeatable workflow?", type: "toggle", field: "transitionL1", options: ["Define team standards","Create shared prompt templates","Run training program","Get manager sponsorship","Obtain tool access / licensing","Document the process","Establish peer knowledge sharing"] },
-        { id: "evidenceL1", label: "What evidence supports the detected maturity level?", type: "textarea", field: "evidenceL1", placeholder: "Describe examples, artefacts, or observations that confirm individual AI use." },
       ],
     },
   ],
@@ -675,7 +653,6 @@ export default function App() {
       form.processType,
       form.clientData,
       form.mainSystems,
-      form.aiDependency,
     ];
     return Math.round((fields.filter(Boolean).length / fields.length) * 100);
   }, [form]);
@@ -918,15 +895,6 @@ export default function App() {
                 />
               </div>
 
-              {/* Row 3b: Operational AI dependency */}
-              <FormSelect
-                label="How dependent is the process on AI to operate effectively?"
-                value={form.aiDependency}
-                onChange={(v) => updateField("aiDependency", v)}
-                options={aiDependencyOptions}
-                placeholder="Select..."
-                highlight
-              />
 
               {/* ── Branching section ── */}
               <AnimatePresence mode="wait">
