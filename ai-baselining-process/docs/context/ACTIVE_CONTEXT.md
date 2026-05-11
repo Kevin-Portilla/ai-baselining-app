@@ -1,9 +1,9 @@
 # Active Context: AI Operations Baseline App
 
 ## Session Metadata
-- **Last Updated:** 2026-05-11
+- **Last Updated:** 2026-05-10
 - **Active Role:** Architect
-- **Mode:** PLANNING
+- **Mode:** IMPLEMENTATION
 
 ---
 
@@ -27,6 +27,7 @@ Initialize and configure the ACE Framework v2.6.2 for the AI Operations Baseline
 - Initial ACE roles and skills loaded
 
 ### In Progress
+- **[PRD-002] Pillar-based questions per maturity level** — restructuring branching sections into 4 framework pillars (Literacy, Integration, Governance, Technology) with level-specific questions per pillar. See `docs/requirements/PRD-002-pillar-based-questions.md`.
 - Front-end migration validation
 - Branching logic implementation
 - Maturity calculation validation

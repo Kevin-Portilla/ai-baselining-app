@@ -55,6 +55,19 @@ const initialForm = {
   individualActivitiesOther: "",
   toolsOther: "",
   processStepsOther: "",
+  // Pillar-specific fields (PRD-002)
+  literacyAwareness: "",
+  literacyBarriers: [],
+  integrationDocumentation: "",
+  integrationScope: "",
+  integrationImprovements: [],
+  governanceRisks: [],
+  governanceDataHandling: "",
+  governanceRiskManagement: "",
+  technologyCurrentTools: [],
+  technologyDataReadiness: "",
+  technologyReuse: "",
+  technologyEnterpriseIntegration: "",
 };
 
 const tribes = [
@@ -201,6 +214,542 @@ const impactMeasuredOptions = [
   "Yes, informally tracked",
   "Yes, with defined metrics",
 ];
+
+// Pillar-specific option arrays (PRD-002)
+const literacyAwarenessOptions = [
+  "No awareness — AI not on our radar",
+  "Basic — some team members have heard of AI tools",
+  "Moderate — most understand where AI could help",
+  "High — team actively identifies AI opportunities",
+  "Advanced — AI literacy is a core operational capability",
+];
+
+const literacyBarrierOptions = [
+  "Lack of training or knowledge",
+  "Low confidence using AI tools",
+  "Unclear where AI applies to this process",
+  "No internal champions or role models",
+  "Cultural resistance to AI",
+  "Language or accessibility barriers",
+];
+
+const integrationDocumentationOptions = [
+  "Not documented — AI usage is invisible",
+  "Informally documented by individuals",
+  "Partially documented in some steps",
+  "Formally documented for defined steps",
+  "Fully documented across the process lifecycle",
+];
+
+const integrationScopeOptions = [
+  "No AI in any workflow step",
+  "AI used in 1 isolated task only",
+  "AI used in a few defined steps",
+  "AI connected across multiple steps",
+  "AI orchestrates or automates the full workflow",
+];
+
+const integrationImprovementOptions = [
+  "Speed / cycle time reduction",
+  "Quality improvement",
+  "Effort reduction",
+  "Error rate reduction",
+  "Capacity increase",
+  "Client experience improvement",
+];
+
+const governanceRiskOptions = [
+  "Invisible or unreported AI usage",
+  "No validation of AI outputs",
+  "Sensitive data exposure risk",
+  "Lack of traceability or audit trail",
+  "No escalation path defined",
+  "Compliance or regulatory gap",
+  "Over-reliance on AI without oversight",
+];
+
+const governanceDataHandlingOptions = [
+  "No guidance — data handling is ad hoc",
+  "Individuals apply their own judgment",
+  "Basic guidance exists but not enforced",
+  "Formal policy applied in key steps",
+  "Automated controls enforce data handling rules",
+];
+
+const governanceRiskManagementOptions = [
+  "No risk management in place",
+  "Risks identified informally",
+  "Key risks documented but not actively managed",
+  "Risks documented and reviewed periodically",
+  "Continuous risk monitoring and escalation embedded",
+];
+
+const technologyDataReadinessOptions = [
+  "Data is not structured for AI use",
+  "Some data is clean but not consistently organized",
+  "Data organized for specific AI use cases",
+  "Data is reliable and consistently available",
+  "Data platform supports learning and continuous improvement",
+];
+
+const technologyReuseOptions = [
+  "No reuse — each use is from scratch",
+  "Individuals reuse their own prompts informally",
+  "Some prompts or templates shared within a team",
+  "Structured reuse via prompt library or knowledge base",
+  "Reusable components deployed at scale across teams",
+];
+
+const technologyEnterpriseIntegrationOptions = [
+  "No integration with enterprise systems",
+  "Isolated tools with no system connections",
+  "Partial integration with some tools or platforms",
+  "AI integrated with key enterprise systems",
+  "Full integration across enterprise data and platforms",
+];
+
+// ── PILLAR_QUESTIONS — level × pillar question definitions ───────────────────
+
+const PILLAR_QUESTIONS = {
+  "no-ai": [
+    {
+      id: "literacy",
+      title: "AI Literacy & Readiness",
+      icon: "brain",
+      questions: [
+        {
+          id: "literacyAwareness",
+          label: "What is the current level of AI awareness in the team?",
+          type: "select",
+          field: "literacyAwareness",
+          options: literacyAwarenessOptions,
+        },
+        {
+          id: "literacyBarriers",
+          label: "What literacy or confidence barriers exist?",
+          type: "toggle",
+          field: "literacyBarriers",
+          options: literacyBarrierOptions,
+        },
+      ],
+    },
+    {
+      id: "integration",
+      title: "Operational Process AI Integration",
+      icon: "workflow",
+      questions: [
+        {
+          id: "integrationScope",
+          label: "How would you describe AI's role in the current workflow?",
+          type: "select",
+          field: "integrationScope",
+          options: integrationScopeOptions,
+        },
+        {
+          id: "aiBenefit",
+          label: "Which parts of the process could potentially benefit from AI?",
+          type: "textarea",
+          field: "aiBenefit",
+          placeholder: "Example: classification, documentation, reporting, QA review…",
+        },
+      ],
+    },
+    {
+      id: "governance",
+      title: "AI Governance",
+      icon: "shield",
+      questions: [
+        {
+          id: "governanceRisks",
+          label: "What governance risks exist today (even without AI)?",
+          type: "toggle",
+          field: "governanceRisks",
+          options: governanceRiskOptions,
+        },
+        {
+          id: "governanceDataHandling",
+          label: "How is sensitive data currently handled in this process?",
+          type: "select",
+          field: "governanceDataHandling",
+          options: governanceDataHandlingOptions,
+        },
+      ],
+    },
+    {
+      id: "technology",
+      title: "Technology & Data Enablement",
+      icon: "database",
+      questions: [
+        {
+          id: "barriers",
+          label: "What are the main barriers to AI adoption in this process?",
+          type: "toggle",
+          field: "barriers",
+          options: noAiBarriers,
+        },
+        {
+          id: "technologyDataReadiness",
+          label: "How ready is your data for AI use?",
+          type: "select",
+          field: "technologyDataReadiness",
+          options: technologyDataReadinessOptions,
+        },
+      ],
+    },
+  ],
+
+  individual: [
+    {
+      id: "literacy",
+      title: "AI Literacy & Readiness",
+      icon: "brain",
+      questions: [
+        {
+          id: "literacyAwareness",
+          label: "How would you describe AI awareness and confidence in the team?",
+          type: "select",
+          field: "literacyAwareness",
+          options: literacyAwarenessOptions,
+        },
+        {
+          id: "literacyBarriers",
+          label: "What barriers limit broader AI adoption beyond individuals?",
+          type: "toggle",
+          field: "literacyBarriers",
+          options: literacyBarrierOptions,
+        },
+      ],
+    },
+    {
+      id: "integration",
+      title: "Operational Process AI Integration",
+      icon: "workflow",
+      questions: [
+        {
+          id: "individualActivities",
+          label: "What individual AI activities are being performed?",
+          type: "toggle",
+          field: "individualActivities",
+          options: individualActivityOptions,
+          otherField: "individualActivitiesOther",
+        },
+        {
+          id: "integrationDocumentation",
+          label: "Is AI usage documented or tracked in any way?",
+          type: "select",
+          field: "integrationDocumentation",
+          options: integrationDocumentationOptions,
+        },
+      ],
+    },
+    {
+      id: "governance",
+      title: "AI Governance",
+      icon: "shield",
+      questions: [
+        {
+          id: "humanValidation",
+          label: "Is there human validation of AI outputs?",
+          type: "select",
+          field: "humanValidation",
+          options: humanValidationOptions,
+        },
+        {
+          id: "governanceRisks",
+          label: "What governance risks exist with individual AI usage?",
+          type: "toggle",
+          field: "governanceRisks",
+          options: governanceRiskOptions,
+        },
+      ],
+    },
+    {
+      id: "technology",
+      title: "Technology & Data Enablement",
+      icon: "database",
+      questions: [
+        {
+          id: "tools",
+          label: "Which AI tools are being used?",
+          type: "toggle",
+          field: "tools",
+          options: aiToolOptions,
+          otherField: "toolsOther",
+        },
+        {
+          id: "technologyReuse",
+          label: "Are prompts, outputs, or learnings reused in a structured way?",
+          type: "select",
+          field: "technologyReuse",
+          options: technologyReuseOptions,
+        },
+      ],
+    },
+  ],
+
+  connected: [
+    {
+      id: "literacy",
+      title: "AI Literacy & Readiness",
+      icon: "brain",
+      questions: [
+        {
+          id: "literacyAwareness",
+          label: "How well does the team understand where AI applies in this process?",
+          type: "select",
+          field: "literacyAwareness",
+          options: literacyAwarenessOptions,
+        },
+        {
+          id: "integrationImprovements",
+          label: "What operational improvements have been observed from AI use?",
+          type: "toggle",
+          field: "integrationImprovements",
+          options: integrationImprovementOptions,
+        },
+      ],
+    },
+    {
+      id: "integration",
+      title: "Operational Process AI Integration",
+      icon: "workflow",
+      questions: [
+        {
+          id: "processSteps",
+          label: "Which process steps are supported by AI?",
+          type: "toggle",
+          field: "processSteps",
+          options: processStepOptions,
+          otherField: "processStepsOther",
+        },
+        {
+          id: "integrationDocumentation",
+          label: "How is AI usage documented across process steps?",
+          type: "select",
+          field: "integrationDocumentation",
+          options: integrationDocumentationOptions,
+        },
+      ],
+    },
+    {
+      id: "governance",
+      title: "AI Governance",
+      icon: "shield",
+      questions: [
+        {
+          id: "humanValidation",
+          label: "Is there human validation of AI outputs?",
+          type: "select",
+          field: "humanValidation",
+          options: humanValidationOptions,
+        },
+        {
+          id: "governanceDataHandling",
+          label: "How is sensitive data handling applied across AI steps?",
+          type: "select",
+          field: "governanceDataHandling",
+          options: governanceDataHandlingOptions,
+        },
+      ],
+    },
+    {
+      id: "technology",
+      title: "Technology & Data Enablement",
+      icon: "database",
+      questions: [
+        {
+          id: "techEnablement",
+          label: "What reusable assets or tools exist?",
+          type: "toggle",
+          field: "techEnablement",
+          options: reusableAssetOptions,
+        },
+        {
+          id: "technologyDataReadiness",
+          label: "How organized is data for these AI use cases?",
+          type: "select",
+          field: "technologyDataReadiness",
+          options: technologyDataReadinessOptions,
+        },
+      ],
+    },
+  ],
+
+  orchestrated: [
+    {
+      id: "literacy",
+      title: "AI Literacy & Readiness",
+      icon: "brain",
+      questions: [
+        {
+          id: "literacyAwareness",
+          label: "How would you describe team AI readiness for orchestrated workflows?",
+          type: "select",
+          field: "literacyAwareness",
+          options: literacyAwarenessOptions,
+        },
+        {
+          id: "integrationImprovements",
+          label: "What measurable operational improvements has AI enabled?",
+          type: "toggle",
+          field: "integrationImprovements",
+          options: integrationImprovementOptions,
+        },
+      ],
+    },
+    {
+      id: "integration",
+      title: "Operational Process AI Integration",
+      icon: "workflow",
+      questions: [
+        {
+          id: "processSteps",
+          label: "Which process steps are connected to AI systems?",
+          type: "toggle",
+          field: "processSteps",
+          options: processStepOptions,
+          otherField: "processStepsOther",
+        },
+        {
+          id: "impactMeasured",
+          label: "Is AI impact on this process formally measured?",
+          type: "select",
+          field: "impactMeasured",
+          options: impactMeasuredOptions,
+        },
+      ],
+    },
+    {
+      id: "governance",
+      title: "AI Governance",
+      icon: "shield",
+      questions: [
+        {
+          id: "governanceControls",
+          label: "What governance and control mechanisms are in place?",
+          type: "toggle",
+          field: "governanceControls",
+          options: advancedControlOptions,
+        },
+        {
+          id: "governanceRiskManagement",
+          label: "How mature is AI risk management for this process?",
+          type: "select",
+          field: "governanceRiskManagement",
+          options: governanceRiskManagementOptions,
+        },
+      ],
+    },
+    {
+      id: "technology",
+      title: "Technology & Data Enablement",
+      icon: "database",
+      questions: [
+        {
+          id: "techEnablement",
+          label: "What reusable components or integrations exist?",
+          type: "toggle",
+          field: "techEnablement",
+          options: reusableAssetOptions,
+        },
+        {
+          id: "technologyEnterpriseIntegration",
+          label: "How integrated is AI with enterprise systems and platforms?",
+          type: "select",
+          field: "technologyEnterpriseIntegration",
+          options: technologyEnterpriseIntegrationOptions,
+        },
+      ],
+    },
+  ],
+
+  adaptive: [
+    {
+      id: "literacy",
+      title: "AI Literacy & Readiness",
+      icon: "brain",
+      questions: [
+        {
+          id: "literacyAwareness",
+          label: "How advanced is team AI readiness for autonomous/agentic workflows?",
+          type: "select",
+          field: "literacyAwareness",
+          options: literacyAwarenessOptions,
+        },
+        {
+          id: "integrationImprovements",
+          label: "Which performance dimensions does AI continuously improve?",
+          type: "toggle",
+          field: "integrationImprovements",
+          options: integrationImprovementOptions,
+        },
+      ],
+    },
+    {
+      id: "integration",
+      title: "Operational Process AI Integration",
+      icon: "workflow",
+      questions: [
+        {
+          id: "integrationScope",
+          label: "How autonomous or adaptive is the current AI-enabled workflow?",
+          type: "select",
+          field: "integrationScope",
+          options: integrationScopeOptions,
+        },
+        {
+          id: "humanOversight",
+          label: "Describe the human oversight model",
+          type: "textarea",
+          field: "humanOversight",
+          placeholder: "Where do humans approve, override, monitor, or handle exceptions?",
+        },
+      ],
+    },
+    {
+      id: "governance",
+      title: "AI Governance",
+      icon: "shield",
+      questions: [
+        {
+          id: "governanceControls",
+          label: "What advanced controls and monitoring mechanisms are in place?",
+          type: "toggle",
+          field: "governanceControls",
+          options: advancedControlOptions,
+        },
+        {
+          id: "governanceRiskManagement",
+          label: "How is ongoing AI risk and compliance managed?",
+          type: "select",
+          field: "governanceRiskManagement",
+          options: governanceRiskManagementOptions,
+        },
+      ],
+    },
+    {
+      id: "technology",
+      title: "Technology & Data Enablement",
+      icon: "database",
+      questions: [
+        {
+          id: "techEnablement",
+          label: "Which scalable technology capabilities support this process?",
+          type: "toggle",
+          field: "techEnablement",
+          options: reusableAssetOptions,
+        },
+        {
+          id: "technologyEnterpriseIntegration",
+          label: "How integrated is AI with enterprise systems and platforms?",
+          type: "select",
+          field: "technologyEnterpriseIntegration",
+          options: technologyEnterpriseIntegrationOptions,
+        },
+      ],
+    },
+  ],
+};
 
 // ── Dimensions ───────────────────────────────────────────────────────────────
 
@@ -420,24 +969,67 @@ const ToggleGrid = ({ label, options, value, onChange, otherValue, onOtherChange
   );
 };
 
-const ValidationDropdowns = ({ form, updateField }) => (
-  <div className="grid md:grid-cols-2 gap-4">
-    <FormSelect
-      label="Is there human validation?"
-      value={form.humanValidation}
-      onChange={(v) => updateField("humanValidation", v)}
-      options={humanValidationOptions}
-      placeholder="Select..."
-    />
-    <FormSelect
-      label="Is impact measured?"
-      value={form.impactMeasured}
-      onChange={(v) => updateField("impactMeasured", v)}
-      options={impactMeasuredOptions}
-      placeholder="Select..."
-    />
-  </div>
-);
+// PillarSection — renders one pillar's questions for a given maturity level
+const PillarSection = ({ pillar, form, updateField }) => {
+  return (
+    <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 space-y-4">
+      {/* Pillar header */}
+      <div className="flex items-center gap-3">
+        <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white text-sm font-bold shrink-0">
+          <Icon type={pillar.icon} />
+        </div>
+        <p className="font-semibold text-sm text-slate-900">{pillar.title}</p>
+      </div>
+
+      {/* Questions */}
+      <div className="space-y-4">
+        {pillar.questions.map((q) => {
+          if (q.type === "select") {
+            return (
+              <FormSelect
+                key={q.id}
+                label={q.label}
+                value={form[q.field] || ""}
+                onChange={(v) => updateField(q.field, v)}
+                options={q.options}
+                placeholder="Select…"
+              />
+            );
+          }
+          if (q.type === "toggle") {
+            return (
+              <ToggleGrid
+                key={q.id}
+                label={q.label}
+                options={q.options}
+                value={form[q.field] || []}
+                onChange={(v) => updateField(q.field, v)}
+                otherValue={q.otherField ? form[q.otherField] : undefined}
+                onOtherChange={q.otherField ? (v) => updateField(q.otherField, v) : undefined}
+              />
+            );
+          }
+          if (q.type === "textarea") {
+            return (
+              <div key={q.id}>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  {q.label}
+                </label>
+                <textarea
+                  className="w-full border border-slate-200 rounded-xl p-3 text-sm text-slate-900 min-h-[90px] resize-y focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder={q.placeholder || ""}
+                  value={form[q.field] || ""}
+                  onChange={(e) => updateField(q.field, e.target.value)}
+                />
+              </div>
+            );
+          }
+          return null;
+        })}
+      </div>
+    </div>
+  );
+};
 
 // ── App ───────────────────────────────────────────────────────────────────────
 
@@ -477,6 +1069,9 @@ export default function App() {
     recommendedLevel === "needs-validation" || !levelShortLabels[recommendedLevel]
       ? levelShortLabels[recommendedLevel] || "Awaiting Input"
       : `${recommendedLevel} — ${levelShortLabels[recommendedLevel]}`;
+
+  // Determine which pillar set to render
+  const activePillars = PILLAR_QUESTIONS[currentSection] || null;
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#020617" }}>
@@ -645,142 +1240,21 @@ export default function App() {
                     transition={{ duration: 0.22 }}
                     className="space-y-5"
                   >
-                    {/* ── Level 0: No AI Usage ── */}
-                    {currentSection === "no-ai" && (
-                      <>
-                        <div className="rounded-2xl border border-slate-200 p-5 space-y-5">
-                          <p className="text-base font-bold text-slate-900">
-                            Path: {sectionLabels[currentSection]}
-                          </p>
-                          <ToggleGrid
-                            label="What are the main barriers to AI adoption in this process?"
-                            options={noAiBarriers}
-                            value={form.barriers}
-                            onChange={(v) => updateField("barriers", v)}
-                          />
-                          <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">
-                              Which part of the process could potentially benefit from AI?
-                            </label>
-                            <textarea
-                              className="w-full border border-slate-200 rounded-xl p-3 text-sm min-h-[90px] resize-y focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              placeholder="Example: classification, documentation, reporting, QA review…"
-                              value={form.aiBenefit}
-                              onChange={(e) => updateField("aiBenefit", e.target.value)}
+                    {/* ── Levels 0–4: Pillar-based sections ── */}
+                    {activePillars && (
+                      <div className="rounded-2xl border border-slate-200 p-5 space-y-4">
+                        <p className="text-base font-bold text-slate-900">
+                          Path: {sectionLabels[currentSection]}
+                        </p>
+                        <div className="space-y-3">
+                          {activePillars.map((pillar) => (
+                            <PillarSection
+                              key={pillar.id}
+                              pillar={pillar}
+                              form={form}
+                              updateField={updateField}
                             />
-                          </div>
-                        </div>
-                      </>
-                    )}
-
-                    {/* ── Level 1: Individual AI Use ── */}
-                    {currentSection === "individual" && (
-                      <div className="rounded-2xl border border-slate-200 p-5 space-y-5">
-                        <p className="text-base font-bold text-slate-900">
-                          Path: {sectionLabels[currentSection]}
-                        </p>
-                        <ToggleGrid
-                          label="What individual AI activities are being performed?"
-                          options={individualActivityOptions}
-                          value={form.individualActivities}
-                          onChange={(v) => updateField("individualActivities", v)}
-                          otherValue={form.individualActivitiesOther}
-                          onOtherChange={(v) => updateField("individualActivitiesOther", v)}
-                        />
-                        <ToggleGrid
-                          label="Which AI tools are being used?"
-                          options={aiToolOptions}
-                          value={form.tools}
-                          onChange={(v) => updateField("tools", v)}
-                          otherValue={form.toolsOther}
-                          onOtherChange={(v) => updateField("toolsOther", v)}
-                        />
-                        <ValidationDropdowns form={form} updateField={updateField} />
-                      </div>
-                    )}
-
-                    {/* ── Level 2: Connected Workflows ── */}
-                    {currentSection === "connected" && (
-                      <div className="rounded-2xl border border-slate-200 p-5 space-y-5">
-                        <p className="text-base font-bold text-slate-900">
-                          Path: {sectionLabels[currentSection]}
-                        </p>
-                        <ToggleGrid
-                          label="Which process steps are supported by AI?"
-                          options={processStepOptions}
-                          value={form.processSteps}
-                          onChange={(v) => updateField("processSteps", v)}
-                          otherValue={form.processStepsOther}
-                          onOtherChange={(v) => updateField("processStepsOther", v)}
-                        />
-                        <ToggleGrid
-                          label="What reusable assets or tools exist?"
-                          options={reusableAssetOptions}
-                          value={form.techEnablement}
-                          onChange={(v) => updateField("techEnablement", v)}
-                        />
-                        <ValidationDropdowns form={form} updateField={updateField} />
-                      </div>
-                    )}
-
-                    {/* ── Level 3: Orchestrated Systems ── */}
-                    {currentSection === "orchestrated" && (
-                      <div className="rounded-2xl border border-slate-200 p-5 space-y-5">
-                        <p className="text-base font-bold text-slate-900">
-                          Path: {sectionLabels[currentSection]}
-                        </p>
-                        <ToggleGrid
-                          label="Which process steps are connected to AI systems?"
-                          options={processStepOptions}
-                          value={form.processSteps}
-                          onChange={(v) => updateField("processSteps", v)}
-                          otherValue={form.processStepsOther}
-                          onOtherChange={(v) => updateField("processStepsOther", v)}
-                        />
-                        <ToggleGrid
-                          label="What reusable assets or tools exist?"
-                          options={reusableAssetOptions}
-                          value={form.techEnablement}
-                          onChange={(v) => updateField("techEnablement", v)}
-                        />
-                        <ToggleGrid
-                          label="What orchestration controls are in place?"
-                          options={advancedControlOptions}
-                          value={form.governanceControls}
-                          onChange={(v) => updateField("governanceControls", v)}
-                        />
-                        <ValidationDropdowns form={form} updateField={updateField} />
-                      </div>
-                    )}
-
-                    {/* ── Level 4: Adaptive / Autonomous ── */}
-                    {currentSection === "adaptive" && (
-                      <div className="rounded-2xl border border-slate-200 p-5 space-y-5">
-                        <p className="text-base font-bold text-slate-900">
-                          Path: {sectionLabels[currentSection]}
-                        </p>
-                        <ToggleGrid
-                          label="What advanced controls are in place?"
-                          options={advancedControlOptions}
-                          value={form.governanceControls}
-                          onChange={(v) => updateField("governanceControls", v)}
-                        />
-                        <ToggleGrid
-                          label="Which advanced technology capabilities exist?"
-                          options={reusableAssetOptions}
-                          value={form.techEnablement}
-                          onChange={(v) => updateField("techEnablement", v)}
-                        />
-                        <div>
-                          <label className="block text-sm font-medium text-slate-700 mb-1">
-                            Describe the human oversight model
-                          </label>
-                          <textarea
-                            className="w-full border border-slate-200 rounded-xl p-3 text-sm min-h-[90px] resize-y focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Where do humans approve, override, monitor, or handle exceptions?"
-                            value={form.humanOversight}
-                            onChange={(e) => updateField("humanOversight", e.target.value)}
-                          />
+                          ))}
                         </div>
                       </div>
                     )}
