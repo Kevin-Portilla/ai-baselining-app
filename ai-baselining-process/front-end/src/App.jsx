@@ -188,6 +188,7 @@ const PILLAR_QUESTIONS = {
       id: "literacy", title: "AI Literacy & Readiness", icon: "brain",
       questions: [
         { id: "literacyAwareness", label: "How would you describe AI literacy within the team?", type: "select", field: "literacyAwareness", options: ["Basic awareness","Moderate practical usage","Some individuals highly capable"] },
+        { id: "integrationScope", label: "How integrated is AI within the official workflow?", type: "select", field: "integrationScope", options: ["Personal productivity only","Isolated activities","Some repeatable individual usage"] },
         { id: "literacyBarriers", label: "What barriers limit broader AI adoption?", type: "toggle", field: "literacyBarriers", options: ["Lack of training","Low confidence","Unclear process applicability","No internal champions","Resistance to change","Tool limitations"] },
       ],
     },
@@ -195,21 +196,15 @@ const PILLAR_QUESTIONS = {
       id: "integration", title: "Operational Process AI Integration", icon: "workflow",
       questions: [
         { id: "individualActivities", label: "What individual AI activities are currently performed?", type: "toggle", field: "individualActivities", options: ["Writing / rewriting","Summarization","Brainstorming","Documentation","Reporting","Code assistance","Communication support","Basic analysis","Other"], otherField: "individualActivitiesOther" },
-        { id: "integrationScope", label: "How integrated is AI within the official workflow?", type: "select", field: "integrationScope", options: ["Personal productivity only","Isolated activities","Some repeatable individual usage"] },
       ],
     },
     {
       id: "governance", title: "AI Governance", icon: "shield",
       questions: [
         { id: "humanValidation", label: "How are AI outputs validated?", type: "select", field: "humanValidation", options: ["No validation","Informal human review","Peer review in some situations"] },
+        { id: "tools", label: "Which AI tools are currently used?", type: "toggle", field: "tools", options: ["ChatGPT","Microsoft Copilot","GitHub Copilot","Claude","Gemini","Internal tools","Other"], otherField: "toolsOther" },
         { id: "dataAwarenessL1", label: "Are associates clear on what information can or cannot be entered into AI tools?", type: "select", field: "dataAwarenessL1", options: ["No","Somewhat","Yes"] },
         { id: "governanceRisks", label: "What governance risks currently exist?", type: "toggle", field: "governanceRisks", options: ["Invisible AI usage","Lack of validation","Sensitive data exposure","No traceability","No escalation path","Use of non-approved tools"] },
-      ],
-    },
-    {
-      id: "technology", title: "Technology & Data Enablement", icon: "database",
-      questions: [
-        { id: "tools", label: "Which AI tools are currently used?", type: "toggle", field: "tools", options: ["ChatGPT","Microsoft Copilot","GitHub Copilot","Claude","Gemini","Internal tools","Other"], otherField: "toolsOther" },
       ],
     },
   ],
