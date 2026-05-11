@@ -1,7 +1,7 @@
 # Active Context: AI Operations Baseline App
 
 ## Session Metadata
-- **Last Updated:** 2026-05-10
+- **Last Updated:** 2026-05-11
 - **Active Role:** Architect
 - **Mode:** IMPLEMENTATION
 
@@ -28,6 +28,7 @@ Initialize and configure the ACE Framework v2.6.2 for the AI Operations Baseline
 
 ### In Progress
 - **[PRD-002] Pillar-based questions per maturity level** — restructuring branching sections into 4 framework pillars (Literacy, Integration, Governance, Technology) with level-specific questions per pillar. See `docs/requirements/PRD-002-pillar-based-questions.md`.
+- **[PRD-003] Fixed question logic: maturity-constrained survey redesign** — 7-section global flow, dual-signal AI detection (integration + operational dependency), constrained option sets per maturity level, new Section 1 metadata fields (squad, processType, clientData, mainSystems), new Outcome/Value section for all scored levels. See `docs/requirements/PRD-003-fixed-question-logic.md`.
 - Front-end migration validation
 - Branching logic implementation
 - Maturity calculation validation

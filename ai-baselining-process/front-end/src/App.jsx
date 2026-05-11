@@ -68,6 +68,14 @@ const initialForm = {
   technologyDataReadiness: "",
   technologyReuse: "",
   technologyEnterpriseIntegration: "",
+  // PRD-003 new fields
+  squad: "",
+  processType: "",
+  clientData: "",
+  mainSystems: "",
+  aiDependency: "",
+  outcomeImpact: "",
+  outcomeAreas: [],
 };
 
 const tribes = [
@@ -101,298 +109,129 @@ const criticalities = [
 ];
 
 const aiUsageOptions = [
-  "No AI is used",
+  "No AI usage identified",
   "AI is used informally by individuals",
-  "AI is used in specific process steps",
-  "AI is used across multiple workflow steps or systems",
-  "AI is used in adaptive, agentic, or semi-autonomous workflows",
+  "AI supports some defined workflow activities",
+  "AI is integrated across multiple workflow steps",
+  "AI operates adaptive or autonomous activities",
   "Not sure",
 ];
 
 const usageToLevel = {
-  "No AI is used": "0",
+  "No AI usage identified": "0",
   "AI is used informally by individuals": "1",
-  "AI is used in specific process steps": "2",
-  "AI is used across multiple workflow steps or systems": "3",
-  "AI is used in adaptive, agentic, or semi-autonomous workflows": "4",
+  "AI supports some defined workflow activities": "2",
+  "AI is integrated across multiple workflow steps": "3",
+  "AI operates adaptive or autonomous activities": "4",
   "Not sure": "needs-validation",
 };
 
-// Level 0 — barriers
-const noAiBarriers = [
-  "Lack of training",
-  "Lack of approved tools",
-  "Data quality",
-  "Data access",
-  "Security concerns",
-  "Client restrictions",
-  "Lack of governance",
-  "Lack of technical support",
-  "Unclear business value",
-  "Resistance to change",
-];
 
-// Level 1 — individual AI activities
-const individualActivityOptions = [
-  "Writing / rewriting",
-  "Summarization",
-  "Brainstorming",
-  "Basic analysis",
-  "Code generation",
-  "Documentation",
-  "Reporting",
-  "Ticket or case review",
-  "Communication support",
+// PRD-003 new option arrays
+const processTypeOptions = [
+  "Customer-facing operations",
+  "Internal operations",
+  "Compliance / risk management",
+  "Product development",
+  "Support / service delivery",
   "Other",
 ];
 
-// Level 1 — AI tools in use
-const aiToolOptions = [
-  "ChatGPT",
-  "Microsoft Copilot",
-  "GitHub Copilot",
-  "Claude",
-  "Gemini",
-  "Power Platform AI Builder",
-  "UiPath AI",
-  "Internal AI tool",
-  "Custom model / API",
-  "Other",
+const clientDataOptions = [
+  "Yes — this process handles client or sensitive data",
+  "No — no sensitive data involved",
+  "Partially — some steps involve sensitive data",
 ];
 
-// Level 2 / 3 — process steps
-const processStepOptions = [
-  "Intake",
-  "Classification",
-  "Prioritization",
-  "Analysis",
-  "Documentation",
-  "Development",
-  "Testing",
-  "Quality review",
-  "Reporting",
-  "Monitoring",
-  "Decision support",
-  "Client communication",
-  "Other",
+const aiDependencyOptions = [
+  "No dependency — process runs without AI",
+  "Individual productivity support only",
+  "Some workflow activities depend on AI",
+  "Multiple operational activities depend on AI",
+  "The process is designed around AI-driven execution",
 ];
 
-// Level 2 / 3 / 4 — reusable assets or tech capabilities
-const reusableAssetOptions = [
-  "Prompt library",
-  "Reusable templates",
-  "Knowledge base",
-  "Connectors",
-  "Automation workflow",
-  "System integration",
-  "Agents",
-  "APIs",
-  "Monitoring dashboard",
+const outcomeImpactOptions = [
+  "No impact identified",
+  "Perceived improvements only",
+  "Small local improvements",
+  "Measured operational improvements",
+  "KPI or SLA impact",
+  "Strategic business impact",
 ];
 
-// Level 4 — advanced governance controls
-const advancedControlOptions = [
-  "Human validation",
-  "Approved tools only",
-  "Sensitive data guidance",
-  "Traceability / audit trail",
-  "Risk documentation",
-  "Escalation path",
-  "Automated controls",
-  "Continuous monitoring",
+const outcomeAreaOptions = [
+  "Productivity",
+  "Cycle time",
+  "Quality",
+  "Error reduction",
+  "Capacity",
+  "Customer experience",
+  "Compliance",
+  "Decision-making",
 ];
 
-const humanValidationOptions = [
-  "No validation — AI output used directly",
-  "Informal — individuals verify as they see fit",
-  "Formal and required",
-  "Automated validation only",
-];
-
-const impactMeasuredOptions = [
-  "No, impact is not measured",
-  "Yes, informally tracked",
-  "Yes, with defined metrics",
-];
-
-// Pillar-specific option arrays (PRD-002)
-const literacyAwarenessOptions = [
-  "No awareness — AI not on our radar",
-  "Basic — some team members have heard of AI tools",
-  "Moderate — most understand where AI could help",
-  "High — team actively identifies AI opportunities",
-  "Advanced — AI literacy is a core operational capability",
-];
-
-const literacyBarrierOptions = [
-  "Lack of training or knowledge",
-  "Low confidence using AI tools",
-  "Unclear where AI applies to this process",
-  "No internal champions or role models",
-  "Cultural resistance to AI",
-  "Language or accessibility barriers",
-];
-
-const integrationDocumentationOptions = [
-  "Not documented — AI usage is invisible",
-  "Informally documented by individuals",
-  "Partially documented in some steps",
-  "Formally documented for defined steps",
-  "Fully documented across the process lifecycle",
-];
-
-const integrationScopeOptions = [
-  "No AI in any workflow step",
-  "AI used in 1 isolated task only",
-  "AI used in a few defined steps",
-  "AI connected across multiple steps",
-  "AI orchestrates or automates the full workflow",
-];
-
-const integrationImprovementOptions = [
-  "Speed / cycle time reduction",
-  "Quality improvement",
-  "Effort reduction",
-  "Error rate reduction",
-  "Capacity increase",
-  "Client experience improvement",
-];
-
-const governanceRiskOptions = [
-  "Invisible or unreported AI usage",
-  "No validation of AI outputs",
-  "Sensitive data exposure risk",
-  "Lack of traceability or audit trail",
-  "No escalation path defined",
-  "Compliance or regulatory gap",
-  "Over-reliance on AI without oversight",
-];
-
-const governanceDataHandlingOptions = [
-  "No guidance — data handling is ad hoc",
-  "Individuals apply their own judgment",
-  "Basic guidance exists but not enforced",
-  "Formal policy applied in key steps",
-  "Automated controls enforce data handling rules",
-];
-
-const governanceRiskManagementOptions = [
-  "No risk management in place",
-  "Risks identified informally",
-  "Key risks documented but not actively managed",
-  "Risks documented and reviewed periodically",
-  "Continuous risk monitoring and escalation embedded",
-];
-
-const technologyDataReadinessOptions = [
-  "Data is not structured for AI use",
-  "Some data is clean but not consistently organized",
-  "Data organized for specific AI use cases",
-  "Data is reliable and consistently available",
-  "Data platform supports learning and continuous improvement",
-];
-
-const technologyReuseOptions = [
-  "No reuse — each use is from scratch",
-  "Individuals reuse their own prompts informally",
-  "Some prompts or templates shared within a team",
-  "Structured reuse via prompt library or knowledge base",
-  "Reusable components deployed at scale across teams",
-];
-
-const technologyEnterpriseIntegrationOptions = [
-  "No integration with enterprise systems",
-  "Isolated tools with no system connections",
-  "Partial integration with some tools or platforms",
-  "AI integrated with key enterprise systems",
-  "Full integration across enterprise data and platforms",
-];
-
-// ── PILLAR_QUESTIONS — level × pillar question definitions ───────────────────
+// ── PILLAR_QUESTIONS — level × pillar question definitions (PRD-003 constrained) ─
 
 const PILLAR_QUESTIONS = {
   "no-ai": [
     {
-      id: "literacy",
-      title: "AI Literacy & Readiness",
-      icon: "brain",
+      id: "literacy", title: "AI Literacy & Readiness", icon: "brain",
       questions: [
         {
-          id: "literacyAwareness",
-          label: "What is the current level of AI awareness in the team?",
-          type: "select",
-          field: "literacyAwareness",
-          options: literacyAwarenessOptions,
+          id: "literacyAwareness", label: "What is the current AI awareness level within the team?",
+          type: "select", field: "literacyAwareness",
+          options: ["No awareness", "Basic awareness"],
         },
         {
-          id: "literacyBarriers",
-          label: "What literacy or confidence barriers exist?",
-          type: "toggle",
-          field: "literacyBarriers",
-          options: literacyBarrierOptions,
+          id: "literacyBarriers", label: "What barriers currently prevent AI adoption?",
+          type: "toggle", field: "literacyBarriers",
+          options: ["Lack of knowledge or training", "Unclear business value", "Security or compliance concerns", "No approved tools", "Client restrictions", "Resistance to change"],
         },
       ],
     },
     {
-      id: "integration",
-      title: "Operational Process AI Integration",
-      icon: "workflow",
+      id: "integration", title: "Operational Process AI Integration", icon: "workflow",
       questions: [
         {
-          id: "integrationScope",
-          label: "How would you describe AI's role in the current workflow?",
-          type: "select",
-          field: "integrationScope",
-          options: integrationScopeOptions,
+          id: "integrationScope", label: "How is the workflow currently executed?",
+          type: "select", field: "integrationScope",
+          options: ["Fully manual", "Traditional tools only", "Rule-based automation only"],
         },
         {
-          id: "aiBenefit",
-          label: "Which parts of the process could potentially benefit from AI?",
-          type: "textarea",
-          field: "aiBenefit",
-          placeholder: "Example: classification, documentation, reporting, QA review…",
+          id: "aiBenefit", label: "Which process areas could potentially benefit from AI?",
+          type: "toggle", field: "barriers",
+          options: ["Documentation", "Reporting", "Analysis", "Classification", "Communication", "Monitoring", "Decision support", "Development", "Testing", "Governance"],
         },
       ],
     },
     {
-      id: "governance",
-      title: "AI Governance",
-      icon: "shield",
+      id: "governance", title: "AI Governance", icon: "shield",
       questions: [
         {
-          id: "governanceRisks",
-          label: "What governance risks exist today (even without AI)?",
-          type: "toggle",
-          field: "governanceRisks",
-          options: governanceRiskOptions,
+          id: "governanceDataHandling", label: "How is AI usage currently governed in this process?",
+          type: "select", field: "governanceDataHandling",
+          options: ["No governance defined", "Informal awareness only"],
         },
         {
-          id: "governanceDataHandling",
-          label: "How is sensitive data currently handled in this process?",
-          type: "select",
-          field: "governanceDataHandling",
-          options: governanceDataHandlingOptions,
+          id: "governanceRisks", label: "What governance risks are most concerning today?",
+          type: "toggle", field: "governanceRisks",
+          options: ["Invisible AI usage", "Sensitive data exposure", "No validation practices", "Compliance concerns", "Lack of traceability"],
         },
       ],
     },
     {
-      id: "technology",
-      title: "Technology & Data Enablement",
-      icon: "database",
+      id: "technology", title: "Technology & Data Enablement", icon: "database",
       questions: [
         {
-          id: "barriers",
-          label: "What are the main barriers to AI adoption in this process?",
-          type: "toggle",
-          field: "barriers",
-          options: noAiBarriers,
+          id: "technologyCurrentTools", label: "What AI capabilities currently exist?",
+          type: "select", field: "integrationDocumentation",
+          options: ["No AI tools", "Isolated experimentation only"],
         },
         {
-          id: "technologyDataReadiness",
-          label: "How ready is your data for AI use?",
-          type: "select",
-          field: "technologyDataReadiness",
-          options: technologyDataReadinessOptions,
+          id: "technologyDataReadiness", label: "How prepared is process data for future AI usage?",
+          type: "select", field: "technologyDataReadiness",
+          options: ["Not structured", "Partially structured but inconsistent"],
         },
       ],
     },
@@ -400,88 +239,64 @@ const PILLAR_QUESTIONS = {
 
   individual: [
     {
-      id: "literacy",
-      title: "AI Literacy & Readiness",
-      icon: "brain",
+      id: "literacy", title: "AI Literacy & Readiness", icon: "brain",
       questions: [
         {
-          id: "literacyAwareness",
-          label: "How would you describe AI awareness and confidence in the team?",
-          type: "select",
-          field: "literacyAwareness",
-          options: literacyAwarenessOptions,
+          id: "literacyAwareness", label: "How would you describe AI literacy within the team?",
+          type: "select", field: "literacyAwareness",
+          options: ["Basic awareness", "Moderate practical usage", "Some individuals highly capable"],
         },
         {
-          id: "literacyBarriers",
-          label: "What barriers limit broader AI adoption beyond individuals?",
-          type: "toggle",
-          field: "literacyBarriers",
-          options: literacyBarrierOptions,
+          id: "literacyBarriers", label: "What barriers limit broader AI adoption?",
+          type: "toggle", field: "literacyBarriers",
+          options: ["Lack of training", "Low confidence", "Unclear process applicability", "No internal champions", "Resistance to change", "Tool limitations"],
         },
       ],
     },
     {
-      id: "integration",
-      title: "Operational Process AI Integration",
-      icon: "workflow",
+      id: "integration", title: "Operational Process AI Integration", icon: "workflow",
       questions: [
         {
-          id: "individualActivities",
-          label: "What individual AI activities are being performed?",
-          type: "toggle",
-          field: "individualActivities",
-          options: individualActivityOptions,
+          id: "individualActivities", label: "What individual AI activities are currently performed?",
+          type: "toggle", field: "individualActivities",
+          options: ["Writing / rewriting", "Summarization", "Brainstorming", "Documentation", "Reporting", "Code assistance", "Communication support", "Basic analysis"],
           otherField: "individualActivitiesOther",
         },
         {
-          id: "integrationDocumentation",
-          label: "Is AI usage documented or tracked in any way?",
-          type: "select",
-          field: "integrationDocumentation",
-          options: integrationDocumentationOptions,
+          id: "integrationScope", label: "How integrated is AI within the official workflow?",
+          type: "select", field: "integrationScope",
+          options: ["Personal productivity only", "Isolated activities", "Some repeatable individual usage"],
         },
       ],
     },
     {
-      id: "governance",
-      title: "AI Governance",
-      icon: "shield",
+      id: "governance", title: "AI Governance", icon: "shield",
       questions: [
         {
-          id: "humanValidation",
-          label: "Is there human validation of AI outputs?",
-          type: "select",
-          field: "humanValidation",
-          options: humanValidationOptions,
+          id: "humanValidation", label: "How are AI outputs validated?",
+          type: "select", field: "humanValidation",
+          options: ["No validation", "Informal human review", "Peer review in some situations"],
         },
         {
-          id: "governanceRisks",
-          label: "What governance risks exist with individual AI usage?",
-          type: "toggle",
-          field: "governanceRisks",
-          options: governanceRiskOptions,
+          id: "governanceRisks", label: "What governance risks currently exist?",
+          type: "toggle", field: "governanceRisks",
+          options: ["Invisible AI usage", "Lack of validation", "Sensitive data exposure", "No traceability", "No escalation path"],
         },
       ],
     },
     {
-      id: "technology",
-      title: "Technology & Data Enablement",
-      icon: "database",
+      id: "technology", title: "Technology & Data Enablement", icon: "database",
       questions: [
         {
-          id: "tools",
-          label: "Which AI tools are being used?",
-          type: "toggle",
-          field: "tools",
-          options: aiToolOptions,
+          id: "tools", label: "Which AI tools are currently used?",
+          type: "toggle", field: "tools",
+          options: ["ChatGPT", "Microsoft Copilot", "Claude", "Gemini", "GitHub Copilot", "Internal tools", "Other"],
           otherField: "toolsOther",
         },
         {
-          id: "technologyReuse",
-          label: "Are prompts, outputs, or learnings reused in a structured way?",
-          type: "select",
-          field: "technologyReuse",
-          options: technologyReuseOptions,
+          id: "technologyReuse", label: "How are prompts or outputs reused?",
+          type: "select", field: "technologyReuse",
+          options: ["No reuse", "Individual informal reuse", "Shared informally inside team"],
         },
       ],
     },
@@ -489,87 +304,63 @@ const PILLAR_QUESTIONS = {
 
   connected: [
     {
-      id: "literacy",
-      title: "AI Literacy & Readiness",
-      icon: "brain",
+      id: "literacy", title: "AI Literacy & Readiness", icon: "brain",
       questions: [
         {
-          id: "literacyAwareness",
-          label: "How well does the team understand where AI applies in this process?",
-          type: "select",
-          field: "literacyAwareness",
-          options: literacyAwarenessOptions,
+          id: "literacyAwareness", label: "How capable is the team at identifying operational AI opportunities?",
+          type: "select", field: "literacyAwareness",
+          options: ["Moderate", "High"],
         },
         {
-          id: "integrationImprovements",
-          label: "What operational improvements have been observed from AI use?",
-          type: "toggle",
-          field: "integrationImprovements",
-          options: integrationImprovementOptions,
+          id: "integrationImprovements", label: "What operational improvements have been observed?",
+          type: "toggle", field: "integrationImprovements",
+          options: ["Faster execution", "Reduced effort", "Better quality", "Reduced errors", "Improved reporting", "Better decision support"],
         },
       ],
     },
     {
-      id: "integration",
-      title: "Operational Process AI Integration",
-      icon: "workflow",
+      id: "integration", title: "Operational Process AI Integration", icon: "workflow",
       questions: [
         {
-          id: "processSteps",
-          label: "Which process steps are supported by AI?",
-          type: "toggle",
-          field: "processSteps",
-          options: processStepOptions,
+          id: "processSteps", label: "Which workflow activities are AI-supported?",
+          type: "toggle", field: "processSteps",
+          options: ["Intake", "Classification", "Analysis", "Reporting", "Documentation", "Monitoring", "Decision support", "Communication"],
           otherField: "processStepsOther",
         },
         {
-          id: "integrationDocumentation",
-          label: "How is AI usage documented across process steps?",
-          type: "select",
-          field: "integrationDocumentation",
-          options: integrationDocumentationOptions,
+          id: "integrationScope", label: "How integrated is AI across the workflow?",
+          type: "select", field: "integrationScope",
+          options: ["AI supports defined workflow steps", "AI connects some activities together", "AI partially supports operational flow"],
         },
       ],
     },
     {
-      id: "governance",
-      title: "AI Governance",
-      icon: "shield",
+      id: "governance", title: "AI Governance", icon: "shield",
       questions: [
         {
-          id: "humanValidation",
-          label: "Is there human validation of AI outputs?",
-          type: "select",
-          field: "humanValidation",
-          options: humanValidationOptions,
+          id: "humanValidation", label: "How are AI activities governed?",
+          type: "select", field: "humanValidation",
+          options: ["Human validation required", "Partial documented controls", "Team-level responsible use practices"],
         },
         {
-          id: "governanceDataHandling",
-          label: "How is sensitive data handling applied across AI steps?",
-          type: "select",
-          field: "governanceDataHandling",
-          options: governanceDataHandlingOptions,
+          id: "governanceDataHandling", label: "How is sensitive data handled?",
+          type: "select", field: "governanceDataHandling",
+          options: ["Basic guidance", "Defined team practices", "Partial standardization"],
         },
       ],
     },
     {
-      id: "technology",
-      title: "Technology & Data Enablement",
-      icon: "database",
+      id: "technology", title: "Technology & Data Enablement", icon: "database",
       questions: [
         {
-          id: "techEnablement",
-          label: "What reusable assets or tools exist?",
-          type: "toggle",
-          field: "techEnablement",
-          options: reusableAssetOptions,
+          id: "techEnablement", label: "What reusable assets exist?",
+          type: "toggle", field: "techEnablement",
+          options: ["Templates", "Prompt libraries", "Knowledge bases", "Connectors", "Workflow automations"],
         },
         {
-          id: "technologyDataReadiness",
-          label: "How organized is data for these AI use cases?",
-          type: "select",
-          field: "technologyDataReadiness",
-          options: technologyDataReadinessOptions,
+          id: "technologyDataReadiness", label: "How prepared is the data environment?",
+          type: "select", field: "technologyDataReadiness",
+          options: ["Organized for some use cases", "Reliable for defined workflows"],
         },
       ],
     },
@@ -577,87 +368,62 @@ const PILLAR_QUESTIONS = {
 
   orchestrated: [
     {
-      id: "literacy",
-      title: "AI Literacy & Readiness",
-      icon: "brain",
+      id: "literacy", title: "AI Literacy & Readiness", icon: "brain",
       questions: [
         {
-          id: "literacyAwareness",
-          label: "How would you describe team AI readiness for orchestrated workflows?",
-          type: "select",
-          field: "literacyAwareness",
-          options: literacyAwarenessOptions,
+          id: "literacyAwareness", label: "How mature is operational AI capability in the team?",
+          type: "select", field: "literacyAwareness",
+          options: ["High", "Advanced operational capability"],
         },
         {
-          id: "integrationImprovements",
-          label: "What measurable operational improvements has AI enabled?",
-          type: "toggle",
-          field: "integrationImprovements",
-          options: integrationImprovementOptions,
+          id: "integrationImprovements", label: "How effectively can teams evaluate AI limitations and risks?",
+          type: "select", field: "integrationDocumentation",
+          options: ["Most teams understand limitations", "Teams consistently evaluate outputs and risks"],
         },
       ],
     },
     {
-      id: "integration",
-      title: "Operational Process AI Integration",
-      icon: "workflow",
+      id: "integration", title: "Operational Process AI Integration", icon: "workflow",
       questions: [
         {
-          id: "processSteps",
-          label: "Which process steps are connected to AI systems?",
-          type: "toggle",
-          field: "processSteps",
-          options: processStepOptions,
-          otherField: "processStepsOther",
+          id: "integrationScope", label: "How is AI integrated operationally?",
+          type: "select", field: "integrationScope",
+          options: ["AI supports multiple workflow steps", "AI integrates with systems and data sources", "AI enables measurable operational workflows"],
         },
         {
-          id: "impactMeasured",
-          label: "Is AI impact on this process formally measured?",
-          type: "select",
-          field: "impactMeasured",
-          options: impactMeasuredOptions,
+          id: "impactMeasured", label: "How is AI impact measured?",
+          type: "select", field: "impactMeasured",
+          options: ["Informally tracked", "Measured with operational metrics", "Measured with KPIs and SLAs"],
         },
       ],
     },
     {
-      id: "governance",
-      title: "AI Governance",
-      icon: "shield",
+      id: "governance", title: "AI Governance", icon: "shield",
       questions: [
         {
-          id: "governanceControls",
-          label: "What governance and control mechanisms are in place?",
-          type: "toggle",
-          field: "governanceControls",
-          options: advancedControlOptions,
+          id: "governanceControls", label: "Which governance controls are implemented?",
+          type: "toggle", field: "governanceControls",
+          options: ["Human validation", "Audit trail", "Approval workflows", "Risk documentation", "Traceability", "Monitoring", "Escalation procedures"],
         },
         {
-          id: "governanceRiskManagement",
-          label: "How mature is AI risk management for this process?",
-          type: "select",
-          field: "governanceRiskManagement",
-          options: governanceRiskManagementOptions,
+          id: "governanceRiskManagement", label: "How mature is AI risk management?",
+          type: "select", field: "governanceRiskManagement",
+          options: ["Documented and reviewed", "Continuously managed operationally"],
         },
       ],
     },
     {
-      id: "technology",
-      title: "Technology & Data Enablement",
-      icon: "database",
+      id: "technology", title: "Technology & Data Enablement", icon: "database",
       questions: [
         {
-          id: "techEnablement",
-          label: "What reusable components or integrations exist?",
-          type: "toggle",
-          field: "techEnablement",
-          options: reusableAssetOptions,
+          id: "techEnablement", label: "Which reusable enterprise capabilities exist?",
+          type: "toggle", field: "techEnablement",
+          options: ["APIs", "Agents", "Enterprise integrations", "Shared orchestration workflows", "Monitoring dashboards"],
         },
         {
-          id: "technologyEnterpriseIntegration",
-          label: "How integrated is AI with enterprise systems and platforms?",
-          type: "select",
-          field: "technologyEnterpriseIntegration",
-          options: technologyEnterpriseIntegrationOptions,
+          id: "technologyEnterpriseIntegration", label: "How reliable is the technical environment?",
+          type: "select", field: "technologyEnterpriseIntegration",
+          options: ["Reliable and repeatable", "Operationally scalable"],
         },
       ],
     },
@@ -665,86 +431,62 @@ const PILLAR_QUESTIONS = {
 
   adaptive: [
     {
-      id: "literacy",
-      title: "AI Literacy & Readiness",
-      icon: "brain",
+      id: "literacy", title: "AI Literacy & Readiness", icon: "brain",
       questions: [
         {
-          id: "literacyAwareness",
-          label: "How advanced is team AI readiness for autonomous/agentic workflows?",
-          type: "select",
-          field: "literacyAwareness",
-          options: literacyAwarenessOptions,
+          id: "literacyAwareness", label: "How prepared are teams to operate adaptive AI workflows?",
+          type: "select", field: "literacyAwareness",
+          options: ["Advanced", "AI-native operational capability"],
         },
         {
-          id: "integrationImprovements",
-          label: "Which performance dimensions does AI continuously improve?",
-          type: "toggle",
-          field: "integrationImprovements",
-          options: integrationImprovementOptions,
+          id: "integrationImprovements", label: "How actively do teams improve AI-supported decisions?",
+          type: "select", field: "integrationDocumentation",
+          options: ["Teams validate and improve workflows", "Teams continuously optimize AI decisions"],
         },
       ],
     },
     {
-      id: "integration",
-      title: "Operational Process AI Integration",
-      icon: "workflow",
+      id: "integration", title: "Operational Process AI Integration", icon: "workflow",
       questions: [
         {
-          id: "integrationScope",
-          label: "How autonomous or adaptive is the current AI-enabled workflow?",
-          type: "select",
-          field: "integrationScope",
-          options: integrationScopeOptions,
+          id: "integrationScope", label: "How autonomous is the workflow?",
+          type: "select", field: "integrationScope",
+          options: ["AI recommends actions", "AI executes some actions autonomously", "AI adapts operational behavior dynamically"],
         },
         {
-          id: "humanOversight",
-          label: "Describe the human oversight model",
-          type: "textarea",
-          field: "humanOversight",
+          id: "humanOversight", label: "What is the human oversight model?",
+          type: "textarea", field: "humanOversight",
           placeholder: "Where do humans approve, override, monitor, or handle exceptions?",
         },
       ],
     },
     {
-      id: "governance",
-      title: "AI Governance",
-      icon: "shield",
+      id: "governance", title: "AI Governance", icon: "shield",
       questions: [
         {
-          id: "governanceControls",
-          label: "What advanced controls and monitoring mechanisms are in place?",
-          type: "toggle",
-          field: "governanceControls",
-          options: advancedControlOptions,
+          id: "governanceControls", label: "Which advanced governance capabilities exist?",
+          type: "toggle", field: "governanceControls",
+          options: ["Continuous monitoring", "Automated controls", "Auditability", "Confidence thresholds", "Escalation automation", "Human override", "Risk lifecycle management"],
         },
         {
-          id: "governanceRiskManagement",
-          label: "How is ongoing AI risk and compliance managed?",
-          type: "select",
-          field: "governanceRiskManagement",
-          options: governanceRiskManagementOptions,
+          id: "governanceRiskManagement", label: "How is AI compliance monitored?",
+          type: "select", field: "governanceRiskManagement",
+          options: ["Continuously monitored", "Embedded operationally", "Adaptive risk management"],
         },
       ],
     },
     {
-      id: "technology",
-      title: "Technology & Data Enablement",
-      icon: "database",
+      id: "technology", title: "Technology & Data Enablement", icon: "database",
       questions: [
         {
-          id: "techEnablement",
-          label: "Which scalable technology capabilities support this process?",
-          type: "toggle",
-          field: "techEnablement",
-          options: reusableAssetOptions,
+          id: "techEnablement", label: "Which adaptive capabilities exist?",
+          type: "toggle", field: "techEnablement",
+          options: ["Agents", "Autonomous workflows", "Adaptive orchestration", "Continuous learning systems", "Enterprise monitoring"],
         },
         {
-          id: "technologyEnterpriseIntegration",
-          label: "How integrated is AI with enterprise systems and platforms?",
-          type: "select",
-          field: "technologyEnterpriseIntegration",
-          options: technologyEnterpriseIntegrationOptions,
+          id: "technologyEnterpriseIntegration", label: "How adaptive is the platform ecosystem?",
+          type: "select", field: "technologyEnterpriseIntegration",
+          options: ["AI integrated enterprise-wide", "AI-enabled continuous optimization", "Adaptive operational architecture"],
         },
       ],
     },
@@ -1044,6 +786,11 @@ export default function App() {
       form.frequency,
       form.criticality,
       form.evidence,
+      form.squad,
+      form.processType,
+      form.clientData,
+      form.mainSystems,
+      form.aiDependency,
     ];
     return Math.round((fields.filter(Boolean).length / fields.length) * 100);
   }, [form]);
@@ -1056,7 +803,9 @@ export default function App() {
       form.integrationDocumentation ||
       form.integrationScope ||
       form.integrationImprovements.length ||
-      form.impactMeasured
+      form.impactMeasured ||
+      form.outcomeAreas.length ||
+      form.outcomeImpact
     ),
     governance: !!(
       form.governanceControls.length ||
@@ -1206,6 +955,28 @@ export default function App() {
                 />
               </div>
 
+              {/* Row 1b: Team / Squad | Process Type */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    Team / Squad
+                  </label>
+                  <input
+                    className="w-full border border-slate-200 rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Example: SecureNow Delivery Squad"
+                    value={form.squad}
+                    onChange={(e) => updateField("squad", e.target.value)}
+                  />
+                </div>
+                <FormSelect
+                  label="Process Type"
+                  value={form.processType}
+                  onChange={(v) => updateField("processType", v)}
+                  options={processTypeOptions}
+                  placeholder="Select..."
+                />
+              </div>
+
               {/* Row 2: Process name | Execution frequency */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
@@ -1226,6 +997,28 @@ export default function App() {
                   options={frequencies}
                   placeholder="Select..."
                 />
+              </div>
+
+              {/* Row 2b: Client data | Main systems */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <FormSelect
+                  label="Does this process handle client or sensitive data?"
+                  value={form.clientData}
+                  onChange={(v) => updateField("clientData", v)}
+                  options={clientDataOptions}
+                  placeholder="Select..."
+                />
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    Main systems / platforms used
+                  </label>
+                  <input
+                    className="w-full border border-slate-200 rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Example: Salesforce, Jira, Power BI"
+                    value={form.mainSystems}
+                    onChange={(e) => updateField("mainSystems", e.target.value)}
+                  />
+                </div>
               </div>
 
               {/* Brief process description */}
@@ -1260,6 +1053,16 @@ export default function App() {
                 />
               </div>
 
+              {/* Row 3b: Operational AI dependency */}
+              <FormSelect
+                label="How dependent is the process on AI to operate effectively?"
+                value={form.aiDependency}
+                onChange={(v) => updateField("aiDependency", v)}
+                options={aiDependencyOptions}
+                placeholder="Select..."
+                highlight
+              />
+
               {/* ── Branching section ── */}
               <AnimatePresence mode="wait">
                 {isActive && (
@@ -1287,6 +1090,26 @@ export default function App() {
                             />
                           ))}
                         </div>
+                      </div>
+                    )}
+
+                    {/* ── Outcome & Value Measurement ── */}
+                    {isActive && !isNeedsValidation && (
+                      <div className="rounded-2xl border border-slate-200 p-5 space-y-5">
+                        <p className="text-base font-bold text-slate-900">Outcome & Value Measurement</p>
+                        <FormSelect
+                          label="What measurable impact has AI produced on this process?"
+                          value={form.outcomeImpact}
+                          onChange={(v) => updateField("outcomeImpact", v)}
+                          options={outcomeImpactOptions}
+                          placeholder="Select..."
+                        />
+                        <ToggleGrid
+                          label="Which areas improved due to AI?"
+                          options={outcomeAreaOptions}
+                          value={form.outcomeAreas}
+                          onChange={(v) => updateField("outcomeAreas", v)}
+                        />
                       </div>
                     )}
 
