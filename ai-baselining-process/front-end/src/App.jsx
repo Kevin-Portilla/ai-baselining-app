@@ -211,18 +211,10 @@ const PILLAR_QUESTIONS = {
 
   connected: [
     {
-      id: "literacy", title: "AI Literacy & Readiness", icon: "brain",
-      questions: [
-        { id: "literacyAwareness", label: "How capable is the team at identifying operational AI opportunities?", type: "select", field: "literacyAwareness", options: ["Moderate","High"] },
-        { id: "integrationImprovements", label: "What operational improvements have been observed?", type: "toggle", field: "integrationImprovements", options: ["Faster execution","Reduced effort","Better quality","Reduced errors","Improved reporting","Better decision support"] },
-      ],
-    },
-    {
       id: "integration", title: "Operational Process AI Integration", icon: "workflow",
       questions: [
         { id: "processSteps", label: "Which workflow activities are AI-supported?", type: "toggle", field: "processSteps", options: ["Intake","Classification","Analysis","Reporting","Documentation","Monitoring","Decision support","Communication"], otherField: "processStepsOther" },
         { id: "integrationScope", label: "How integrated is AI across the workflow?", type: "select", field: "integrationScope", options: ["AI supports defined workflow steps","AI connects some activities together","AI partially supports operational flow"] },
-        { id: "teamRepeatability", label: "Are AI-supported steps repeatable across the team?", type: "select", field: "teamRepeatability", options: ["No","Partially","Yes — consistently across the team"] },
       ],
     },
     {
@@ -236,8 +228,7 @@ const PILLAR_QUESTIONS = {
     {
       id: "technology", title: "Technology & Data Enablement", icon: "database",
       questions: [
-        { id: "techEnablement", label: "What reusable assets exist?", type: "toggle", field: "techEnablement", options: ["Templates","Prompt libraries","Knowledge bases","Connectors","Workflow automations"] },
-        { id: "technologyDataReadiness", label: "How prepared is the data environment?", type: "select", field: "technologyDataReadiness", options: ["Organized for some use cases","Reliable for defined workflows"] },
+        { id: "techEnablement", label: "What reusable assets exist?", type: "toggle", field: "techEnablement", options: ["Templates","Prompt libraries","Knowledge bases","Connectors","Workflow automations","APIs","System integration","Agents","Monitoring Dashboard"] },
       ],
     },
     {
@@ -245,13 +236,6 @@ const PILLAR_QUESTIONS = {
       questions: [
         { id: "outcomeImpact", label: "What measurable impact has AI produced on this process?", type: "select", field: "outcomeImpact", options: ["No impact identified","Perceived improvements only","Small local improvements","Measured operational improvements"] },
         { id: "outcomeAreas", label: "Which areas improved due to AI?", type: "toggle", field: "outcomeAreas", options: ["Productivity","Cycle time","Quality","Error reduction","Capacity","Customer experience","Compliance","Decision-making"] },
-      ],
-    },
-    {
-      id: "transition", title: "Transition & Evidence", icon: "route",
-      questions: [
-        { id: "transitionL2", label: "What is missing to move this process toward an orchestrated system?", type: "toggle", field: "transitionL2", options: ["System integrations","Automated data pipelines","Standardised tooling","Governance framework","Dedicated team roles","Consistent documentation","Performance measurement"] },
-        { id: "evidenceL2", label: "What evidence supports the detected maturity level?", type: "textarea", field: "evidenceL2", placeholder: "Describe examples, artefacts, or observations that confirm connected AI workflows." },
       ],
     },
   ],
