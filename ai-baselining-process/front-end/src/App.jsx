@@ -323,7 +323,7 @@ const PILLAR_QUESTIONS = {
     {
       id: "technology", title: "Technology & Data Enablement", icon: "database",
       questions: [
-        { id: "techEnablement", label: "Which adaptive capabilities exist?", type: "toggle", field: "techEnablement", options: ["Agents","Autonomous workflows","Adaptive orchestration","Continuous learning systems","Enterprise monitoring","Other"], otherField: "techEnablementOther" },
+        { id: "techEnablement", label: "Which advanced technology capabilities support this process?", type: "toggle", field: "techEnablement", options: ["Agentic orchestration platform","Real-time data pipelines","Model fine-tuning","RAG (Retrieval-Augmented Generation)","Vector databases","Custom evaluation harness","Autonomous decision routing","Multi-model AI","Other"], otherField: "techEnablementOther" },
         { id: "technologyEnterpriseIntegration", label: "How adaptive is the platform ecosystem?", type: "select", field: "technologyEnterpriseIntegration", options: ["AI integrated enterprise-wide","AI-enabled continuous optimization","Adaptive operational architecture"] },
       ],
     },
