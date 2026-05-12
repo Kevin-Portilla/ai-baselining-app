@@ -1,68 +1,115 @@
 # Project Context & Preferences
 
-> This file captures stable project-level decisions made during the **Discuss Phase**.
-> It is created/updated by the Architect before the Plan phase.
-> Unlike ACTIVE_CONTEXT.md (which is volatile per-session), this file is persistent.
+> Stable project-level decisions made during the Discuss Phase.
+> Updated by the Architect. Unlike ACTIVE_CONTEXT.md (volatile per-session), this file is persistent.
+
+*Last Updated: 2026-05-12*
+
+---
+
+## Project Identity
+
+| Property | Value |
+|----------|-------|
+| **Name** | AI Operations Baseline Assessment |
+| **Purpose** | Survey tool to classify the AI maturity of operational processes using a 5-level model (L0–L4) across 3 strategic domains |
+| **Target Users** | Operations Managers, Business Analysts, Process Owners, AI Program leads |
+| **Primary Use Case** | Facilitated assessment: assessor fills in form during a process review session and exports JSON |
+| **Repository** | `paulosolis-ai/ai-baselining-app` |
+| **Framework** | ACE-Framework v2.5.0 |
 
 ---
 
 ## Visual Style
 
-- **Density**: [Compact | Comfortable | Spacious]
-- **Theme**: [Dark Mode | Light Mode | System]
-- **Component Library**: [e.g., Shadcn/UI, Material, Custom]
-- **Typography**: [e.g., Inter, System Default]
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Density | Comfortable | Executive/corporate audience — readable without being sparse |
+| Theme | Dark page background, light form cards | Dark bg (`#020617`) with white card surfaces — high contrast corporate look |
+| Component Library | shadcn/ui + Tailwind CSS v4 | Pre-built accessible components; Tailwind for all custom styling |
+| Typography | Tailwind defaults (Inter-compatible) | Clean, professional sans-serif |
+| Animations | Framer Motion | Smooth section transitions on level change |
+| Icon Library | Lucide React | Consistent outline icons; inline Icon component for dynamic icon rendering |
+| Domain Matrix | Custom chevron-shaped headers (#0052CC), orange category titles (#EA580C) | Matches corporate brand visual language |
+
+---
+
+## Tech Stack
+
+| Layer | Choice | Rationale |
+|-------|--------|-----------|
+| Frontend Framework | React 19 | Stable; familiar to the team |
+| Build Tool | Vite | Fast HMR; minimal config |
+| Styling | Tailwind CSS v4 | Utility-first; no runtime overhead |
+| State Management | Local `useState` in App.jsx | v1 facilitated use case; no persistence needed |
+| Charts | Recharts | React-native charting; sufficient for bar/pie/radar |
+| Animation | Framer Motion | AnimatePresence for level transition effects |
+| Linting | ESLint | CI-enforced; prevents unused-vars regressions |
 
 ---
 
 ## API Design
 
-- **Style**: [REST | GraphQL | gRPC]
-- **Error Format**: [Problem Details RFC 7807 | Custom envelope]
-- **Auth Strategy**: [Bearer Token | Session Cookie | API Key]
-- **Versioning**: [URL path | Header | Query param]
+- **Style:** None (v1 is purely client-side)
+- **Export:** JSON blob via `URL.createObjectURL` — browser-native, no server
+- **Future:** REST API with Problem Details RFC 7807 error format when backend is added
 
 ---
 
 ## Data Layer
 
-- **Database**: [e.g., PostgreSQL, SQLite, MongoDB]
-- **ORM/Query Builder**: [e.g., Prisma, Drizzle, raw SQL]
-- **Migration Tool**: [e.g., Prisma Migrate, Flyway, manual]
+- **Database:** None (v1 — local state only)
+- **Future:** Supabase (PostgreSQL) — `initialForm` maps directly to `process_assessments` table
+- **ORM/Query Builder (future):** Supabase JS client
+- **Migration Tool (future):** Supabase migrations
 
 ---
 
 ## Testing
 
-- **Framework**: [e.g., Vitest, Jest, Pytest]
-- **Coverage Target**: [e.g., 80%]
-- **E2E Tool**: [e.g., Playwright, Cypress, none]
+- **Framework:** None implemented in v1
+- **Coverage Target:** 80% for scoring logic (`logic/maturity.js`) when tests are added
+- **E2E Tool:** Playwright (planned — to detect blank-page regressions per RCA-001)
+- **Current CI:** ESLint lint + Vite build only
 
 ---
 
 ## Code Style
 
-- **Language**: [e.g., TypeScript, Python, Go]
-- **Linter**: [e.g., ESLint, Ruff, golangci-lint]
-- **Formatter**: [e.g., Prettier, Black, gofmt]
+| Decision | Choice |
+|----------|--------|
+| Language | JavaScript (JSX) — not TypeScript in v1 |
+| Linter | ESLint (flat config) |
+| Formatter | No Prettier configured — follow ESLint rules |
+| File naming | kebab-case for components (e.g. `DomainCards.jsx`), camelCase for data/logic |
+| Component pattern | Functional components + hooks only, no class components |
+| Import aliases | `@/` maps to `src/` via Vite alias config |
 
 ---
 
 ## Deployment
 
-- **Platform**: [e.g., Vercel, AWS, Docker, self-hosted]
-- **CI/CD**: [e.g., GitHub Actions, GitLab CI]
-- **Environment Strategy**: [e.g., dev → staging → prod]
+| Decision | Choice |
+|----------|--------|
+| Platform | Static hosting (Vercel or Netlify) — no server required |
+| CI/CD | GitHub Actions — lint + build on push to `main`/`develop` and PRs |
+| Build artifact | `dist/` folder uploaded as GitHub Actions artifact (7-day retention) |
+| Environment | No environment variables required for v1 |
+| Branch strategy | `main` (production), `develop` (integration), `feat/*` / `refactor/*` / `release/*` feature branches |
 
 ---
 
 ## Project-Specific Decisions
 
-<!-- Record any Discuss Phase decisions that don't fit the categories above -->
-
 | Decision | Choice | Rationale | Date |
-|---|---|---|---|
-| _Example: Error handling_ | _Global toast notifications_ | _Cleaner UX for multi-step forms_ | _YYYY-MM-DD_ |
+|----------|--------|-----------|------|
+| No TypeScript in v1 | Plain JSX | Reduce setup complexity; prototype speed | 2026-05-12 |
+| No Prettier | ESLint only | Single linting tool; Prettier not configured | 2026-05-12 |
+| No tests in v1 | CI = lint + build only | Time-to-delivery for prototype; tests planned for v2 | 2026-05-12 |
+| Inline icons via Icon.jsx | No icon library dependency for dynamic icons | Avoids lucide-react as an additional dependency for dynamically-rendered icons | 2026-05-12 |
+| equipManagers field | Present in questions.js but missing from initialForm | Known gap — field defined but not wired; to be resolved in next PRD cycle | 2026-05-12 |
+| Tribe = "Intelligent Automation" | Not "Intelligent" | Correct organizational naming per BR-005 | 2026-05-12 |
+| shadcn/ui + Tailwind v4 | Not MUI or Ant Design | Lighter bundle; Tailwind utility-first matches design needs | 2026-05-12 |
 
 ---
 

@@ -5,79 +5,141 @@
 
 ---
 
+## MANDATORY RULE — No Direct Commits to `develop` or `main`
+
+> **Every change — no matter how small — MUST follow this flow:**
+>
+> ```
+> feature branch  →  PR  →  CI passes  →  merge to develop
+> ```
+>
+> Direct commits to `develop` or `main` are **forbidden without exception**.
+> This includes documentation fixes, config tweaks, and one-line changes.
+
+### Enforcement Checklist (before any merge)
+
+- [ ] Change is on its own branch (not `develop`, not `main`)
+- [ ] PR is open targeting `develop`
+- [ ] CI jobs `Lint` and `Build` are both green ✅
+- [ ] Branch is up to date with `develop` (no conflicts)
+- [ ] PR is merged via GitHub — not by pushing directly
+
+---
+
 ## Branching Strategy
 
 ### Branch Types
 
-| Branch | Purpose | Naming | Lifetime |
-|--------|---------|--------|----------|
-| `main` | Production-ready code | `main` | Permanent |
-| `develop` | Integration branch | `develop` | Permanent |
-| `feature/*` | New features | `feature/short-description` | Until merged |
-| `bugfix/*` | Bug fixes | `bugfix/issue-id-description` | Until merged |
-| `hotfix/*` | Production fixes | `hotfix/issue-id-description` | Until merged |
-| `release/*` | Release prep | `release/vX.Y.Z` | Until released |
+| Branch | Purpose | Naming | Branches from | Merges to |
+|--------|---------|--------|--------------|-----------|
+| `main` | Production-ready code | `main` | `release/*` or `hotfix/*` only | — |
+| `develop` | Integration branch | `develop` | — | `main` (via release) |
+| `feat/*` | New features | `feat/short-description` | `develop` | `develop` |
+| `refactor/*` | Code restructuring | `refactor/short-description` | `develop` | `develop` |
+| `bugfix/*` | Bug fixes | `bugfix/issue-description` | `develop` | `develop` |
+| `hotfix/*` | Production fixes | `hotfix/issue-description` | `main` | `main` + `develop` |
+| `release/*` | Release preparation | `release/vX.Y.Z` | `develop` | `main` + `develop` |
+| `docs/*` | Documentation only | `docs/short-description` | `develop` | `develop` |
 
 ### Branch Flow
 
 ```
-main ─────────────────────────────●─────────────────────●───▶
-                                  ▲                     ▲
-                                  │ merge               │ merge
-                                  │                     │
-develop ────●─────●─────●─────────●─────●─────●─────────●───▶
-            ▲     ▲     ▲               ▲     ▲
-            │     │     │               │     │
-feature/a ──┘     │     │               │     │
-                  │     │               │     │
-feature/b ────────┘     │               │     │
-                        │               │     │
-bugfix/123 ─────────────┘               │     │
-                                        │     │
-feature/c ──────────────────────────────┘     │
-                                              │
-hotfix/456 ───────────────────────────────────┘ (to main AND develop)
+main ────────────────────────────────────────────●──────▶
+                                                 ▲
+                                         release/* PR (CI ✅)
+                                                 │
+develop ──●──────●──────●──────●──────●──────────●──────▶
+          ▲      ▲      ▲      ▲      ▲
+     feat/* PR  PR    PR    bugfix/* PR
+     (CI ✅) (CI ✅) (CI ✅)  (CI ✅)  (CI ✅)
+
+Rule: every arrow (▲) is a PR that must have green CI before merge.
 ```
 
 ### Branch Rules
 
-#### main
-- Always deployable
-- Protected: no direct commits
-- Requires PR with approvals
-- All tests must pass
-- Only merge from release/* or hotfix/*
+#### `main`
+- Always deployable — represents what is in production
+- **No direct commits — ever**
+- Only receives merges from `release/*` or `hotfix/*`
+- Requires PR with CI passing (`Lint` + `Build` green)
 
-#### develop
-- Integration of features
-- Protected: no direct commits
-- Requires PR with approvals
-- Tests should pass
+#### `develop`
+- Integration target for all in-progress work
+- **No direct commits — ever**
+- Every change arrives via a PR from a feature/bugfix/refactor branch
+- Requires PR with CI passing (`Lint` + `Build` green)
+- Must be kept green at all times
 
-#### feature/*
-- Branch from: develop
-- Merge to: develop
-- Delete after merge
-- Keep up-to-date with develop
+#### `feat/*` / `refactor/*` / `bugfix/*` / `docs/*`
+- Always branch from `develop` (not from `main`)
+- Always target `develop` in the PR (not `main`)
+- CI must pass before merge is allowed
+- Delete branch after merge
+- Keep up to date with `develop` if long-lived
 
-#### hotfix/*
-- Branch from: main
-- Merge to: main AND develop
-- For critical production issues only
-- Delete after merge
+#### `hotfix/*`
+- Branch from `main` only (for live production issues)
+- Merge to `main` AND back-merge to `develop`
+- CI must pass on both PRs
+
+#### `release/*`
+- Branch from `develop` when preparing a release
+- Merge to `main` AND back-merge to `develop`
+- CI must pass before merging to `main`
+
+---
+
+## CI Gate — Required Before Any Merge
+
+Both CI jobs must be green before a PR can be merged:
+
+| Job | What it checks | Must pass |
+|-----|---------------|-----------|
+| `Lint` | ESLint — no unused vars, no syntax errors | ✅ Required |
+| `Build` | Vite production build — no missing imports | ✅ Required |
+
+**A PR with failing CI must not be merged**, even if the failure seems unrelated to the change. Fix CI first.
+
+---
+
+## Step-by-Step: Creating a Feature or Fix
+
+```bash
+# 1. Make sure you're on an up-to-date develop
+git checkout develop
+git pull origin develop
+
+# 2. Create your branch
+git checkout -b feat/my-feature      # or bugfix/, refactor/, docs/
+
+# 3. Make your changes and commit
+git add <files>
+git commit -m "feat(scope): describe the change"
+
+# 4. Push your branch
+git push -u origin feat/my-feature
+
+# 5. Open a PR on GitHub targeting `develop`
+#    → Wait for CI to pass (Lint ✅ + Build ✅)
+#    → Merge the PR
+
+# 6. Clean up
+git branch -d feat/my-feature
+```
 
 ---
 
 ## Commit Conventions
 
-### Commit Message Format
+### Format
 
 ```
 <type>(<scope>): <subject>
 
-[optional body]
+[optional body — what and why, not how]
 
-[optional footer]
+[optional footer — issue refs, breaking changes, co-authors]
 ```
 
 ### Types
@@ -92,108 +154,105 @@ hotfix/456 ───────────────────────
 | `perf` | Performance improvement |
 | `test` | Adding/updating tests |
 | `chore` | Build, config, dependencies |
+| `ci` | CI/CD pipeline changes |
 | `revert` | Reverting previous commit |
 
-### Scope
-
-Optional, describes the affected module:
-- `api`, `auth`, `db`, `ui`, `core`, etc.
-
-### Subject
+### Subject Rules
 
 - Imperative mood ("add" not "added")
 - No period at end
 - Max 50 characters
 - Lowercase
 
-### Body
-
-- Explain what and why, not how
-- Wrap at 72 characters
-- Separate from subject with blank line
-
-### Footer
-
-- Reference issues: `Fixes #123`, `Closes #456`
-- Breaking changes: `BREAKING CHANGE: description`
-- Co-authors: `Co-Authored-By: Name <email>`
-
 ### Examples
 
 ```
-feat(auth): add OAuth2 login support
+feat(survey): add evidence textarea to level 3 questions
 
-Implement OAuth2 authentication flow with Google and GitHub
-providers. This enables SSO for enterprise users.
+fix(maturity): prevent .length crash on undefined form fields
 
-- Add OAuth2 strategy configuration
-- Implement callback handlers
-- Add provider-specific user mapping
+Accessing .length on fields removed from initialForm caused a blank
+page. Added || [] safety guard. See RCA-001.
 
-Closes #234
-```
+docs(adr): update ADR-002 status from Proposed to Accepted
 
-```
-fix(api): prevent SQL injection in user search
-
-Apply parameterized queries to user search endpoint.
-Previously, user input was concatenated directly.
-
-Fixes #567
-RCA: docs/rca/RCA-003-sql-injection.md
-```
-
-```
-refactor(core): extract validation logic to separate module
-
-No functional changes. Improves testability and reuse.
+ci: split lint and build into separate jobs
 ```
 
 ---
 
-## Pull Request Process
+## Pull Request Requirements
 
-### Before Creating PR
+### Before Opening a PR
 
-1. [ ] Rebase on latest develop/main
-2. [ ] All tests pass locally
-3. [ ] Self-review completed
-4. [ ] Commit history is clean
-5. [ ] Branch follows naming convention
+- [ ] Branch was created from `develop` (not `main`)
+- [ ] Branch name follows convention (`feat/`, `fix/`, `refactor/`, etc.)
+- [ ] Code runs locally without errors
+- [ ] All new form fields added to `initialForm` (BR-007)
+- [ ] Self-review completed
 
-### PR Requirements
+### PR Must Have
 
-1. [ ] Descriptive title
-2. [ ] Complete description (use template)
-3. [ ] Linked to issue/spec
-4. [ ] Tests included
-5. [ ] Documentation updated
-6. [ ] No merge conflicts
-7. [ ] CI pipeline passes
+- [ ] Title follows commit convention format
+- [ ] Description explains what changed and why
+- [ ] Target branch is `develop` (never `main` for features)
+- [ ] CI passes: both `Lint` ✅ and `Build` ✅ are green
+- [ ] No merge conflicts with `develop`
 
 ### PR Size Guidelines
 
-| Size | Lines Changed | Review Effort |
-|------|---------------|---------------|
-| XS | < 50 | Trivial |
-| S | 50-200 | Quick |
-| M | 200-500 | Moderate |
-| L | 500-1000 | Significant |
-| XL | > 1000 | Consider splitting |
-
-**Prefer smaller PRs** - They get faster, better reviews.
+| Size | Lines Changed | Guidance |
+|------|---------------|----------|
+| XS | < 50 | Fine as-is |
+| S | 50–200 | Normal size |
+| M | 200–500 | Acceptable |
+| L | 500–1000 | Consider splitting |
+| XL | > 1000 | Split before review |
 
 ### Merge Strategy
 
-- **Squash and merge** for feature branches (clean history)
-- **Merge commit** for release branches (preserve context)
-- **Rebase and merge** when linear history is preferred
+- **Squash and merge** for `feat/*`, `bugfix/*`, `refactor/*`, `docs/*`
+- **Merge commit** for `release/*` (preserve commit history)
+- **Rebase and merge** for single-commit hotfixes
+
+---
+
+## Protected Branch Configuration
+
+The following GitHub branch protection rules must be active:
+
+### `main`
+
+```yaml
+protection:
+  required_status_checks:
+    - Lint        # CI job name
+    - Build       # CI job name
+  require_branches_to_be_up_to_date: true
+  required_reviews: 1
+  dismiss_stale_reviews: true
+  allow_force_push: false
+  allow_deletion: false
+  restrict_pushes: true   # no direct pushes
+```
+
+### `develop`
+
+```yaml
+protection:
+  required_status_checks:
+    - Lint
+    - Build
+  require_branches_to_be_up_to_date: true
+  required_reviews: 1
+  allow_force_push: false
+  allow_deletion: false
+  restrict_pushes: true   # no direct pushes
+```
 
 ---
 
 ## Version Tagging
-
-### Semantic Versioning
 
 ```
 MAJOR.MINOR.PATCH
@@ -203,22 +262,10 @@ MINOR: New features, backward compatible
 PATCH: Bug fixes, backward compatible
 ```
 
-### Pre-release Tags
-
-```
-vX.Y.Z-alpha.N   # Alpha releases
-vX.Y.Z-beta.N    # Beta releases
-vX.Y.Z-rc.N      # Release candidates
-```
-
-### Tagging Process
-
 ```bash
-# Create annotated tag
-git tag -a v1.2.0 -m "Release v1.2.0: Feature description"
-
-# Push tag
-git push origin v1.2.0
+# Tag after merging release/* to main
+git tag -a v1.0.0 -m "Release v1.0.0"
+git push origin v1.0.0
 ```
 
 ---
@@ -226,159 +273,63 @@ git push origin v1.2.0
 ## Git Best Practices
 
 ### Do
-
-- Commit early and often
-- Write meaningful commit messages
-- Keep commits focused (one change per commit)
-- Pull/rebase before pushing
-- Use `.gitignore` properly
-- Review your own changes before committing
+- Create a branch for every change, even small ones
+- Keep branches short-lived (< 1 week ideally)
+- Push early and open a Draft PR to get CI feedback
+- Write meaningful commit messages (what + why)
+- Rebase on `develop` if your branch is out of date
 
 ### Don't
-
-- Commit secrets or credentials
-- Force push to shared branches
-- Commit generated/build files
-- Create huge commits
-- Commit broken code to shared branches
+- Commit directly to `develop` or `main`
+- Merge without CI being green
+- Force-push to shared branches (`develop`, `main`)
+- Commit secrets, credentials, or `node_modules`
 - Rewrite published history
+- Keep stale branches alive after merge
 
 ---
 
 ## Conflict Resolution
 
-### Prevention
-
-1. Keep branches short-lived
-2. Regularly sync with base branch
-3. Communicate about overlapping work
-4. Use feature flags for parallel work
-
-### Resolution Process
-
 ```bash
-# Update your branch
+# Update your branch with latest develop
 git fetch origin
 git rebase origin/develop
 
-# Resolve conflicts
-# Edit conflicted files
+# Resolve conflicts, then:
 git add <resolved-files>
 git rebase --continue
-
-# Or abort if needed
-git rebase --abort
 ```
 
-### Resolution Guidelines
-
-- Understand both changes before resolving
-- Don't just accept "mine" or "theirs" blindly
+- Understand both sides of the conflict before resolving
 - Test after resolution
-- Get help if unsure
-
----
-
-## Protected Branch Rules
-
-### main
-
-```yaml
-protection:
-  required_reviews: 2
-  dismiss_stale_reviews: true
-  require_code_owner_review: true
-  required_status_checks:
-    - build
-    - test
-    - security-scan
-  enforce_admins: true
-  allow_force_push: false
-  allow_deletion: false
-```
-
-### develop
-
-```yaml
-protection:
-  required_reviews: 1
-  dismiss_stale_reviews: true
-  required_status_checks:
-    - build
-    - test
-  enforce_admins: false
-  allow_force_push: false
-  allow_deletion: false
-```
-
----
-
-## Git Hooks
-
-### Pre-commit
-
-```bash
-#!/bin/sh
-# Run linting
-npm run lint
-
-# Run type check
-npm run typecheck
-
-# Check for secrets
-./scripts/check-secrets.sh
-```
-
-### Commit-msg
-
-```bash
-#!/bin/sh
-# Validate commit message format
-./scripts/validate-commit-msg.sh "$1"
-```
-
-### Pre-push
-
-```bash
-#!/bin/sh
-# Run tests
-npm test
-
-# Check regression guards
-./scripts/check-guard-compliance.sh
-```
+- Re-run lint + build locally before pushing
 
 ---
 
 ## Emergency Procedures
 
-### Reverting a Bad Merge
+### Reverting a Bad Merge to Develop
 
 ```bash
 # Identify the merge commit
-git log --oneline
+git log --oneline develop
 
-# Revert the merge
+# Create a revert branch
+git checkout -b bugfix/revert-bad-merge develop
 git revert -m 1 <merge-commit-hash>
 
-# Push the revert
-git push origin main
-
-# Create hotfix for proper fix
-git checkout -b hotfix/revert-issue main
+# Open a PR targeting develop — wait for CI ✅
 ```
 
-### Recovering Deleted Branch
+### Recovering a Deleted Branch
 
 ```bash
-# Find the commit
 git reflog
-
-# Recreate branch
 git checkout -b <branch-name> <commit-hash>
 ```
 
 ---
 
-*Last Updated: [DATE]*
+*Last Updated: 2026-05-12*
 *Requires ADR to modify*

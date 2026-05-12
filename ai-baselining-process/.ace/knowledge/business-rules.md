@@ -1,140 +1,124 @@
-# Business Rules
+# Business Rules — AI Operations Baseline Assessment
 
-> Core business logic and constraints that must be enforced.
+> Core business logic and constraints for the AI Operations Baseline Assessment tool.
 > These rules are immutable without explicit stakeholder approval.
 
----
-
-## How to Use This Document
-
-1. AI agents must check rules before implementing features
-2. Code must enforce all applicable rules
-3. Tests must verify rule compliance
-4. Violations must be flagged immediately
+*Last Updated: 2026-05-12*
 
 ---
 
 ## Rule Categories
 
-### Critical Rules
-Must never be violated. System should prevent these at all costs.
-
-### Standard Rules
-Normal business constraints. May have edge cases requiring human approval.
-
-### Soft Rules
-Guidelines that can be overridden with appropriate authorization.
+- **Critical** — Must never be violated. Application must enforce at all costs.
+- **Standard** — Normal business constraints. May have edge cases requiring approval.
+- **Soft** — Guidelines that can be overridden with appropriate authorization.
 
 ---
 
-## Rules Registry
+## BR-001: Maturity Level Integrity
 
-### [Category]: [Domain Area]
-
-#### BR-001: [Rule Name]
-- **Priority:** [Critical | Standard | Soft]
-- **Description:** [Clear description of the rule]
-- **Rationale:** [Why this rule exists]
-- **Enforcement:** [How/where to enforce]
-- **Exceptions:** [Any allowed exceptions]
-- **Example:**
-  ```
-  Valid: [example of valid case]
-  Invalid: [example of invalid case]
-  ```
-
----
-
-## Example Rules
-
-### User Management
-
-#### BR-001: Unique Email
 - **Priority:** Critical
-- **Description:** Each user account must have a unique email address
-- **Rationale:** Email is the primary identifier for authentication
-- **Enforcement:** Database unique constraint + validation layer
-- **Exceptions:** None
+- **Description:** A process cannot be assigned a maturity level that contradicts the selected AI usage answer. The AI usage selection is the primary and dominant branching signal.
+- **Rationale:** If a process has "No AI usage identified" it cannot score at Level 2+. Contradictory data would invalidate executive reports.
+- **Enforcement:** `calculateLevel()` in `logic/maturity.js` — base level set by `usageToLevel[form.aiUsage]`. Supplementary signals can only nudge upward by ≤ 2.0 points and are capped at L4.
+- **Exceptions:** `maturityOverride` field allows an assessor to manually override the computed level for edge cases.
 - **Example:**
   ```
-  Valid: user1@example.com (no existing user with this email)
-  Invalid: user1@example.com (email already registered)
-  ```
-
-#### BR-002: Password Complexity
-- **Priority:** Critical
-- **Description:** Passwords must be at least 12 characters with mixed case, numbers, and symbols
-- **Rationale:** Security requirement for account protection
-- **Enforcement:** Validation on registration and password change
-- **Exceptions:** None
-- **Example:**
-  ```
-  Valid: MyP@ssw0rd123!
-  Invalid: password123
+  Valid: aiUsage = "AI is used informally by individuals" → base L1, nudged to L1.5 → recommended L2
+  Invalid: aiUsage = "No AI usage identified" → recommended L3 (impossible without override)
   ```
 
 ---
 
-### Order Processing
+## BR-002: Option Set Scoping per Level
 
-#### BR-010: Minimum Order Value
+- **Priority:** Critical
+- **Description:** Question options visible at Level N must not include options that are only appropriate at Level N+1 or above. Each level's `SECTION_QUESTIONS` entry must contain only options calibrated to that level's maturity state.
+- **Rationale:** Prevents respondents from selecting answers inconsistent with their detected level, eliminating logical contradictions in the output data.
+- **Enforcement:** Each entry in `SECTION_QUESTIONS[level]` in `questions.js` has a distinct `options` array scoped to that level. No shared option arrays between levels.
+- **Exceptions:** None.
+
+---
+
+## BR-003: Domain Coverage at Every Level
+
 - **Priority:** Standard
-- **Description:** Orders must meet minimum value of $10.00 before checkout
-- **Rationale:** Cost of processing small orders exceeds margin
-- **Enforcement:** Checkout validation
-- **Exceptions:** Promotional campaigns may lower minimum
-- **Example:**
-  ```
-  Valid: Cart total $15.00 → proceed to checkout
-  Invalid: Cart total $5.00 → show minimum order message
-  ```
+- **Description:** Each maturity level (L0–L4) must have at least one question per active domain. Currently L0 has questions only in `clientCentric` and `people`; `operatingModel` coverage at L0 is provided by the evidence textarea.
+- **Rationale:** The domain matrix must reflect real assessment data, not empty cells.
+- **Enforcement:** `SECTION_QUESTIONS` data structure review on PRD updates.
+- **Exceptions:** A domain may have zero questions at a given level only if that domain is genuinely irrelevant at that maturity stage (documented explicitly in the PRD).
 
-#### BR-011: Inventory Check
+---
+
+## BR-004: Evidence Field at Every Level
+
+- **Priority:** Standard
+- **Description:** Every maturity level (L0–L4) must include a free-text evidence textarea (`evidenceL0` through `evidenceL4`).
+- **Rationale:** Qualitative anchoring for quantitative scores is required for executive reporting credibility. An assessor must be able to note what specific observation supports the level assignment.
+- **Enforcement:** Each `SECTION_QUESTIONS[level]` array must contain an `evidenceL{N}` textarea entry.
+- **Exceptions:** Needs Validation path has `validationContext` instead of `evidenceL{N}`.
+
+---
+
+## BR-005: Tribe Naming Convention
+
+- **Priority:** Standard
+- **Description:** The tribe named for AI automation must always be "Intelligent Automation" — never "Intelligent," "AI Tribe," or any other variant.
+- **Rationale:** Organizational naming convention set by stakeholder (ADR correction applied in commit `90efd97`).
+- **Enforcement:** `tribes` array in `formConfig.js`.
+- **Exceptions:** None.
+
+---
+
+## BR-006: No Backend Data Persistence in v1
+
+- **Priority:** Standard
+- **Description:** Version 1 of the application must not send assessment data to any external server, API, or analytics service. All data remains in the browser session.
+- **Rationale:** Privacy and simplicity for v1 facilitated-assessment use case (ADR-004).
+- **Enforcement:** No `fetch`, `axios`, or SDK calls in any component. No cookies, no LocalStorage writes.
+- **Exceptions:** JSON export via `URL.createObjectURL` (browser-native, no network call) is permitted.
+
+---
+
+## BR-007: Field Initialization for All Form Fields
+
 - **Priority:** Critical
-- **Description:** Cannot sell more items than available in inventory
-- **Rationale:** Prevent overselling and customer disappointment
-- **Enforcement:** Real-time inventory check at checkout
-- **Exceptions:** Pre-order items with expected restock date
-- **Example:**
-  ```
-  Valid: Order 5 units, 10 in stock → approve
-  Invalid: Order 5 units, 3 in stock → reject or partial
-  ```
+- **Description:** Every field referenced in any component (`App.jsx`, `SurveyView.jsx`, `maturity.js`, `DomainCards.jsx`) must have a corresponding entry in `initialForm` in `formConfig.js`. String fields initialize to `""`, array fields to `[]`.
+- **Rationale:** Accessing `.length` on an undefined field crashes the application (RCA-001). All field references must be safe from initial render.
+- **Enforcement:** `initialForm` in `formConfig.js` is the canonical registry of all form fields. Any PR adding a new field reference must also add it to `initialForm`.
+- **Exceptions:** None.
 
 ---
 
-## Adding New Rules
+## BR-008: Approved Questions Only
 
-1. Propose rule with business stakeholder
-2. Document in this file with unique ID
-3. Create tests that verify the rule
-4. Implement enforcement in code
-5. Update ADR if architecturally significant
+- **Priority:** Standard
+- **Description:** Survey questions, options, and labels must match the approved question set reviewed and validated by stakeholders. New questions must go through a PRD update cycle before implementation.
+- **Rationale:** Questions have been tested and approved for measurement accuracy. Unauthorized additions may invalidate comparability between assessments.
+- **Enforcement:** Questions defined in `SECTION_QUESTIONS` in `questions.js`. Changes require a new PRD or a PRD amendment.
+- **Exceptions:** Minor wording fixes (typos, grammar) can be made without a full PRD cycle if the meaning is preserved.
 
 ---
 
-## Rule Validation
+## Rule Validation Checklist
 
-When implementing features:
+When implementing features touching form fields or scoring:
 
-```markdown
-Checklist:
-- [ ] Identified all applicable business rules
-- [ ] Each rule has enforcement in code
-- [ ] Each rule has test coverage
-- [ ] Edge cases documented
-- [ ] Stakeholder approved any exceptions
+```
+- [ ] All new field names added to initialForm in formConfig.js
+- [ ] All domainActive references use fields that exist in initialForm
+- [ ] All calculateLevel references use fields that exist in initialForm
+- [ ] Option arrays scoped to the correct maturity level
+- [ ] Evidence textarea present at the level being modified
+- [ ] Build passes with zero lint errors
 ```
 
 ---
 
 ## Cross-References
 
-- [See: .ace/standards/security.md] for security-related rules
-- [See: docs/adr/] for rule-related architectural decisions
-- [See: .ace/knowledge/entities.md] for entity definitions
-
----
-
-*Last Updated: [DATE]*
-*Requires stakeholder approval to modify*
+- `.ace/standards/security.md` — security-related rules
+- `docs/adr/` — architectural decisions related to these rules
+- `docs/rca/RCA-001-blank-page-crash.md` — BR-007 violation incident
+- `src/data/formConfig.js` — field registry (initialForm)
+- `src/data/questions.js` — approved question sets (SECTION_QUESTIONS)

@@ -1,202 +1,183 @@
-# Domain Entities
+# Domain Entities — AI Operations Baseline Assessment
 
 > Canonical definitions of domain entities and their relationships.
-> This is the source of truth for domain modeling.
+> This is the source of truth for domain modeling in the AI Operations Baseline Assessment tool.
+
+*Last Updated: 2026-05-12*
 
 ---
 
-## How to Use This Document
-
-1. Reference when designing database schemas
-2. Reference when creating DTOs and interfaces
-3. Ensure code entities match these definitions
-4. Update when domain model changes (with ADR)
-
----
-
-## Entity Definitions
-
-### Template
-
-```markdown
-## [Entity Name]
+## ProcessAssessment
 
 ### Description
-[What this entity represents in the domain]
+The primary domain entity. Represents a single assessment of one operational process by one respondent. Contains all metadata, maturity answers, and the calculated maturity level.
 
 ### Type
-[Aggregate Root | Entity | Value Object]
+Aggregate Root
 
 ### Attributes
 | Attribute | Type | Required | Description |
 |-----------|------|----------|-------------|
-| id | UUID | Yes | Unique identifier |
-| ... | ... | ... | ... |
+| id | UUID | Yes (future) | Unique identifier — not yet implemented in v1 (local state only) |
+| tribe | String | No | Organizational tribe (e.g. "Intelligent Automation") |
+| role | String | No | Respondent role type |
+| processName | String | No | Name of the process being assessed |
+| processType | String | No | Category of the process |
+| processDescription | String | No | Free-text description of the process |
+| frequency | String | No | Execution frequency |
+| criticality | String | No | Process criticality level |
+| clientData | String | No | Whether process handles sensitive/client data |
+| mainSystems | String | No | Comma-separated list of systems used |
+| aiUsage | String | No | Primary AI usage selection (branching signal) |
+| maturityLevel | String | Computed | Recommended level: "0"–"4" or "needs-validation" |
+| createdAt | DateTime | No (future) | Submission timestamp |
 
-### Relationships
-- [relationship type] [related entity]: [description]
+### Level-Specific Answer Groups
+Each group is a subset of `ProcessAssessment` — attributes that only apply when `aiUsage` maps to that level.
+
+**Level 0 (No AI):**
+- `aiAwareness`, `adoptionBarriers[]`, `workflowExecution`, `potentialAiBenefits[]`, `evidenceL0`
+
+**Level 1 (Individual):**
+- `aiLiteracy`, `aiIntegrationWorkflow`, `broaderAdoptionBarriers[]`, `individualAiActivities[]`
+- `outputValidationL1`, `aiToolsUsed[]`, `infoSecurityClearance`, `governanceRisksL1[]`, `evidenceL1`
+
+**Level 2 (Connected):**
+- `automationMaturity`, `evaluatingQuality`, `remainingBarriersL2[]`
+- `workflowActivitiesL2[]`, `aiIntegrationL2`
+- `aiGovernanceL2`, `sensitiveDataHandling`, `consistentValidation`
+- `reusableAssetsL2[]`, `measurableImpactL2`, `improvedAreasL2[]`, `evidenceL2`
+
+**Level 3 (Orchestrated):**
+- `operationalAiCapability`, `limitationsRiskEval`
+- `connectedProcessSteps[]`, `connectedSystems[]`, `operationalImpactMeasurement`
+- `governanceControlsL3[]`, `auditableOutputs`, `riskManagementL3`, `approvalCriteria`
+- `reusableCapabilitiesL3[]`, `environmentReliability`
+- `impactMetricsL3[]`, `performanceMonitoringL3`, `missingForAdaptive[]`, `evidenceL3`
+
+**Level 4 (Adaptive):**
+- `preparednessAdaptive`, `improvingAiDecisions`
+- `aiAutonomyLevel`, `aiActionsInProcess[]`
+- `advancedTechCapabilities[]`, `humanOversightRequired[]`
+- `advancedGovernanceL4[]`, `continuousMonitoringL4`, `humanOverrideMechanism`, `escalationPathsL4`
+- `platformAdaptivity`, `evidenceL4`
+
+**Needs Validation:**
+- `validationUncertainty`, `aiOutputsSeen`, `validationContact`, `reviewRequired`, `validationContext`
 
 ### Invariants
-- [Rule that must always be true]
+- `aiUsage` is the primary branching signal — must be set before any level-specific fields are meaningful.
+- `maturityLevel` is always derived from `aiUsage` + supplementary signals; never set directly by respondent input (only via `maturityOverride`).
+- All array fields default to `[]`, all string fields default to `""`.
 
 ### Lifecycle
-[Created when] → [States/transitions] → [Terminated when]
+Draft (fields being filled) → Complete (all relevant fields answered) → Exported (JSON downloaded)
 
 ### Business Rules
-- [BR-XXX]: [Reference to business rule]
+- BR-001: Maturity Level Integrity
+- BR-002: Option Set Scoping per Level
+- BR-004: Evidence Field at Every Level
+- BR-007: Field Initialization for All Form Fields
+
+---
+
+## MaturityLevel
+
+### Description
+A value object representing one of the five defined AI maturity levels plus the validation state. Not stored independently — computed from `ProcessAssessment`.
+
+### Type
+Value Object (Enum)
+
+### Values
+| Key | Label | Section Key |
+|-----|-------|-------------|
+| "0" | No AI Usage | `no-ai` |
+| "1" | Individual AI Use | `individual` |
+| "2" | Connected Workflows | `connected` |
+| "3" | Orchestrated Systems | `orchestrated` |
+| "4" | Adaptive / Autonomous Operations | `adaptive` |
+| "needs-validation" | Needs Validation | `needs-validation` |
+| (null/empty) | Screening / Awaiting Input | `screening` |
+
+### Validation Rules
+- Must be one of the six defined values.
+- Computed via `calculateLevel()` in `logic/maturity.js`.
+
+---
+
+## Domain
+
+### Description
+One of three organizational dimensions used to categorize assessment questions. Value object — defined in `levelConfig.js`.
+
+### Type
+Value Object (Enum)
+
+### Values
+| ID | Title | Sub-title |
+|----|-------|-----------|
+| `clientCentric` | Client Centric Approach | (Business Model) |
+| `operatingModel` | Operating Model & Technology | (How we deliver) |
+| `people` | People | (How our people grow & win) |
+
+---
+
+## StrategicStage
+
+### Description
+One of three strategic progression stages that organize subcategories within each domain. Value object — defined in `levelConfig.js`.
+
+### Type
+Value Object (Enum)
+
+### Values
+| ID | Title |
+|----|-------|
+| `sbp` | Sense, Benchmark & Position |
+| `sd` | Scale & Differentiate |
+| `dh` | Become a Human-AI Delivery Hub |
+
+---
+
+## Entity Relationships
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│               ENTITY RELATIONSHIPS                          │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   ┌───────────────────────┐                                 │
+│   │   ProcessAssessment   │                                 │
+│   │   (Aggregate Root)    │                                 │
+│   │                       │                                 │
+│   │  - tribe              │──has──▶ MaturityLevel           │
+│   │  - role               │         (value object)          │
+│   │  - processName        │                                 │
+│   │  - aiUsage            │──maps via──▶ Domain             │
+│   │  - [level fields]     │              (3 values)         │
+│   │  - maturityLevel      │                                 │
+│   └───────────────────────┘──grouped by──▶ StrategicStage  │
+│                                              (3 values)     │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Core Entities
+## Future Entities (Post-v1 Backend)
 
-### User
+When a backend is added the following entities will be introduced:
 
-#### Description
-A person who interacts with the system. Can have various roles and permissions.
-
-#### Type
-Aggregate Root
-
-#### Attributes
-| Attribute | Type | Required | Description |
-|-----------|------|----------|-------------|
-| id | UUID | Yes | Unique identifier |
-| email | String | Yes | Login identifier (unique) |
-| passwordHash | String | Yes | Hashed password |
-| name | String | Yes | Display name |
-| role | Enum | Yes | User role (admin, user, guest) |
-| status | Enum | Yes | Account status (active, suspended, deleted) |
-| createdAt | DateTime | Yes | Account creation timestamp |
-| updatedAt | DateTime | Yes | Last modification timestamp |
-| lastLoginAt | DateTime | No | Last successful login |
-
-#### Relationships
-- Has many **Sessions**: Active login sessions
-- Has many **Orders**: Orders placed by user
-- Has one **Profile**: Extended user information
-
-#### Invariants
-- Email must be unique across all users
-- Password must meet complexity requirements
-- Cannot delete user with pending orders
-
-#### Lifecycle
-Created (registration) → Active → Suspended (violation) → Active (reinstated) OR Deleted (request)
-
-#### Business Rules
-- [BR-001]: Unique Email
-- [BR-002]: Password Complexity
-
----
-
-## Value Objects
-
-### Address
-
-#### Description
-A physical or mailing address. Immutable.
-
-#### Type
-Value Object
-
-#### Attributes
-| Attribute | Type | Required | Description |
-|-----------|------|----------|-------------|
-| street | String | Yes | Street address |
-| city | String | Yes | City name |
-| state | String | Yes | State/province |
-| postalCode | String | Yes | Postal/ZIP code |
-| country | String | Yes | Country code (ISO) |
-
-#### Validation Rules
-- Postal code format must match country
-- Country must be valid ISO code
-
----
-
-### Money
-
-#### Description
-A monetary value with currency. Immutable.
-
-#### Type
-Value Object
-
-#### Attributes
-| Attribute | Type | Required | Description |
-|-----------|------|----------|-------------|
-| amount | Decimal | Yes | Numeric value |
-| currency | String | Yes | Currency code (ISO 4217) |
-
-#### Validation Rules
-- Amount cannot be negative (use separate type for debits)
-- Currency must be valid ISO 4217 code
-- Operations between different currencies forbidden
-
----
-
-## Entity Relationships Diagram
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│                     ENTITY RELATIONSHIPS                     │
-├──────────────────────────────────────────────────────────────┤
-│                                                              │
-│   ┌──────────┐         ┌──────────┐         ┌──────────┐    │
-│   │   User   │────────▶│  Order   │────────▶│OrderItem │    │
-│   │          │ 1    *  │          │ 1    *  │          │    │
-│   └──────────┘         └──────────┘         └──────────┘    │
-│        │                    │                     │          │
-│        │ 1                  │ 1                   │ *        │
-│        ▼                    ▼                     ▼          │
-│   ┌──────────┐         ┌──────────┐         ┌──────────┐    │
-│   │ Profile  │         │ Payment  │         │ Product  │    │
-│   │          │         │          │         │          │    │
-│   └──────────┘         └──────────┘         └──────────┘    │
-│                                                              │
-│   Legend:                                                    │
-│   ─────▶  Has relationship                                   │
-│   1    *  One to many                                        │
-│   1    1  One to one                                         │
-│                                                              │
-└──────────────────────────────────────────────────────────────┘
-```
-
----
-
-## Aggregates
-
-### User Aggregate
-- Root: User
-- Contains: Profile, Sessions
-- Boundary: User data and authentication
-
-### Order Aggregate
-- Root: Order
-- Contains: OrderItems, Payment
-- Boundary: Single order transaction
-
----
-
-## Adding/Modifying Entities
-
-1. Propose change with domain expert
-2. Update this document
-3. Create ADR if significant
-4. Update database migrations
-5. Update code models
-6. Update tests
+- **Assessor** — The user performing the assessment (auth identity)
+- **AssessmentSession** — Groups multiple `ProcessAssessment` records into one review session
+- **OrganizationSnapshot** — Aggregate of all `ProcessAssessment` records for reporting
 
 ---
 
 ## Cross-References
 
-- [See: .ace/knowledge/glossary.md] for term definitions
-- [See: .ace/knowledge/business-rules.md] for entity rules
-- [See: .ace/standards/architecture.md] for modeling patterns
-
----
-
-*Last Updated: [DATE]*
-*Requires ADR for significant changes*
+- `src/data/formConfig.js` — `initialForm` maps directly to `ProcessAssessment` attributes
+- `src/data/levelConfig.js` — `domains`, `strategicStages` define Domain and StrategicStage value objects
+- `src/logic/maturity.js` — `calculateLevel()` computes `MaturityLevel` from `ProcessAssessment`
+- `.ace/knowledge/business-rules.md` — rules governing entity constraints

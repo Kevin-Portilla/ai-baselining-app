@@ -1,147 +1,109 @@
-# Active Context: AI Operations Baseline App
+# Active Context: AI Operations Baseline Assessment
 
 ## Session Metadata
-- **Last Updated:** 2026-05-11
+- **Last Updated:** 2026-05-12
 - **Active Role:** Architect
-- **Mode:** IMPLEMENTATION
+- **Mode:** REVIEW / DOCUMENTATION
 
 ---
 
-## PRD-004: Enterprise Assessment Redesign
+## Current State Summary
 
-**File:** `docs/requirements/PRD-004-enterprise-assessment-redesign.md`  
-**Status:** Active — supersedes PRD-003
-
-Key changes introduced by PRD-004:
-- 5-section global survey flow (metadata → AI detection → dynamic branch → validation/evidence → final questions)
-- Constrained option sets per maturity level — no contradiction or drift between levels
-- All levels (0–4) now include a Transition &amp; Evidence subsection
-- New Final Questions section shown to all active respondents
-- Needs Validation path expanded to 5 questions (uncertainty, outputs seen, contact, review, context)
-- Section 1: updated role types, frequencies, criticalities; tribe name corrected to "Intelligent Automation"
-- 30+ new form fields for level-specific, validation, and final question data
-- PILLAR_QUESTIONS restructured: each level has 5–6 pillar sections (literacy, integration, governance, technology, outcome, transition/evidence)
-- Standalone Outcome JSX block (PRD-003) removed — Outcome embedded inside PILLAR_QUESTIONS for Levels 1–4
+The application is **functionally complete for v1** as of 2026-05-12. The full client-centric 3-domain framework (PRD-005) has been implemented and all critical runtime crashes have been resolved (RCA-001). The PR `release/complete-survey-app → main` (PR #9) is open and awaiting merge.
 
 ---
 
-## Current Objective
+## Completed PRDs
 
-Initialize and configure the ACE Framework v2.6.2 for the AI Operations Baseline App migration into a React + Vite local development environment.
-
----
-
-## Current State
-
-### Working
-- ACE Framework structure initialized
-- Vite React project initialized
-- Tailwind CSS configured
-- shadcn/ui configured
-- Framer Motion installed
-- Alias configuration defined
-- Initial App.jsx migrated from ChatGPT canvas
-- Core requirements documented
-- Initial ACE roles and skills loaded
-
-### In Progress
-- **[PRD-004] Enterprise assessment redesign** — 5-section global flow, constrained maturity progression, all levels with Transition &amp; Evidence subsection, Final Questions section, expanded Needs Validation path (5 questions), 30+ new form fields. See `docs/requirements/PRD-004-enterprise-assessment-redesign.md`.
-
-### Completed
-- **[PRD-002] Pillar-based questions per maturity level** — restructured branching into 4 framework pillars per level. See `docs/requirements/PRD-002-pillar-based-questions.md`.
-- **[PRD-003] Fixed question logic: maturity-constrained survey redesign** — dual-signal AI detection, constrained option sets, Outcome/Value section. See `docs/requirements/PRD-003-fixed-question-logic.md`.
-- Front-end migration validation
-- Branching logic implementation
-- Maturity calculation validation
-- UI refinement for executive/corporate layout
-- Project standardization under ACE methodology
-
-### Blocked
-- None
+| PRD | Title | Status |
+|-----|-------|--------|
+| PRD-002 | Pillar-based questions per maturity level | Completed (superseded) |
+| PRD-003 | Fixed question logic: maturity-constrained survey redesign | Completed (superseded) |
+| PRD-004 | Enterprise Assessment Redesign — 5-section global flow | Implemented |
+| PRD-005 | Client-Centric Operational Framework — 3 domains × 3 stages | Implemented |
 
 ---
 
-## Next Steps
+## Accepted ADRs
 
-1. [ ] Validate App.jsx compilation
-2. [ ] Validate Tailwind and shadcn imports
-3. [ ] Validate Vite alias resolution
-4. [ ] Implement remaining branching sections
-5. [ ] Validate maturity scoring logic
-6. [ ] Validate JSON export functionality
-7. [ ] Validate reset workflow
-8. [ ] Create ADR-001 for frontend architecture decisions
-9. [ ] Create regression guards for maturity logic
-10. [ ] Create testing strategy plan
+| ADR | Title | Status |
+|-----|-------|--------|
+| ADR-001 | Removal of Pillar-Based Categorization | Accepted |
+| ADR-002 | Client-Centric Domain Model | Accepted |
+| ADR-003 | Domain-Grouped Question Rendering in SurveyView | Accepted |
+| ADR-004 | Local React State Only — No Backend for v1 | Accepted |
 
 ---
 
-## Active Constraints
+## Resolved RCAs
 
-- `.ace/standards/coding.md`
-- `.ace/standards/security.md`
-- No backend for version 1
-- Use local state only
-- Keep inline icon implementation
-- Do not install lucide-react
-- Maintain corporate/executive visual style
-- Use Intelligence Automation naming convention
-
----
-
-## Active Skills
-
-- `state-management`
-- `testing-strategy`
-- `code-review`
-- `documentation-generation`
-- `accessibility-audit`
+| RCA | Title | Status |
+|-----|-------|--------|
+| RCA-001 | Blank Page Crash — Missing levelConfig Exports + Stale Field References | Resolved |
 
 ---
 
 ## Current Architecture
 
 ### Frontend Stack
-- React
-- Vite
-- Tailwind CSS
-- shadcn/ui
-- Framer Motion
+- React 19 + Vite
+- Tailwind CSS v4 + shadcn/ui
+- Framer Motion (AnimatePresence for level transitions)
+- Recharts (dashboard charts)
+- Lucide React (icons in static JSX)
 
 ### State Management
-- Local React state only
-- No persistence layer
+- Local React state only (`useState` in App.jsx)
+- No persistence layer — data lives in browser session
+- Export via JSON blob download
 
-### Export Mechanism
-- JSON blob download
-- Browser-native file generation
-
-### Core Functional Areas
-1. Process assessment
-2. AI maturity classification
-3. Branching workflow engine
-4. Governance assessment
-5. Technology enablement assessment
-6. Export and reporting
-
----
-
-## Active Risks
-
-### Risk 1
-Alias resolution may fail if `vite.config.js` and `jsconfig.json` are inconsistent.
-
-### Risk 2
-Tailwind/shadcn configuration mismatch could break UI rendering.
-
-### Risk 3
-Branching logic and maturity scoring may diverge if requirements are not centralized.
+### Core Files
+| File | Responsibility |
+|------|---------------|
+| `App.jsx` | Global state, `domainActive`, `completion`, `currentSection`, `recommendedLevel` |
+| `views/SurveyView.jsx` | Main survey form with domain-grouped questions |
+| `views/DashboardView.jsx` | Aggregate dashboard with Recharts |
+| `data/formConfig.js` | `initialForm` — single source of truth for all form fields |
+| `data/questions.js` | `SECTION_QUESTIONS` — question sets per maturity level |
+| `data/levelConfig.js` | Domain structure, strategic stages, level metadata |
+| `logic/maturity.js` | `calculateLevel()`, `getCurrentSection()` |
+| `components/DomainCards.jsx` | 3×3 domain matrix |
+| `components/ClassificationCard.jsx` | Real-time recommended level card |
+| `components/BranchingPreview.jsx` | Level navigation sidebar |
+| `components/NeedsValidation.jsx` | Needs Validation path |
 
 ---
 
-## Session Notes
+## Known Gaps / Backlog
 
-- Initial project migrated from ChatGPT-generated prototype.
-- ACE Framework adopted as operational engineering methodology.
-- Goal is to standardize development lifecycle under BMAD.
-- Future roadmap may include Supabase backend and analytics layer.
+| Item | Priority | Notes |
+|------|----------|-------|
+| `equipManagers` field missing from `initialForm` | Medium | Field defined in `questions.js` and `levelConfig.js` but never initialized — will render as controlled-undefined. Needs wiring or removal. |
+| No automated tests | High | Scoring logic, branch routing, and field initialization all lack unit tests. RCA-001 would have been caught by tests. |
+| No E2E smoke test | High | Playwright test to load the app and select each AI usage option — prevents blank-page regressions. |
+| Dashboard not connected to live form data | Low | Dashboard uses static `sampleProcesses.js` — does not reflect current session's assessment. |
+| Some subcategories have no questions | Low | "IP - Reusable Accelerators," "Equip Managers to Win," "Intelligent Staffing," "Next-Gen Roles" have no form fields yet. |
+| JSON export not implemented | Medium | Export button/mechanism not yet wired up. `URL.createObjectURL` approach decided but not built. |
+| Completion % counts legacy `evidence` field | Low | `form.evidence` referenced in completion calc but doesn't exist in `initialForm`. |
+
+---
+
+## Active Constraints
+
+- No backend — local state only (ADR-004, BR-006)
+- Approved questions only — no new questions without PRD update (BR-008)
+- All field references must exist in `initialForm` (BR-007, RCA-001)
+- Tribe name must be "Intelligent Automation" (BR-005)
+- Build must pass lint + build CI before merge
+
+---
+
+## Next Recommended Actions
+
+1. [ ] Fix `equipManagers` — add to `initialForm` or remove from `questions.js` and `levelConfig.js`
+2. [ ] Fix completion calc — remove stale `form.evidence` reference from `App.jsx`
+3. [ ] Implement JSON export functionality
+4. [ ] Add unit tests for `calculateLevel()` and `getCurrentSection()`
+5. [ ] Add Playwright E2E smoke test for blank-page regression
+6. [ ] Connect Dashboard to live form state (or define aggregation strategy for v2)
+7. [ ] PRD-006: Define scope for v2 (backend, persistence, multi-user, PDF export)

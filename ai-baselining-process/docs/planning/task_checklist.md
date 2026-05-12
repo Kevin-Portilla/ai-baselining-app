@@ -1,95 +1,25 @@
-# Task Checklist: [Feature/Task Name]
+# Task Checklist: PRD-004 Redesign
 
-> **Plan Reference:** [docs/planning/implementation_plan.md]
-> **Last Updated:** [YYYY-MM-DD HH:MM]
-> **Current Role:** [Developer]
+## Phase 1: State & Metadata
+- [ ] Task 1.1: Initialize new fields in `initialForm`
+- [ ] Task 1.2: Update Metadata select options
+- [ ] Task 1.3: Correct Tribe name
 
----
+## Phase 2: Client-Centric Framework Integration
+- [ ] Task 2.1: Restructure `SECTION_QUESTIONS` for 3 Domains
+- [ ] Task 2.2: Update `initialForm` with new IDs
+- [ ] Task 2.3: Re-introduce `DomainCards` (3 domains)
+- [ ] Task 2.4: Refactor `SurveyView` for grouped rendering
+- [ ] Task 2.5: Implement Needs Validation & Final Questions
 
-## Progress Summary
+## Phase 3: UI & Branching
+- [ ] Task 3.1: Update main render loop for 5-section flow
+- [ ] Task 3.2: Implement Transition/Evidence subsections
+- [ ] Task 3.3: Handle Level 4 UI specifics
+- [ ] Task 3.4: Update `pillarActive` logic
 
-| Status | Count |
-|--------|-------|
-| Completed | 0 |
-| In Progress | 0 |
-| Pending | 0 |
-| Blocked | 0 |
-
----
-
-## Tasks
-
-### Task 1: [Name]
-- **Status:** [ ] Pending / [~] In Progress / [x] Completed / [!] Blocked
-- **Started:** [YYYY-MM-DD]
-- **Completed:** [YYYY-MM-DD]
-
-**Subtasks:**
-- [ ] [Subtask 1]
-- [ ] [Subtask 2]
-- [ ] Write tests
-- [ ] Verify against standards
-
-**Notes:**
-[Any notes from implementation]
-
----
-
-### Task 2: [Name]
-- **Status:** [ ] Pending
-- **Blocked By:** [Task 1 if applicable]
-
-**Subtasks:**
-- [ ] [Subtask 1]
-- [ ] [Subtask 2]
-- [ ] Write tests
-- [ ] Verify against standards
-
-**Notes:**
-
----
-
-### Task 3: [Name]
-- **Status:** [ ] Pending
-
-**Subtasks:**
-- [ ] [Subtask 1]
-- [ ] Write tests
-- [ ] Verify against standards
-
-**Notes:**
-
----
-
-## Blockers
-
-| Task | Blocker | Resolution | Status |
-|------|---------|------------|--------|
-| [Task] | [Description] | [Action needed] | [Open/Resolved] |
-
----
-
-## Session Log
-
-### [YYYY-MM-DD]
-- **Role:** [Developer]
-- **Worked On:** [Task X]
-- **Completed:** [What was finished]
-- **Next:** [What's next]
-
----
-
-## Verification Checklist
-
-Before marking feature complete:
-
-- [ ] All tasks completed
-- [ ] All tests passing
-- [ ] Code review done
-- [ ] Documentation updated
-- [ ] ACTIVE_CONTEXT.md current
-- [ ] Ready for QA verification
-
----
-
-*Task Checklist - ACE-Framework v2.3*
+## Phase 4: Scoring & Verification
+- [ ] Task 4.1: Update maturity scoring logic
+- [ ] Task 4.2: Validate compilation
+- [ ] Task 4.3: Run linting
+- [ ] Task 4.4: Full survey walkthrough
