@@ -23,43 +23,48 @@ export const ClassificationCard = ({ recommendedLevel, currentSection }) => {
       : `${recommendedLevel} — ${levelShortLabels[recommendedLevel]}`;
 
   return (
-    <div className="bg-slate-900 rounded-2xl p-6">
-      <h3 className="font-bold text-lg text-white">Recommended Classification</h3>
-      <p className="text-xs text-blue-400 mt-1 leading-relaxed">
-        Calculated from usage path plus governance, measurement, and technology indicators.
+    <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 backdrop-blur-md shadow-2xl relative overflow-hidden group">
+      {/* Decorative accent */}
+      <div className="absolute -top-12 -right-12 w-24 h-24 bg-blue-500/10 blur-3xl rounded-full" />
+      
+      <h3 className="font-bold text-lg text-white relative z-10">Recommended Classification</h3>
+      <p className="text-[11px] text-slate-400 mt-1.5 leading-relaxed relative z-10">
+        Based on governance, technology, and execution indicators.
       </p>
 
       <AnimatePresence mode="wait">
         <motion.div
           key={recommendedLevel}
-          initial={{ opacity: 0, scale: 0.97 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          className={cn("mt-4 rounded-xl p-4 flex items-start gap-4", pillClass)}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.3 }}
+          className={cn("mt-5 rounded-xl p-4 flex items-center gap-4 relative z-10", pillClass)}
         >
           <div
             className={cn(
-              "w-11 h-11 rounded-xl flex items-center justify-center text-lg font-bold shrink-0",
+              "w-12 h-12 rounded-xl flex items-center justify-center text-xl shadow-lg shrink-0",
               pillIconClass
             )}
           >
             <Icon type={levelIcons[recommendedLevel] || "network"} />
           </div>
           <div>
-            <p className={cn("text-xs uppercase tracking-wide", pillLabelClass)}>
-              Maturity Level
+            <p className={cn("text-[10px] uppercase font-black tracking-widest opacity-80", pillLabelClass)}>
+              Current Maturity
             </p>
-            <p className={cn("text-xl font-bold leading-snug mt-0.5", pillTitleClass)}>
+            <p className={cn("text-lg font-black leading-tight mt-0.5", pillTitleClass)}>
               {classificationTitle}
             </p>
           </div>
         </motion.div>
       </AnimatePresence>
 
-      <p className="mt-4 text-sm text-blue-300 leading-relaxed">
-        {levelDescriptions[recommendedLevel] || levelDescriptions.screening}
-      </p>
+      <div className="mt-5 pt-5 border-t border-slate-800/50 relative z-10">
+        <p className="text-xs text-slate-400 leading-relaxed italic">
+          "{levelDescriptions[recommendedLevel] || levelDescriptions.screening}"
+        </p>
+      </div>
     </div>
   );
 };

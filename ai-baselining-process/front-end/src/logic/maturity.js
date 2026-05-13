@@ -18,13 +18,18 @@ export function calculateLevel(form) {
   const base = usageToLevel[form.aiUsage];
   if (!base || base === "needs-validation") return "needs-validation";
 
+  const arr = (v) => (Array.isArray(v) ? v : []);
   let score = Number(base);
-  if (form.consistentValidation === "Yes — consistently" && score < 3) score += 0.5;
-  if (form.measurableImpactL2 === "Measured operational improvements" && score < 3) score += 0.5;
-  if ((form.governanceControlsL3 || []).length >= 4 && score < 4) score += 0.5;
-  if ((form.advancedTechCapabilities || []).length >= 4 && score < 4) score += 0.5;
-  const l3CcaAnswered = [form.ccaAlignPrioritiesL3, form.ccaCodesignL3, form.ccaInfiniteLedL3, form.ccaAiDeliveryL3, form.ccaGovControlsL3].filter(Boolean).length;
-  if (l3CcaAnswered >= 3 && score < 3) score += 0.5;
+  // Governance at L2 → nudge toward L3
+  if (arr(form.omtGovernanceL2).length >= 2 && score < 3) score += 0.5;
+  // Automation at L2 → nudge toward L3
+  if (arr(form.omtAutoWorkflowsL2).length >= 2 && score < 3) score += 0.5;
+  // Governance at L3 → nudge toward L4
+  if (arr(form.omtGovernanceL3).length >= 3 && score < 4) score += 0.5;
+  // Advanced tech at L4
+  if (arr(form.omtTechCapL4).length >= 4 && score < 4) score += 0.5;
+  // Connected systems at L3
+  if (arr(form.omtConnectedSystemsL3).length >= 4 && score < 3) score += 0.5;
 
   return String(Math.min(4, Math.round(score)));
 }

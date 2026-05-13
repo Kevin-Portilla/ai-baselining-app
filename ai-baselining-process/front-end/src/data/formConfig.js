@@ -28,13 +28,17 @@ export const initialForm = {
   ccaCodesignL0: "",        ccaCodesignL0Other: "",
   ccaIpAssetsL0: "",        ccaIpAssetsL0Other: "",
   // Client Centric Approach — Become a Human-AI Delivery Hub
-  ccaInfiniteLedL0: "",     ccaInfiniteLedL0Other: "",
-  ccaAiDeliveryL0: "",      ccaAiDeliveryL0Other: "",
-  // Client Centric Approach — Operational Enablers
-  ccaGovControlsL0: "",     ccaGovControlsL0Other: "",
-  ccaToolingL0: "",         ccaToolingL0Other: "",
-  ccaRolesOpsL0: "",        ccaRolesOpsL0Other: "",
-  // Operating Model
+  ccaDeliveryL0: "",        ccaDeliveryL0Other: "",
+  // Operating Model — L0
+  omtBarriersL0: [],       omtBarriersL0Other: "",
+  omtVisibilityL0: [],     omtVisibilityL0Other: "",
+  omtBaselineL0: [],       omtBaselineL0Other: "",
+  omtGovernanceL0: [],     omtGovernanceL0Other: "",
+  omtSecureL0: [],         omtSecureL0Other: "",
+  omtAutoWorkflowsL0: [],  omtAutoWorkflowsL0Other: "",
+  omtPerformanceL0: [],    omtPerformanceL0Other: "",
+  omtPlatformsL0: [],      omtPlatformsL0Other: "",
+  omtTribesL0: [],         omtTribesL0Other: "",
   evidenceL0: "",
 
   // ── Level 1 ──────────────────────────────────────────────────────────────
@@ -43,23 +47,23 @@ export const initialForm = {
   equipManagers: "",            equipManagersOther: "",
   broaderAdoptionBarriers: [],  broaderAdoptionBarriersOther: "",
   // Client Centric Approach — Sense, Benchmark & Position
-  ccaAlignPrioritiesL1: "",     ccaAlignPrioritiesL1Other: "",
-  ccaIdentifyOppsL1: "",        ccaIdentifyOppsL1Other: "",
+  ccaAlignPrioritiesL1: [],     ccaAlignPrioritiesL1Other: "",
+  ccaIdentifyOppsL1: [],        ccaIdentifyOppsL1Other: "",
   // Client Centric Approach — Scale & Differentiate
-  ccaCodesignL1: "",            ccaCodesignL1Other: "",
-  ccaIpAssetsL1: "",            ccaIpAssetsL1Other: "",
+  ccaCodesignL1: [],            ccaCodesignL1Other: "",
+  ccaIpAssetsL1: [],            ccaIpAssetsL1Other: "",
   // Client Centric Approach — Become a Human-AI Delivery Hub
-  ccaInfiniteLedL1: "",         ccaInfiniteLedL1Other: "",
-  ccaAiDeliveryL1: "",          ccaAiDeliveryL1Other: "",
-  // Client Centric Approach — Operational Enablers
-  ccaGovControlsL1: "",         ccaGovControlsL1Other: "",
-  ccaToolingL1: "",             ccaToolingL1Other: "",
-  ccaRolesOpsL1: "",            ccaRolesOpsL1Other: "",
-  // Operating Model
-  outputValidationL1: "",       outputValidationL1Other: "",
-  aiToolsUsed: [],              aiToolsUsedOther: "",
-  infoSecurityClearance: "",    infoSecurityClearanceOther: "",
-  governanceRisksL1: [],        governanceRisksL1Other: "",
+  ccaDeliveryL1: [],            ccaDeliveryL1Other: "",
+  // Operating Model — L1
+  omtToolsUsedL1: [],      omtToolsUsedL1Other: "",
+  omtStandardL1: [],       omtStandardL1Other: "",
+  omtBaselineL1: [],       omtBaselineL1Other: "",
+  omtGovernanceL1: [],     omtGovernanceL1Other: "",
+  omtSecureL1: [],         omtSecureL1Other: "",
+  omtAutoWorkflowsL1: [],  omtAutoWorkflowsL1Other: "",
+  omtPerformanceL1: [],    omtPerformanceL1Other: "",
+  omtPlatformsL1: [],      omtPlatformsL1Other: "",
+  omtTribesL1: [],         omtTribesL1Other: "",
   evidenceL1: "",
 
   // ── Level 2 ──────────────────────────────────────────────────────────────
@@ -68,25 +72,23 @@ export const initialForm = {
   evaluatingQuality: "",     evaluatingQualityOther: "",
   remainingBarriersL2: [],   remainingBarriersL2Other: "",
   // Client Centric Approach — Sense, Benchmark & Position
-  ccaAlignPrioritiesL2: "",  ccaAlignPrioritiesL2Other: "",
-  ccaIdentifyOppsL2: "",     ccaIdentifyOppsL2Other: "",
+  ccaAlignPrioritiesL2: [],  ccaAlignPrioritiesL2Other: "",
+  ccaIdentifyOppsL2: [],     ccaIdentifyOppsL2Other: "",
   // Client Centric Approach — Scale & Differentiate
-  ccaCodesignL2: "",         ccaCodesignL2Other: "",
-  ccaIpAssetsL2: "",         ccaIpAssetsL2Other: "",
+  ccaCodesignL2: [],         ccaCodesignL2Other: "",
+  ccaIpAssetsL2: [],         ccaIpAssetsL2Other: "",
   // Client Centric Approach — Become a Human-AI Delivery Hub
-  ccaInfiniteLedL2: "",      ccaInfiniteLedL2Other: "",
-  ccaAiDeliveryL2: "",       ccaAiDeliveryL2Other: "",
-  // Client Centric Approach — Operational Enablers
-  ccaGovControlsL2: "",      ccaGovControlsL2Other: "",
-  ccaToolingL2: "",          ccaToolingL2Other: "",
-  ccaRolesOpsL2: "",         ccaRolesOpsL2Other: "",
-  // Operating Model
-  aiGovernanceL2: "",        aiGovernanceL2Other: "",
-  sensitiveDataHandling: "", sensitiveDataHandlingOther: "",
-  consistentValidation: "",  consistentValidationOther: "",
-  reusableAssetsL2: [],      reusableAssetsL2Other: "",
-  measurableImpactL2: "",    measurableImpactL2Other: "",
-  improvedAreasL2: [],       improvedAreasL2Other: "",
+  ccaDeliveryL2: [],         ccaDeliveryL2Other: "",
+  // Operating Model — L2
+  omtStandardL2: [],        omtStandardL2Other: "",
+  omtBaselineL2: [],        omtBaselineL2Other: "",
+  omtGovernanceL2: [],      omtGovernanceL2Other: "",
+  omtSecureL2: [],          omtSecureL2Other: "",
+  omtAutoWorkflowsL2: [],   omtAutoWorkflowsL2Other: "",
+  omtPerformanceL2: [],     omtPerformanceL2Other: "",
+  omtPlatformsL2: [],       omtPlatformsL2Other: "",
+  omtReusableAssetsL2: [],  omtReusableAssetsL2Other: "",
+  omtTribesL2: [],          omtTribesL2Other: "",
   evidenceL2: "",
 
   // ── Level 3 ──────────────────────────────────────────────────────────────
@@ -94,30 +96,23 @@ export const initialForm = {
   operationalAiCapability: "",      operationalAiCapabilityOther: "",
   limitationsRiskEval: "",          limitationsRiskEvalOther: "",
   // Client Centric Approach — Sense, Benchmark & Position
-  ccaAlignPrioritiesL3: "",         ccaAlignPrioritiesL3Other: "",
-  ccaIdentifyOppsL3: "",            ccaIdentifyOppsL3Other: "",
+  ccaAlignPrioritiesL3: [],         ccaAlignPrioritiesL3Other: "",
+  ccaIdentifyOppsL3: [],            ccaIdentifyOppsL3Other: "",
   // Client Centric Approach — Scale & Differentiate
-  ccaCodesignL3: "",                ccaCodesignL3Other: "",
-  ccaIpAssetsL3: "",                ccaIpAssetsL3Other: "",
+  ccaCodesignL3: [],                ccaCodesignL3Other: "",
+  ccaIpAssetsL3: [],                ccaIpAssetsL3Other: "",
   // Client Centric Approach — Become a Human-AI Delivery Hub
-  ccaInfiniteLedL3: "",             ccaInfiniteLedL3Other: "",
-  ccaAiDeliveryL3: "",              ccaAiDeliveryL3Other: "",
-  // Client Centric Approach — Operational Enablers
-  ccaGovControlsL3: "",             ccaGovControlsL3Other: "",
-  ccaToolingL3: "",                 ccaToolingL3Other: "",
-  ccaRolesOpsL3: "",                ccaRolesOpsL3Other: "",
-  // Operating Model
-  connectedSystems: [],             connectedSystemsOther: "",
-  operationalImpactMeasurement: "", operationalImpactMeasurementOther: "",
-  governanceControlsL3: [],         governanceControlsL3Other: "",
-  auditableOutputs: "",             auditableOutputsOther: "",
-  riskManagementL3: "",             riskManagementL3Other: "",
-  approvalCriteria: "",             approvalCriteriaOther: "",
-  reusableCapabilitiesL3: [],       reusableCapabilitiesL3Other: "",
-  environmentReliability: "",       environmentReliabilityOther: "",
-  impactMetricsL3: [],              impactMetricsL3Other: "",
-  performanceMonitoringL3: "",      performanceMonitoringL3Other: "",
-  missingForAdaptive: [],           missingForAdaptiveOther: "",
+  ccaDeliveryL3: [],                ccaDeliveryL3Other: "",
+  // Operating Model — L3
+  omtStandardL3: [],           omtStandardL3Other: "",
+  omtBaselineL3: [],           omtBaselineL3Other: "",
+  omtGovernanceL3: [],         omtGovernanceL3Other: "",
+  omtSecureL3: [],             omtSecureL3Other: "",
+  omtAutoWorkflowsL3: [],      omtAutoWorkflowsL3Other: "",
+  omtPerformanceL3: [],        omtPerformanceL3Other: "",
+  omtConnectedSystemsL3: [],   omtConnectedSystemsL3Other: "",
+  omtPlatformsL3: [],          omtPlatformsL3Other: "",
+  omtTribesL3: [],             omtTribesL3Other: "",
   evidenceL3: "",
 
   // ── Level 4 ──────────────────────────────────────────────────────────────
@@ -125,26 +120,23 @@ export const initialForm = {
   preparednessAdaptive: "",     preparednessAdaptiveOther: "",
   improvingAiDecisions: "",     improvingAiDecisionsOther: "",
   // Client Centric Approach — Sense, Benchmark & Position
-  ccaAlignPrioritiesL4: "",     ccaAlignPrioritiesL4Other: "",
-  ccaIdentifyOppsL4: "",        ccaIdentifyOppsL4Other: "",
+  ccaAlignPrioritiesL4: [],     ccaAlignPrioritiesL4Other: "",
+  ccaIdentifyOppsL4: [],        ccaIdentifyOppsL4Other: "",
   // Client Centric Approach — Scale & Differentiate
-  ccaCodesignL4: "",            ccaCodesignL4Other: "",
-  ccaIpAssetsL4: "",            ccaIpAssetsL4Other: "",
+  ccaCodesignL4: [],            ccaCodesignL4Other: "",
+  ccaIpAssetsL4: [],            ccaIpAssetsL4Other: "",
   // Client Centric Approach — Become a Human-AI Delivery Hub
-  ccaInfiniteLedL4: "",         ccaInfiniteLedL4Other: "",
-  ccaAiDeliveryL4: "",          ccaAiDeliveryL4Other: "",
-  // Client Centric Approach — Operational Enablers
-  ccaGovControlsL4: "",         ccaGovControlsL4Other: "",
-  ccaToolingL4: "",             ccaToolingL4Other: "",
-  ccaRolesOpsL4: "",            ccaRolesOpsL4Other: "",
-  // Operating Model
-  advancedTechCapabilities: [], advancedTechCapabilitiesOther: "",
-  humanOversightRequired: [],   humanOversightRequiredOther: "",
-  advancedGovernanceL4: [],     advancedGovernanceL4Other: "",
-  continuousMonitoringL4: "",   continuousMonitoringL4Other: "",
-  humanOverrideMechanism: "",   humanOverrideMechanismOther: "",
-  escalationPathsL4: "",        escalationPathsL4Other: "",
-  platformAdaptivity: "",       platformAdaptivityOther: "",
+  ccaDeliveryL4: [],            ccaDeliveryL4Other: "",
+  // Operating Model — L4
+  omtStandardL4: [],       omtStandardL4Other: "",
+  omtBaselineL4: [],       omtBaselineL4Other: "",
+  omtGovernanceL4: [],     omtGovernanceL4Other: "",
+  omtSecureL4: [],         omtSecureL4Other: "",
+  omtAutoWorkflowsL4: [],  omtAutoWorkflowsL4Other: "",
+  omtPerformanceL4: [],    omtPerformanceL4Other: "",
+  omtTechCapL4: [],        omtTechCapL4Other: "",
+  omtPlatformsL4: [],      omtPlatformsL4Other: "",
+  omtTribesL4: [],         omtTribesL4Other: "",
   evidenceL4: "",
 
   // Needs Validation Path

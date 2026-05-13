@@ -24,7 +24,7 @@ export default function App() {
       form.processDescription,
       form.frequency,
       form.criticality,
-      form.evidence,
+
       form.processType,
       form.clientData,
       form.mainSystems,
@@ -32,20 +32,11 @@ export default function App() {
     return Math.round((fields.filter(Boolean).length / fields.length) * 100);
   }, [form]);
 
+  const arr = (v) => (Array.isArray(v) ? v : []);
   const domainActive = useMemo(() => ({
-    clientCentric: !!(
-      form.ccaAlignPrioritiesL0 || form.ccaAlignPrioritiesL1 || form.ccaAlignPrioritiesL2 || form.ccaAlignPrioritiesL3 || form.ccaAlignPrioritiesL4 ||
-      form.ccaIdentifyOppsL0 || form.ccaIdentifyOppsL1 || form.ccaIdentifyOppsL2 || form.ccaIdentifyOppsL3 || form.ccaIdentifyOppsL4 ||
-      form.ccaCodesignL0 || form.ccaCodesignL1 || form.ccaCodesignL2 || form.ccaCodesignL3 || form.ccaCodesignL4 ||
-      form.ccaIpAssetsL0 || form.ccaIpAssetsL1 || form.ccaIpAssetsL2 || form.ccaIpAssetsL3 || form.ccaIpAssetsL4 ||
-      form.ccaInfiniteLedL0 || form.ccaInfiniteLedL1 || form.ccaInfiniteLedL2 || form.ccaInfiniteLedL3 || form.ccaInfiniteLedL4 ||
-      form.ccaAiDeliveryL0 || form.ccaAiDeliveryL1 || form.ccaAiDeliveryL2 || form.ccaAiDeliveryL3 || form.ccaAiDeliveryL4 ||
-      form.ccaGovControlsL0 || form.ccaGovControlsL1 || form.ccaGovControlsL2 || form.ccaGovControlsL3 || form.ccaGovControlsL4 ||
-      form.ccaToolingL0 || form.ccaToolingL1 || form.ccaToolingL2 || form.ccaToolingL3 || form.ccaToolingL4 ||
-      form.ccaRolesOpsL0 || form.ccaRolesOpsL1 || form.ccaRolesOpsL2 || form.ccaRolesOpsL3 || form.ccaRolesOpsL4
-    ),
-    operatingModel: !!(form.outputValidationL1 || form.aiToolsUsed.length || form.infoSecurityClearance || form.governanceRisksL1.length || form.aiGovernanceL2 || form.sensitiveDataHandling || form.consistentValidation || form.reusableAssetsL2.length || form.measurableImpactL2 || form.connectedSystems.length || form.governanceControlsL3.length || form.auditableOutputs || form.riskManagementL3 || form.approvalCriteria || form.reusableCapabilitiesL3.length || form.environmentReliability || form.impactMetricsL3.length || form.performanceMonitoringL3 || form.missingForAdaptive.length || form.advancedTechCapabilities.length || form.humanOversightRequired.length || form.advancedGovernanceL4.length || form.continuousMonitoringL4 || form.humanOverrideMechanism || form.escalationPathsL4 || form.platformAdaptivity),
-    people: !!(form.aiAwareness || form.adoptionBarriers.length || form.aiLiteracy || form.broaderAdoptionBarriers.length || form.automationMaturity || form.evaluatingQuality || form.remainingBarriersL2.length || form.operationalAiCapability || form.limitationsRiskEval || form.preparednessAdaptive || form.improvingAiDecisions),
+    clientCentric: !!(arr(form.ccaAlignPrioritiesL0).length || arr(form.ccaAlignPrioritiesL1).length || arr(form.ccaAlignPrioritiesL2).length || arr(form.ccaAlignPrioritiesL3).length || arr(form.ccaAlignPrioritiesL4).length || arr(form.ccaIdentifyOppsL0).length || arr(form.ccaIdentifyOppsL1).length || arr(form.ccaIdentifyOppsL2).length || arr(form.ccaIdentifyOppsL3).length || arr(form.ccaIdentifyOppsL4).length || arr(form.ccaCodesignL0).length || arr(form.ccaCodesignL1).length || arr(form.ccaCodesignL2).length || arr(form.ccaCodesignL3).length || arr(form.ccaCodesignL4).length || arr(form.ccaIpAssetsL0).length || arr(form.ccaIpAssetsL1).length || arr(form.ccaIpAssetsL2).length || arr(form.ccaIpAssetsL3).length || arr(form.ccaIpAssetsL4).length || arr(form.ccaDeliveryL0).length || arr(form.ccaDeliveryL1).length || arr(form.ccaDeliveryL2).length || arr(form.ccaDeliveryL3).length || arr(form.ccaDeliveryL4).length),
+    operatingModel: !!(arr(form.omtBarriersL0).length || arr(form.omtBaselineL0).length || arr(form.omtGovernanceL0).length || arr(form.omtSecureL0).length || arr(form.omtAutoWorkflowsL0).length || arr(form.omtPerformanceL0).length || arr(form.omtPlatformsL0).length || arr(form.omtTribesL0).length || arr(form.omtToolsUsedL1).length || arr(form.omtStandardL1).length || arr(form.omtBaselineL1).length || arr(form.omtGovernanceL1).length || arr(form.omtSecureL1).length || arr(form.omtStandardL2).length || arr(form.omtBaselineL2).length || arr(form.omtGovernanceL2).length || arr(form.omtAutoWorkflowsL2).length || arr(form.omtPerformanceL2).length || arr(form.omtReusableAssetsL2).length || arr(form.omtStandardL3).length || arr(form.omtGovernanceL3).length || arr(form.omtConnectedSystemsL3).length || arr(form.omtAutoWorkflowsL3).length || arr(form.omtPerformanceL3).length || arr(form.omtTechCapL4).length || arr(form.omtGovernanceL4).length || arr(form.omtAutoWorkflowsL4).length),
+    people: !!(form.aiAwareness || arr(form.adoptionBarriers).length || form.aiLiteracy || arr(form.broaderAdoptionBarriers).length || form.automationMaturity || form.evaluatingQuality || arr(form.remainingBarriersL2).length || form.operationalAiCapability || form.limitationsRiskEval || form.preparednessAdaptive || form.improvingAiDecisions),
   }), [form]);
 
 

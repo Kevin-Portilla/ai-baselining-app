@@ -65,10 +65,9 @@ export const branchingLevels = [
 ];
 
 export const strategicStages = [
-  { id: "sbp", title: "Sense, Benchmark & Position" },
-  { id: "sd", title: "Scale & Differentiate" },
-  { id: "dh", title: "Become a Human-AI Delivery Hub" },
-  { id: "oe", title: "Operational Enablers" },
+  { id: "sbp", title: "Sense, Benchmark & Position", subtitle: "Understand. Measure. Prioritize.", number: "01" },
+  { id: "sd",  title: "Scale & Differentiate",        subtitle: "Build. Automate. Elevate.",       number: "02" },
+  { id: "dh",  title: "Become a Human-AI Delivery Hub", subtitle: "Lead. Integrate. Transform.",  number: "03" },
 ];
 
 export const domains = [
@@ -79,59 +78,24 @@ export const domains = [
     icon: "users",
     stages: {
       sbp: {
-        category: "AI Impact to Client",
+        category: "AI impact to Client",
         subcategories: [
-          {
-            name: "Align with Client Priorities",
-            fields: ["ccaAlignPrioritiesL0", "ccaAlignPrioritiesL1", "ccaAlignPrioritiesL2", "ccaAlignPrioritiesL3", "ccaAlignPrioritiesL4"],
-          },
-          {
-            name: "Identify Opportunities",
-            fields: ["ccaIdentifyOppsL0", "ccaIdentifyOppsL1", "ccaIdentifyOppsL2", "ccaIdentifyOppsL3", "ccaIdentifyOppsL4"],
-          },
+          { name: "Align with Client priorities", fields: ["ccaAlignPrioritiesL0", "ccaAlignPrioritiesL1", "ccaAlignPrioritiesL2", "ccaAlignPrioritiesL3", "ccaAlignPrioritiesL4"] },
+          { name: "Identify opportunities.", fields: ["ccaIdentifyOppsL0", "ccaIdentifyOppsL1", "ccaIdentifyOppsL2", "ccaIdentifyOppsL3", "ccaIdentifyOppsL4"] },
         ],
       },
       sd: {
-        category: "AI Impact to Customers of Clients",
+        category: "AI impact to customers of our clients",
         subcategories: [
-          {
-            name: "Co-design",
-            fields: ["ccaCodesignL0", "ccaCodesignL1", "ccaCodesignL2", "ccaCodesignL3", "ccaCodesignL4"],
-          },
-          {
-            name: "IP - Reusable Accelerators",
-            fields: ["ccaIpAssetsL0", "ccaIpAssetsL1", "ccaIpAssetsL2", "ccaIpAssetsL3", "ccaIpAssetsL4"],
-          },
+          { name: "Co-design.", fields: ["ccaCodesignL0", "ccaCodesignL1", "ccaCodesignL2", "ccaCodesignL3", "ccaCodesignL4"] },
+          { name: "IP - reusable accelerators and service patterns.", fields: ["ccaIpAssetsL0", "ccaIpAssetsL1", "ccaIpAssetsL2", "ccaIpAssetsL3", "ccaIpAssetsL4"] },
         ],
       },
       dh: {
-        category: "AI Impact End to End",
+        category: "AI impact end to end",
         subcategories: [
-          {
-            name: "Infinite Led",
-            fields: ["ccaInfiniteLedL0", "ccaInfiniteLedL1", "ccaInfiniteLedL2", "ccaInfiniteLedL3", "ccaInfiniteLedL4"],
-          },
-          {
-            name: "AI-Managed Delivery Models",
-            fields: ["ccaAiDeliveryL0", "ccaAiDeliveryL1", "ccaAiDeliveryL2", "ccaAiDeliveryL3", "ccaAiDeliveryL4"],
-          },
-        ],
-      },
-      oe: {
-        category: "Cross-Cutting Capabilities",
-        subcategories: [
-          {
-            name: "Governance & Controls",
-            fields: ["ccaGovControlsL0", "ccaGovControlsL1", "ccaGovControlsL2", "ccaGovControlsL3", "ccaGovControlsL4"],
-          },
-          {
-            name: "Tooling & AI Environments",
-            fields: ["ccaToolingL0", "ccaToolingL1", "ccaToolingL2", "ccaToolingL3", "ccaToolingL4"],
-          },
-          {
-            name: "AI-Enabled Roles & Operational Practices",
-            fields: ["ccaRolesOpsL0", "ccaRolesOpsL1", "ccaRolesOpsL2", "ccaRolesOpsL3", "ccaRolesOpsL4"],
-          },
+          { name: "Infinite Led.", fields: ["ccaDeliveryL0", "ccaDeliveryL1", "ccaDeliveryL2", "ccaDeliveryL3", "ccaDeliveryL4"] },
+          { name: "Evolve towards AI-managed delivery models.", fields: ["ccaDeliveryL0", "ccaDeliveryL1", "ccaDeliveryL2", "ccaDeliveryL3", "ccaDeliveryL4"] },
         ],
       },
     },
@@ -143,26 +107,26 @@ export const domains = [
     icon: "settings",
     stages: {
       sbp: {
-        category: "Standardization & Modernization",
+        category: "Drive standardization and modernization",
         subcategories: [
-          { name: "Standard for AI-Readiness", fields: ["aiToolsUsed"] },
-          { name: "Baseline Operations", fields: ["evidenceL0", "evidenceL1", "evidenceL2", "evidenceL3", "evidenceL4"] },
-          { name: "Intelligent Governance", fields: ["outputValidationL1", "governanceRisksL1", "aiGovernanceL2", "consistentValidation", "governanceControlsL3", "auditableOutputs", "riskManagementL3", "approvalCriteria", "humanOversightRequired", "advancedGovernanceL4", "humanOverrideMechanism", "escalationPathsL4"] },
-          { name: "Secure Environments", fields: ["infoSecurityClearance", "sensitiveDataHandling"] },
+          { name: "Standard for AI-readiness, and baseline setting", fields: ["omtBarriersL0","omtVisibilityL0","omtStandardL1","omtStandardL2","omtStandardL3","omtStandardL4"] },
+          { name: "Baseline operations",                             fields: ["omtBaselineL0","omtToolsUsedL1","omtBaselineL1","omtBaselineL2","omtBaselineL3","omtBaselineL4"] },
+          { name: "Intelligent processes & governance.",             fields: ["omtGovernanceL0","omtGovernanceL1","omtGovernanceL2","omtGovernanceL3","omtGovernanceL4"] },
+          { name: "Secure environments.",                            fields: ["omtSecureL0","omtSecureL1","omtSecureL2","omtSecureL3","omtSecureL4"] },
         ],
       },
       sd: {
-        category: "Embedded Intelligent Automation",
+        category: "Embedded intelligent automation",
         subcategories: [
-          { name: "Highly Automated Workflows", fields: ["missingForAdaptive", "advancedTechCapabilities"] },
-          { name: "Performance & Capacity", fields: ["measurableImpactL2", "improvedAreasL2", "operationalImpactMeasurement", "impactMetricsL3", "performanceMonitoringL3", "continuousMonitoringL4"] },
+          { name: "Highly automated workflows.",                                                       fields: ["omtAutoWorkflowsL0","omtAutoWorkflowsL1","omtAutoWorkflowsL2","omtAutoWorkflowsL3","omtAutoWorkflowsL4"] },
+          { name: "Improve delivery performance and capacity via intelligent models.",                 fields: ["omtPerformanceL0","omtPerformanceL1","omtPerformanceL2","omtPerformanceL3","omtPerformanceL4"] },
         ],
       },
       dh: {
         category: "Intelligent by Design",
         subcategories: [
-          { name: "Secure Platforms", fields: ["reusableAssetsL2", "reusableCapabilitiesL3", "environmentReliability", "platformAdaptivity"] },
-          { name: "Tribe Enablement", fields: ["connectedSystems"] },
+          { name: "Run delivery on secure, monitored, and reusable platforms.",                                                          fields: ["omtPlatformsL0","omtPlatformsL1","omtPlatformsL2","omtConnectedSystemsL3","omtPlatformsL3","omtTechCapL4","omtPlatformsL4"] },
+          { name: "Enable tribes and squads with integrated-automated tools, knowledge, and operational gates.", fields: ["omtTribesL0","omtTribesL1","omtReusableAssetsL2","omtTribesL2","omtTribesL3","omtTribesL4"] },
         ],
       },
     },
@@ -174,27 +138,27 @@ export const domains = [
     icon: "user-group",
     stages: {
       sbp: {
-        category: "AI Enhances People",
+        category: 'The right mindset: "AI enhances people; adapting is not an option."',
         subcategories: [
-          { name: "Strengthen Training", fields: ["aiAwareness", "adoptionBarriers"] },
-          { name: "Develop Fresh AI Talent", fields: ["aiLiteracy", "broaderAdoptionBarriers"] },
-          { name: "Equip Managers to Win", fields: ["equipManagers"] },
+          { name: "Strengthen training.", fields: ["aiAwareness", "adoptionBarriers"] },
+          { name: "Develop fresh AI talent.", fields: ["aiLiteracy", "broaderAdoptionBarriers"] },
+          { name: "Equip managers to in this Era.", fields: ["equipManagers"] },
         ],
       },
       sd: {
-        category: "Upskilling & Right Sourcing",
+        category: "Upskilling and right sourcing",
         subcategories: [
-          { name: "Intelligent Staffing", fields: ["intelligentStaffing"] },
-          { name: "Champion & Mentor Networks", fields: ["remainingBarriersL2", "mentorNetworks"] },
-          { name: "Build Manager Fluency", fields: ["automationMaturity", "evaluatingQuality", "managerFluency"] },
+          { name: "Intelligent AI-enable staffing.", fields: [] },
+          { name: "Champion and mentor networks.", fields: ["remainingBarriersL2"] },
+          { name: "Build manager fluency.", fields: ["automationMaturity", "evaluatingQuality"] },
         ],
       },
       dh: {
-        category: "Superminds",
+        category: "Superminds (Human + AI combined)",
         subcategories: [
-          { name: "Next-Gen Roles", fields: ["nextGenRoles"] },
-          { name: "Performance Management", fields: ["operationalAiCapability", "limitationsRiskEval", "techPerformanceManagement"] },
-          { name: "Strong Leadership", fields: ["preparednessAdaptive", "improvingAiDecisions", "leadershipModernDelivery"] },
+          { name: "Career paths for the next generation of delivery roles.", fields: [] },
+          { name: "Technology-enabled performance management.", fields: ["operationalAiCapability", "limitationsRiskEval"] },
+          { name: "Strong leadership for modern delivery.", fields: ["preparednessAdaptive", "improvingAiDecisions"] },
         ],
       },
     },
