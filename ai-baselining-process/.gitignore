@@ -3,6 +3,7 @@ node_modules/
 vendor/
 .venv/
 venv/
+package-lock.json
 
 # Build outputs
 dist/
