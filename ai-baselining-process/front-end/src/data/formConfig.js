@@ -151,7 +151,7 @@ export const initialForm = {
 
 export const tribes = [
   "Client Services",
-  "Intelligent Automation",
+  "Intelligence Automation",
   "Professional Services",
   "Development",
   "Infrastructure Services",
