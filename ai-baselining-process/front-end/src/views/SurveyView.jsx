@@ -100,6 +100,27 @@ export const SurveyView = ({ form, updateField, currentSection, recommendedLevel
 
                   <div className="grid md:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">Manager Name</label>
+                      <input
+                        className="w-full border border-slate-200 bg-slate-50/50 rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all hover:bg-white"
+                        placeholder="e.g. John Smith"
+                        value={form.managerName}
+                        onChange={(e) => updateField("managerName", e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">SME Name</label>
+                      <input
+                        className="w-full border border-slate-200 bg-slate-50/50 rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all hover:bg-white"
+                        placeholder="e.g. Jane Doe"
+                        value={form.smeName}
+                        onChange={(e) => updateField("smeName", e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-5">
+                    <div className="space-y-1.5">
                       <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">Process name</label>
                       <input
                         className="w-full border border-slate-200 bg-slate-50/50 rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all hover:bg-white"

@@ -6,6 +6,8 @@ export const initialForm = {
   role: "",
   processType: "",
   processName: "",
+  managerName: "",
+  smeName: "",
   frequency: "",
   clientData: "",
   mainSystems: "",
@@ -148,19 +150,11 @@ export const initialForm = {
 };
 
 export const tribes = [
-  "Compliance",
-  "Intelligent Automation",
-  "Customer Experience",
-  "Data & Analytics",
-  "Risk Management",
-  "Operations",
-  "Technology",
-  "Implementation",
   "Client Services",
-  "Development",
+  "Intelligent Automation",
   "Professional Services",
-  "Infrastructure",
-  "Other",
+  "Development",
+  "Infrastructure Services",
 ];
 
 export const roleTypes = [
@@ -173,14 +167,8 @@ export const roleTypes = [
 ];
 
 export const processTypeOptions = [
-  "Data Entry & Validation",
-  "Report Generation",
-  "Decision Support / Underwriting",
-  "Customer Communication",
-  "Monitoring & Alerting",
-  "Complex Analysis",
-  "Software Development / Testing",
-  "Other",
+  "Client Facing",
+  "Internal Process",
 ];
 
 export const frequencies = [
