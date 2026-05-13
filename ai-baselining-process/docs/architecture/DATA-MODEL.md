@@ -224,7 +224,10 @@ CREATE TABLE process_assessments (
   -- Computed
   recommended_level  TEXT,
 
+  -- Free-form assessment metadata for process context
+  metadata         JSONB DEFAULT '{}'::jsonb,
+
   -- Level-specific fields stored as JSONB for flexibility
-  level_answers   JSONB DEFAULT '{}'
+  level_answers    JSONB DEFAULT '{}'::jsonb
 );
 ```

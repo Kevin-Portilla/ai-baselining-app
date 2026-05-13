@@ -95,7 +95,7 @@ Presentation  →  Application  →  Domain  →  Configuration
 
 ## 3. State Architecture
 
-All state is managed in a single `useState` hook in `App.jsx`. No external state manager (Redux, Zustand, etc.) is used.
+All state is managed in a single `useState` hook in `App.jsx`. No external state manager (Redux, Zustand, etc.) is used. Authentication state is managed via Supabase auth helpers.
 
 ```
 App.jsx
@@ -112,6 +112,8 @@ App.jsx
   │     └── Validation fields     validationUncertainty, validationContact, ...
   │
   ├── activeView (useState)       "survey" | "dashboard"
+  │
+  ├── session (useState)          Supabase auth session (JWT)
   │
   ├── currentSection (useMemo)    derived from form.aiUsage
   │     └── calls getCurrentSection(form)
@@ -140,6 +142,13 @@ setForm(prev => ({ ...prev, [field]: value }))
       ├── recommendedLevel re-derived → ClassificationCard updates
       ├── completion re-derived      → Header progress bar updates
       └── domainActive re-derived    → DomainCards matrix updates
+
+Supabase auth state change
+      │
+      ▼
+setSession(newSession)
+      │
+      └── UI conditionally renders based on auth status
 ```
 
 ---
@@ -226,18 +235,9 @@ GitHub Actions ci.yml
    │
    ├── Job: Lint
    │     npm ci → npm run lint (ESLint)
-   │     Fails fast on unused vars, missing exports
-   │
-   └── Job: Build (needs: lint)
-         npm ci → npm run build (Vite)
-         Upload dist/ as artifact (7 days)
-```
+   │     Fails fast on unused vaEnhanced Backend)
 
----
-
-## 7. Future Architecture (v2 — Backend)
-
-When a backend is introduced, the architecture will expand to:
+When a custom backend is introduced, the architecture will expand to:
 
 ```
 Browser (React SPA)
@@ -246,10 +246,18 @@ Browser (React SPA)
         ▼
 API Server (Node.js / Express or Next.js)
         │
-        ├── Auth: Supabase Auth (JWT)
+        ├── Auth: Supabase Auth (migrated to custom)
+        ├── DB:   Supabase PostgreSQL (migrated to custom)
+        │          users, sessions, questions, assessments
+        └── Storage: Supabase Storage (PDF exports)
+```
+
+The `initialForm` object maps directly to the `assessments` schema. The `calculateLevel()` function moves to a server-side scoring service. See ADR-005 for the current Supabase MVP decision
+API Server (Node.js / Express or Next.js)
+        │
+        ├── Auth: Supabase Auth 
         ├── DB:   Supabase PostgreSQL
-        │          process_assessments table
-        │          users table
+        │          users, sessions, questions, assessments
         └── Storage: Supabase Storage (PDF exports)
 ```
 

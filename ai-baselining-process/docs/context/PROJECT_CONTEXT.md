@@ -59,7 +59,7 @@
 ## Data Layer
 
 - **Database:** None (v1 — local state only)
-- **Future:** Supabase (PostgreSQL) — `initialForm` maps directly to `process_assessments` table
+- **Future:** Supabase PostgreSQL only (custom auth + session management in application)
 - **ORM/Query Builder (future):** Supabase JS client
 - **Migration Tool (future):** Supabase migrations
 
