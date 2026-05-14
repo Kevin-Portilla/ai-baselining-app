@@ -1,9 +1,11 @@
 // ── questions.js — ACE Framework Maturity Questions ──────────────────────────
+import { withNotApplicable, withNotesOption } from "./responseOptions.js";
+
 // Pillar: Client Centric Approach
 // Strategic Lenses: Sense Benchmark & Position | Scale & Differentiate |
 //                   Become a Human-AI Delivery Hub | Operational Enablers
 
-export const SECTION_QUESTIONS = {
+const RAW_SECTION_QUESTIONS = {
   "no-ai": [
     // ── People domain (unchanged — pending next pillar share) ──────────────
     {
@@ -515,7 +517,34 @@ export const SECTION_QUESTIONS = {
 
 // ── NEEDS_VALIDATION_QUESTIONS ────────────────────────────────────────────────
 
-export const NEEDS_VALIDATION_QUESTIONS = [
+export const SECTION_QUESTIONS = Object.fromEntries(
+  Object.entries(RAW_SECTION_QUESTIONS).map(([section, questions]) => [
+    section,
+    questions.map((question) => {
+      if (!["select", "toggle"].includes(question.type) || !question.options) {
+        return question;
+      }
+
+      return {
+        ...question,
+        options: withNotApplicable(withNotesOption(question.options)),
+      };
+    }),
+  ])
+);
+
+const withQuestionNotes = (question) => {
+  if (!["select", "toggle"].includes(question.type) || !question.options) {
+    return question;
+  }
+
+  return {
+    ...question,
+    options: withNotesOption(question.options),
+  };
+};
+
+const RAW_NEEDS_VALIDATION_QUESTIONS = [
   {
     id: "validationUncertainty",
     label: "Why are you unsure whether AI is used in this process?",
@@ -556,9 +585,11 @@ export const NEEDS_VALIDATION_QUESTIONS = [
   },
 ];
 
+export const NEEDS_VALIDATION_QUESTIONS = RAW_NEEDS_VALIDATION_QUESTIONS.map(withQuestionNotes);
+
 // ── FINAL_QUESTIONS (Kept for reference but not currently rendered) ───────────
 
-export const FINAL_QUESTIONS = [
+const RAW_FINAL_QUESTIONS = [
   { id: "maturityAccurate", label: "Does the detected maturity level seem accurate?", type: "select", field: "maturityAccurate", options: ["Yes — accurate", "Partially accurate", "No — too low", "No — too high"] },
   { id: "strongestDimension", label: "Which domain is strongest today?", type: "select", field: "strongestDimension", options: ["Client Centric Approach", "Operating Model & Technology", "People & Talent"] },
   { id: "weakestDimension", label: "Which domain is weakest today?", type: "select", field: "weakestDimension", options: ["Client Centric Approach", "Operating Model & Technology", "People & Talent"] },
@@ -566,3 +597,5 @@ export const FINAL_QUESTIONS = [
   { id: "deeperAssessment", label: "Should this process be considered for deeper assessment or scaling?", type: "select", field: "deeperAssessment", options: ["No", "Possibly", "Yes — recommended"] },
   { id: "additionalComments", label: "Additional comments or examples", type: "textarea", field: "additionalComments" },
 ];
+
+export const FINAL_QUESTIONS = RAW_FINAL_QUESTIONS.map(withQuestionNotes);

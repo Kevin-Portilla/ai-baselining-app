@@ -111,6 +111,7 @@ Questions within each maturity level are grouped by domain. Each domain group is
 - `equipManagers` field referenced in `levelConfig.js` but not initialized in `formConfig.js` — requires cleanup (ADR-003 candidate).
 - JSON export format not yet defined for the 3-domain output structure.
 - Dashboard view does not yet reflect domain breakdown — aggregation by domain pending.
+- PRD-006 adds new stakeholder requirements: Not Applicable / negative diagnostic responses, Other-to-Notes rename, Notes as informational-only, team-level assessment evaluation, and Services / Products preload evaluation.
 
 ---
 

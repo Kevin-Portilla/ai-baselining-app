@@ -1,9 +1,15 @@
 // ── formConfig.js — initial state and options ────────────────────────────────
 
 export const initialForm = {
-  // Section 1: Respondent & Process Metadata
+  // Section 1: Assessment Target, Respondent & Supporting Process Metadata
+  assessmentScope: "Team",
+  teamName: "",
+  area: "",
   tribe: "",
+  director: "",
+  squad: "",
   role: "",
+  serviceProduct: "",
   processType: "",
   processName: "",
   managerName: "",
@@ -149,6 +155,11 @@ export const initialForm = {
   validationContext: "",
 };
 
+export const assessmentScopeOptions = [
+  "Team",
+  "Process",
+];
+
 export const tribes = [
   "Client Services",
   "Intelligence Automation",
@@ -169,6 +180,17 @@ export const roleTypes = [
 export const processTypeOptions = [
   "Client Facing",
   "Internal Process",
+];
+
+export const serviceProductOptions = [
+  "SecureNow",
+  "Cloud Operations",
+  "Managed Services",
+  "Customer Support",
+  "Implementation Services",
+  "Data & Analytics",
+  "Platform Engineering",
+  "Unlisted / Not sure",
 ];
 
 export const frequencies = [

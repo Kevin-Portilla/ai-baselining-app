@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 import {
-  tribes,
+  assessmentScopeOptions,
   roleTypes,
   frequencies,
   criticalities,
@@ -11,6 +11,7 @@ import {
   clientDataOptions,
   aiUsageOptions,
 } from "@/data/formConfig";
+import { AI_BASELINE_TRIBES, getServicesProductsByTribe } from "@/data/aiBaselineCatalog";
 import { SECTION_QUESTIONS } from "@/data/questions";
 import { domains } from "@/data/levelConfig";
 import { Settings } from "lucide-react";
@@ -21,12 +22,19 @@ import { DomainCards } from "@/components/DomainCards";
 import { ClassificationCard } from "@/components/ClassificationCard";
 import { BranchingPreview } from "@/components/BranchingPreview";
 import { NeedsValidation } from "@/components/NeedsValidation";
+import { getAssessmentTarget } from "@/logic/assessmentTarget";
 
 export const SurveyView = ({ form, updateField, currentSection, recommendedLevel, domainActive }) => {
   const [step, setStep] = useState(1);
   const isActive = currentSection !== "screening";
   const isNeedsValidation = currentSection === "needs-validation";
   const questions = SECTION_QUESTIONS[currentSection] || null;
+  const assessmentTarget = getAssessmentTarget(form);
+  const isTeamAssessment = assessmentTarget.isTeam;
+  const serviceProductOptions = useMemo(
+    () => getServicesProductsByTribe(form.tribe),
+    [form.tribe]
+  );
 
   // Clamp step to valid range when section changes (avoids out-of-range step)
   const effectiveStep = isActive ? step : 1;
@@ -86,17 +94,73 @@ export const SurveyView = ({ form, updateField, currentSection, recommendedLevel
                 >
                   <div className="flex items-center justify-between border-b border-slate-100 pb-5">
                     <div>
-                      <h2 className="text-2xl font-black text-slate-900 tracking-tight">Process Context</h2>
-                      <p className="text-[10px] text-blue-600 mt-0.5 uppercase font-bold tracking-widest">General Operational Data</p>
+                      <h2 className="text-2xl font-black text-slate-900 tracking-tight">Assessment Context</h2>
+                      <p className="text-[10px] text-blue-600 mt-0.5 uppercase font-bold tracking-widest">Team-level diagnosis with optional process context</p>
                     </div>
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-5">
-                    <FormSelect label="Tribe" value={form.tribe} onChange={(v) => updateField("tribe", v)} options={tribes} placeholder="Select..." />
+                    <FormSelect label="Assessment scope" value={form.assessmentScope} onChange={(v) => updateField("assessmentScope", v)} options={assessmentScopeOptions} placeholder="Select..." highlight />
+                    <FormSelect label="Tribe" value={form.tribe} onChange={(v) => updateField("tribe", v)} options={AI_BASELINE_TRIBES} placeholder="Select..." />
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-5">
+                    <div className="space-y-1.5">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">Team</label>
+                      <input
+                        className="w-full border border-slate-200 bg-slate-50/50 rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all hover:bg-white"
+                        placeholder="Example: Client Operations Enablement"
+                        value={form.teamName}
+                        onChange={(e) => updateField("teamName", e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">Area</label>
+                      <input
+                        className="w-full border border-slate-200 bg-slate-50/50 rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all hover:bg-white"
+                        placeholder="Example: Managed Operations"
+                        value={form.area}
+                        onChange={(e) => updateField("area", e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-5">
+                    <div className="space-y-1.5">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">Director</label>
+                      <input
+                        className="w-full border border-slate-200 bg-slate-100/70 rounded-xl p-3 text-sm text-slate-700 focus:outline-none cursor-not-allowed"
+                        placeholder="Auto-populated from Tribe"
+                        value={form.director}
+                        readOnly
+                      />
+                    </div>
+                    <FormSelect
+                      label="Service / Product"
+                      value={form.serviceProduct}
+                      onChange={(v) => updateField("serviceProduct", v)}
+                      options={serviceProductOptions}
+                      placeholder={form.tribe ? "Select..." : "Select a Tribe first"}
+                      disabled={!form.tribe}
+                    />
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-5">
+                    <div className="space-y-1.5">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">Squad</label>
+                      <input
+                        className="w-full border border-slate-200 bg-slate-50/50 rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all hover:bg-white"
+                        placeholder="Example: AI Enablement Squad"
+                        value={form.squad}
+                        onChange={(e) => updateField("squad", e.target.value)}
+                      />
+                    </div>
                     <FormSelect label="Role type" value={form.role} onChange={(v) => updateField("role", v)} options={roleTypes} placeholder="Select..." />
                   </div>
 
-                  <FormSelect label="Process Type" value={form.processType} onChange={(v) => updateField("processType", v)} options={processTypeOptions} placeholder="Select..." />
+                  <div className="grid md:grid-cols-2 gap-5">
+                    <FormSelect label="Process Type" value={form.processType} onChange={(v) => updateField("processType", v)} options={processTypeOptions} placeholder={isTeamAssessment ? "Optional..." : "Select..."} />
+                  </div>
 
                   <div className="grid md:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
@@ -121,10 +185,10 @@ export const SurveyView = ({ form, updateField, currentSection, recommendedLevel
 
                   <div className="grid md:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
-                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">Process name</label>
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">{isTeamAssessment ? "Supporting process name" : "Process name"}</label>
                       <input
                         className="w-full border border-slate-200 bg-slate-50/50 rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all hover:bg-white"
-                        placeholder="Example: SecureNow report validation"
+                        placeholder={isTeamAssessment ? "Optional process context" : "Example: SecureNow report validation"}
                         value={form.processName}
                         onChange={(e) => updateField("processName", e.target.value)}
                       />
@@ -146,10 +210,10 @@ export const SurveyView = ({ form, updateField, currentSection, recommendedLevel
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">Brief process description</label>
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">{isTeamAssessment ? "Team / process context" : "Brief process description"}</label>
                     <textarea
                       className="w-full border border-slate-200 bg-slate-50/50 rounded-xl p-3 text-sm text-slate-900 min-h-[80px] resize-y focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all hover:bg-white"
-                      placeholder="Describe the operational workflow..."
+                      placeholder={isTeamAssessment ? "Describe how the team operates and any supporting process context..." : "Describe the operational workflow..."}
                       value={form.processDescription}
                       onChange={(e) => updateField("processDescription", e.target.value)}
                     />
@@ -283,6 +347,7 @@ export const SurveyView = ({ form, updateField, currentSection, recommendedLevel
         <ClassificationCard
           recommendedLevel={recommendedLevel}
           currentSection={currentSection}
+          assessmentTarget={assessmentTarget}
         />
         <BranchingPreview currentSection={currentSection} />
       </div>

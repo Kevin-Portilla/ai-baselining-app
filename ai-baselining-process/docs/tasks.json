@@ -34,5 +34,47 @@
     "title": "Validate JSON export and reset behavior",
     "status": "pending",
     "phase": "VERIFY"
+  },
+  {
+    "id": "TASK-007",
+    "title": "Finalize PRD-006 decisions for Not Applicable wording, completion behavior, team scope, and Services / Products catalog source",
+    "status": "pending",
+    "phase": "PLAN"
+  },
+  {
+    "id": "TASK-008",
+    "title": "Implement PRD-006 Notes and Not Applicable behavior",
+    "status": "pending",
+    "phase": "EXECUTE"
+  },
+  {
+    "id": "TASK-009",
+    "title": "Evaluate and implement team-level assessment metadata and Services / Products preload",
+    "status": "pending",
+    "phase": "PLAN"
+  },
+  {
+    "id": "TASK-010",
+    "title": "Add acceptance tests for PRD-006 Notes, Not Applicable, team scope, and Service/Product metadata",
+    "status": "pending",
+    "phase": "VERIFY"
+  },
+  {
+    "id": "TASK-011",
+    "title": "Finalize Director and Tribe-filtered Services/Products catalog source",
+    "status": "pending",
+    "phase": "PLAN"
+  },
+  {
+    "id": "TASK-012",
+    "title": "Implement Director auto-population and Tribe-filtered Service/Product metadata",
+    "status": "pending",
+    "phase": "EXECUTE"
+  },
+  {
+    "id": "TASK-013",
+    "title": "Verify Director and Service/Product metadata persistence, display, output, and scoring neutrality",
+    "status": "pending",
+    "phase": "VERIFY"
   }
 ]

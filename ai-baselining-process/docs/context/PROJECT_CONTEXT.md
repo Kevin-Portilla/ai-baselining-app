@@ -3,7 +3,7 @@
 > Stable project-level decisions made during the Discuss Phase.
 > Updated by the Architect. Unlike ACTIVE_CONTEXT.md (volatile per-session), this file is persistent.
 
-*Last Updated: 2026-05-12*
+*Last Updated: 2026-05-14*
 
 ---
 
@@ -12,9 +12,9 @@
 | Property | Value |
 |----------|-------|
 | **Name** | AI Operations Baseline Assessment |
-| **Purpose** | Survey tool to classify the AI maturity of operational processes using a 5-level model (L0–L4) across 3 strategic domains |
+| **Purpose** | Survey tool to classify AI maturity using a 5-level model (L0-L4) across 3 strategic domains, with PRD-006 extending the model toward team-level diagnosis |
 | **Target Users** | Operations Managers, Business Analysts, Process Owners, AI Program leads |
-| **Primary Use Case** | Facilitated assessment: assessor fills in form during a process review session and exports JSON |
+| **Primary Use Case** | Facilitated assessment: assessor fills in form during a team or process review session and exports JSON |
 | **Repository** | `paulosolis-ai/ai-baselining-app` |
 | **Framework** | ACE-Framework v2.5.0 |
 
@@ -110,6 +110,12 @@
 | equipManagers field | Present in questions.js but missing from initialForm | Known gap — field defined but not wired; to be resolved in next PRD cycle | 2026-05-12 |
 | Tribe = "Intelligent Automation" | Not "Intelligent" | Correct organizational naming per BR-005 | 2026-05-12 |
 | shadcn/ui + Tailwind v4 | Not MUI or Ant Design | Lighter bundle; Tailwind utility-first matches design needs | 2026-05-12 |
+| PRD-006 Notes semantics | Notes are informational only | Notes must not affect scoring, branching, classification, output generation, or maturity level | 2026-05-13 |
+| PRD-006 Not Applicable semantics | N/A or fully negative responses produce no positive maturity evidence | Not every maturity indicator applies to every team/process | 2026-05-13 |
+| PRD-006 assessment scope | Support team-level diagnosis | Process fields may remain supporting context, but final maturity can represent the team | 2026-05-13 |
+| PRD-006 Service/Product catalog | Add/support preloaded catalog field | Users should select existing services/products rather than rely only on free text | 2026-05-13 |
+| PRD-006 Director mapping | Auto-populate Director from selected Tribe | Director is ownership metadata and must not affect maturity logic | 2026-05-14 |
+| PRD-006 Tribe-filtered Services/Products | Filter Service/Product options by selected Tribe | Service/Product is catalog metadata and must not affect maturity logic | 2026-05-14 |
 
 ---
 

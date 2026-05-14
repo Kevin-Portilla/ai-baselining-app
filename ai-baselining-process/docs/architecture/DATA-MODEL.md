@@ -1,13 +1,15 @@
 # Data Model
 
 **Project:** AI Operations Baseline Assessment
-**Last Updated:** 2026-05-12
+**Last Updated:** 2026-05-14
 
 ---
 
 ## Overview
 
-All data is held in a single `initialForm` object in React state. There is no database in v1. The model is designed so that `initialForm` can be mapped 1:1 to a `process_assessments` table when a backend is added.
+All data is held in a single `initialForm` object in React state. There is no database in v1. The model is designed so that `initialForm` can be mapped to a future backend table when persistence is added.
+
+PRD-006 updates the model direction: the assessment target must support team-level diagnosis, with process-level information available as supporting context. The current `process_assessments` future table remains a useful starting point, but the future schema may need to become `assessments` or `assessment_targets` to avoid hard-coding process-only semantics.
 
 ---
 
@@ -15,11 +17,17 @@ All data is held in a single `initialForm` object in React state. There is no da
 
 The canonical source of truth is `src/data/formConfig.js`. Every field reference in any component **must** have an entry here (BR-007).
 
-### Section 1 — Process Metadata
+### Section 1 — Assessment Target and Process Metadata
 
 | Field | Type | Options Source | Description |
 |-------|------|----------------|-------------|
+| `assessmentScope` | `string` | `assessmentScopeOptions[]` | Whether the final diagnosis represents a Team or Process. Defaults to `Team`. |
+| `teamName` | `string` | free text | Team being assessed when scope is team-level |
+| `area` | `string` | free text | Business or operational area for the assessed team |
+| `squad` | `string` | free text | Squad or delivery group for the assessed team |
 | `tribe` | `string` | `tribes[]` | Organizational tribe |
+| `director` | `string` | Tribe-to-Director mapping | Director auto-populated from selected Tribe |
+| `serviceProduct` | `string` | Tribe-filtered Service/Product catalog | Selected service/product from the selected Tribe catalog |
 | `role` | `string` | `roleTypes[]` | Respondent role |
 | `processType` | `string` | `processTypeOptions[]` | Process category |
 | `processName` | `string` | free text | Name of the process |
@@ -139,11 +147,17 @@ All fields initialize in one of two ways:
 
 ## Export Shape (JSON)
 
-When a user exports their assessment (planned feature), the JSON output mirrors the flat `initialForm` object:
+When a user exports their assessment (planned feature), output should be prepared through `front-end/src/logic/assessmentOutput.js`. The helper separates metadata, scored diagnostic answers, qualitative notes, and derived fields. Under PRD-006, export must also include assessment scope, Director, and Service/Product metadata when those fields are implemented.
+
+Notes are output only under the `notes` object as unscored qualitative context. Diagnostic answers are sanitized through shared positive-evidence helpers so `"Notes"`, legacy `"Other"`, and `"Not Applicable"` never derive `recommendedLevel`, `aiReadinessLevel`, `maturityScore`, branch routing, or domain/quadrant matching.
 
 ```json
 {
   "tribe": "Intelligent Automation",
+  "director": "Jonathan Herrera",
+  "assessmentScope": "Team",
+  "teamName": "Client Operations Enablement",
+  "serviceProduct": "SecureNow",
   "role": "Process Owner",
   "processName": "Invoice Validation",
   "processType": "Internal operations",
@@ -209,6 +223,8 @@ CREATE TABLE process_assessments (
 
   -- Section 1
   tribe           TEXT,
+  director        TEXT,
+  service_product TEXT,
   role            TEXT,
   process_type    TEXT,
   process_name    TEXT,
@@ -228,3 +244,63 @@ CREATE TABLE process_assessments (
   level_answers   JSONB DEFAULT '{}'
 );
 ```
+
+---
+
+## Proposed PRD-006 Extensions
+
+These PRD-006 fields are implemented in `initialForm` and the metadata form:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `assessmentScope` | `string` | Whether the assessment target is a process or a team |
+| `teamName` | `string` | Team being assessed when scope is team-level |
+| `area` | `string` | Business or operational area for the assessed team |
+| `squad` | `string` | Squad or delivery group for the assessed team |
+| `director` | `string` | Director derived from selected Tribe |
+| `serviceProduct` | `string` | Tribe-filtered service or product selection |
+| `processName` | `string` | Required for process scope; optional supporting context for team scope |
+
+Proposed option arrays:
+
+| Options Source | Values / Source |
+|----------------|-----------------|
+| `assessmentScopeOptions[]` | `Team`, `Process` |
+| `directorByTribe` | Static Tribe-to-Director mapping in v1 unless a new ADR approves backend/API catalog loading |
+| `serviceProductsByTribe` | Static Tribe-filtered catalog in v1 unless a new ADR approves backend/API catalog loading |
+
+Director mapping:
+
+| Tribe | Director |
+|-------|----------|
+| Client Services Tribe | Andrey Brenes |
+| Automation Tribe | Jonathan Herrera |
+| Infrastructure Tribe | Fernando Golcher |
+| Development Tribe | Laura Monge |
+| Implementations Tribe | Harold Castillo |
+| Professional Services | Adrian Duarte |
+
+Assessment target behavior:
+
+- New assessments default to `Team`.
+- Team assessments are valid with team, area, squad, or tribe context and do not require `processName`.
+- Process assessments remain valid when `assessmentScope` is `Process` and `processName` is present.
+- Legacy records without `assessmentScope` are treated as process assessments when `processName` exists and no team name is present.
+
+Notes behavior:
+
+- Existing `*Other` fields should be treated as qualitative Notes until renamed.
+- Notes must not affect scoring, branching, recommended classification, maturity level, output-derived fields, dashboard aggregation, or recommendations.
+- Legacy stored `"Other"` selections are mapped to Notes semantics and excluded from positive evidence.
+- "Not Applicable" or fully negative diagnostic responses must not increase maturity; product must decide whether they count as completion.
+
+Service/Product behavior:
+
+- Director and Service/Product are metadata and must not directly change maturity scoring, branch routing, maturity classification, domain activation, or generated/derived output values.
+- The v1 Director and Service/Product catalog source is static frontend reference data in `front-end/src/data/formConfig.js` or a dedicated frontend catalog module.
+- The selected Tribe determines the Director and available Service/Product options.
+- The selected Service/Product is stored in `initialForm.serviceProduct` and included in prepared assessment output metadata.
+- Director is stored in `initialForm.director` or derived during output preparation and included in prepared assessment output metadata.
+- Director and Service/Product are associated with the assessment target metadata alongside team, area, tribe, and squad.
+- Unknown services/products use the `Unlisted / Not sure` fallback.
+- No database table or migration is required in v1 because ADR-004 keeps the app local-state only with no backend/API/database.
