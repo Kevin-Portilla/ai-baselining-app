@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -14,7 +14,7 @@ import {
 import { AI_BASELINE_TRIBES, getServicesProductsByTribe } from "@/data/aiBaselineCatalog";
 import { SECTION_QUESTIONS } from "@/data/questions";
 import { domains } from "@/data/levelConfig";
-import { Settings } from "lucide-react";
+import { Settings, Save } from "lucide-react";
 
 import { FormSelect } from "@/components/FormSelect";
 import { ToggleGrid } from "@/components/ToggleGrid";
@@ -35,6 +35,51 @@ export const SurveyView = ({ form, updateField, currentSection, recommendedLevel
     () => getServicesProductsByTribe(form.tribe),
     [form.tribe]
   );
+
+  const [questionLabels, setQuestionLabels] = useState(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      return JSON.parse(localStorage.getItem("surveyQuestionLabels")) || {};
+    } catch {
+      return {};
+    }
+  });
+  const [activeQuestionEditId, setActiveQuestionEditId] = useState(null);
+  const [editLabelValue, setEditLabelValue] = useState("");
+  const activeEditRef = useRef(null);
+
+  useEffect(() => {
+    if (!activeQuestionEditId) return;
+
+    const handleClickOutside = (event) => {
+      if (activeEditRef.current && !activeEditRef.current.contains(event.target)) {
+        cancelQuestionLabelEdit();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [activeQuestionEditId]);
+
+  const getQuestionLabel = (q) => questionLabels[q.id] ?? q.label;
+  const saveQuestionLabel = (qId, label) => {
+    const next = { ...questionLabels, [qId]: label };
+    setQuestionLabels(next);
+    localStorage.setItem("surveyQuestionLabels", JSON.stringify(next));
+  };
+  const startQuestionLabelEdit = (q) => {
+    setActiveQuestionEditId(q.id);
+    setEditLabelValue(getQuestionLabel(q));
+  };
+  const cancelQuestionLabelEdit = () => setActiveQuestionEditId(null);
+  const commitQuestionLabelEdit = (qId) => {
+    if (!editLabelValue.trim()) {
+      cancelQuestionLabelEdit();
+      return;
+    }
+    saveQuestionLabel(qId, editLabelValue.trim());
+    setActiveQuestionEditId(null);
+  };
 
   // Clamp step to valid range when section changes (avoids out-of-range step)
   const effectiveStep = isActive ? step : 1;
@@ -253,41 +298,97 @@ export const SurveyView = ({ form, updateField, currentSection, recommendedLevel
                     </div>
 
                     <div className="space-y-8 py-4">
-                      {domainQuestions.map((q) => (
-                        <div key={q.id} className="space-y-2">
-                          {q.type === "select" && (
-                            <FormSelect
-                              label={q.label}
-                              value={form[q.field] || ""}
-                              onChange={(v) => updateField(q.field, v)}
-                              options={q.options}
-                              placeholder="Select…"
-                              otherValue={q.otherField ? form[q.otherField] : undefined}
-                              onOtherChange={q.otherField ? (v) => updateField(q.otherField, v) : undefined}
-                            />
-                          )}
-                          {q.type === "toggle" && (
-                            <ToggleGrid
-                              label={q.label}
-                              options={q.options}
-                              value={form[q.field] || []}
-                              onChange={(v) => updateField(q.field, v)}
-                              otherValue={q.otherField ? form[q.otherField] : undefined}
-                              onOtherChange={q.otherField ? (v) => updateField(q.otherField, v) : undefined}
-                            />
-                          )}
-                          {q.type === "input" && (
-                            <div className="space-y-1.5">
-                              <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">{q.label}</label>
-                              <input
-                                className="w-full border border-slate-200 bg-white rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/10"
-                                value={form[q.field] || ""}
-                                onChange={(e) => updateField(q.field, e.target.value)}
-                              />
+                      {domainQuestions.map((q) => {
+                        const label = getQuestionLabel(q);
+                        const isEditing = activeQuestionEditId === q.id;
+                        const hasLabelChanged = editLabelValue.trim() !== label;
+
+                        return (
+                          <div key={q.id} className="space-y-2">
+                            <div ref={isEditing ? activeEditRef : null} className="flex items-center justify-between gap-3">
+                              {isEditing ? (
+                                <input
+                                  className="flex-1 min-w-0 max-w-[calc(100%-90px)] border border-blue-300 bg-blue-50 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                                  value={editLabelValue}
+                                  onChange={(e) => setEditLabelValue(e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                      e.preventDefault();
+                                      commitQuestionLabelEdit(q.id);
+                                    }
+                                    if (e.key === "Escape") {
+                                      cancelQuestionLabelEdit();
+                                    }
+                                  }}
+                                  autoFocus
+                                />
+                              ) : (
+                                <p
+                                  className="flex-1 min-w-0 cursor-text text-[10px] font-black uppercase tracking-widest text-slate-500"
+                                  onDoubleClick={() => startQuestionLabelEdit(q)}
+                                >
+                                  {label}
+                                </p>
+                              )}
+
+                              <div className="flex items-center gap-2">
+                                {isEditing ? (
+                                  <>
+                                    {hasLabelChanged && (
+                                      <button
+                                        type="button"
+                                        onClick={() => commitQuestionLabelEdit(q.id)}
+                                        className="rounded-full border border-blue-200 bg-blue-50 p-2 text-blue-700 hover:bg-blue-100"
+                                        aria-label="Save question label"
+                                      >
+                                        <Save size={14} />
+                                      </button>
+                                    )}
+                                    <button
+                                      type="button"
+                                      onClick={() => cancelQuestionLabelEdit()}
+                                      className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:bg-slate-100"
+                                    >
+                                      Cancel
+                                    </button>
+                                  </>
+                                ) : null}
+                              </div>
                             </div>
-                          )}
-                        </div>
-                      ))}
+
+                            {q.type === "select" && (
+                              <FormSelect
+                                label=""
+                                value={form[q.field] || ""}
+                                onChange={(v) => updateField(q.field, v)}
+                                options={q.options}
+                                placeholder="Select…"
+                                otherValue={q.otherField ? form[q.otherField] : undefined}
+                                onOtherChange={q.otherField ? (v) => updateField(q.otherField, v) : undefined}
+                              />
+                            )}
+                            {q.type === "toggle" && (
+                              <ToggleGrid
+                                label=""
+                                options={q.options}
+                                value={form[q.field] || []}
+                                onChange={(v) => updateField(q.field, v)}
+                                otherValue={q.otherField ? form[q.otherField] : undefined}
+                                onOtherChange={q.otherField ? (v) => updateField(q.otherField, v) : undefined}
+                              />
+                            )}
+                            {q.type === "input" && (
+                              <div className="space-y-1.5">
+                                <input
+                                  className="w-full border border-slate-200 bg-white rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/10"
+                                  value={form[q.field] || ""}
+                                  onChange={(e) => updateField(q.field, e.target.value)}
+                                />
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
                   </motion.div>
                 );
