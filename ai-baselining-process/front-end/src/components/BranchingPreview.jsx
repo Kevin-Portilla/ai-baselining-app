@@ -9,6 +9,9 @@ export const BranchingPreview = ({ currentSection }) => (
     <h3 className="font-bold text-lg text-white mb-4">
       Branching Logic Preview
     </h3>
+    <p className="text-[10px] text-slate-500 mb-4 leading-relaxed">
+      Not Applicable diagnostic answers are recorded as out-of-scope context and do not change the selected branch.
+    </p>
     <div className="space-y-3">
       {branchingLevels.map(({ id, section, label, icon, desc }) => {
         const active = currentSection === section;

@@ -3,7 +3,7 @@
 > Core business logic and constraints for the AI Operations Baseline Assessment tool.
 > These rules are immutable without explicit stakeholder approval.
 
-*Last Updated: 2026-05-12*
+*Last Updated: 2026-05-14*
 
 ---
 
@@ -100,6 +100,77 @@
 
 ---
 
+## BR-009: Notes Are Informational Only
+
+- **Priority:** Critical
+- **Description:** Free-text Notes fields capture qualitative context only. Notes must never affect maturity scoring, branch routing, classification, domain completion, dashboard aggregation, or recommendation logic.
+- **Rationale:** Stakeholders requested replacing "Other" with "Notes" so respondents can add context without changing the assessment result.
+- **Enforcement:** `calculateLevel()` and `getCurrentSection()` must not read note fields. Domain completion and dashboard logic must ignore note-only fields unless displaying qualitative context.
+- **Exceptions:** Notes may be included in JSON export as unscored context.
+
+---
+
+## BR-010: Not Applicable Must Not Inflate Maturity
+
+- **Priority:** Critical
+- **Description:** "Not Applicable" or fully negative diagnostic responses must not increase a maturity score or imply that a quadrant matched the assessed area.
+- **Rationale:** Not every framework quadrant applies to every process or team, and that is acceptable.
+- **Enforcement:** Scoring and domain indicators must distinguish positive capability evidence from explicit non-applicability.
+- **Exceptions:** Product may decide that Not Applicable counts as survey completion while still counting as zero positive maturity evidence.
+
+---
+
+## BR-011: Team-Level Diagnosis Support
+
+- **Priority:** Critical
+- **Description:** The assessment model supports a team-level maturity diagnosis. Process-level information may remain as supporting context, but the final maturity result must identify the assessment scope it represents.
+- **Rationale:** Stakeholders requested that the baseline work at team level rather than only as a single-process assessment.
+- **Enforcement:** `initialForm.assessmentScope` defaults to `Team`. `assessmentTarget` helpers validate Team and Process context, preserve legacy process records, and provide labels for classification, dashboard, and output. Output labels, dashboard labels, and export shape must not imply that every diagnosis is process-only.
+- **Exceptions:** Existing v1 process-level assessments remain valid and must continue to be supported.
+
+---
+
+## BR-012: Service/Product Catalog Field
+
+- **Priority:** Standard
+- **Description:** The form must include or support a Service/Product metadata field populated from a documented catalog source and filtered by selected Tribe when Tribe-specific catalog data is available.
+- **Rationale:** Assessors need to connect the maturity diagnosis to known services/products instead of relying only on free-text process names.
+- **Enforcement:** Static catalog configuration in `formConfig.js` or a dedicated frontend catalog data module is the v1 source. Service/Product options must be filtered by selected Tribe. Backend or external catalog access requires a new ADR or ADR-004 update.
+- **Exceptions:** A fallback free-text note may be allowed for unknown services/products, but it must not replace the catalog requirement.
+
+---
+
+## BR-013: Director Is Derived Metadata
+
+- **Priority:** Standard
+- **Description:** The survey must include a Director field automatically populated from the selected Tribe.
+- **Rationale:** Assessments need to carry organizational ownership metadata without requiring assessors to manually maintain Director names.
+- **Enforcement:** A canonical Tribe-to-Director mapping must be stored with the survey metadata configuration. Director is derived from `tribe`, saved with the survey, and shown in view/edit/output details where metadata appears.
+- **Exceptions:** Manual Director override is not allowed unless a future requirement and ADR explicitly approve it.
+
+Approved mapping:
+
+| Tribe | Director |
+|-------|----------|
+| Client Services Tribe | Andrey Brenes |
+| Automation Tribe | Jonathan Herrera |
+| Infrastructure Tribe | Fernando Golcher |
+| Development Tribe | Laura Monge |
+| Implementations Tribe | Harold Castillo |
+| Professional Services | Adrian Duarte |
+
+---
+
+## BR-014: Director and Service/Product Do Not Affect Maturity Logic
+
+- **Priority:** Critical
+- **Description:** Director and Service/Product are metadata only. They must never affect scoring, maturity classification, branch routing, domain activation, recommendation logic, or generated/derived output values.
+- **Rationale:** Organizational ownership and service/product context should make the assessment easier to attribute, but must not change the maturity model.
+- **Enforcement:** `getCurrentSection()`, `calculateLevel()`, and `computeDomainActive()` must not read `director` or `serviceProduct`. Output helpers may include these fields only in metadata/details sections.
+- **Exceptions:** None.
+
+---
+
 ## Rule Validation Checklist
 
 When implementing features touching form fields or scoring:
@@ -110,6 +181,16 @@ When implementing features touching form fields or scoring:
 - [ ] All calculateLevel references use fields that exist in initialForm
 - [ ] Option arrays scoped to the correct maturity level
 - [ ] Evidence textarea present at the level being modified
+- [ ] Notes fields are ignored by scoring, branching, classification, completion, dashboard aggregation, and recommendations
+- [ ] Not Applicable / negative options do not increase maturity
+- [ ] Team/process assessment scope is present when output is generated
+- [ ] Team-level assessments do not require process-specific fields unless process scope is selected
+- [ ] Legacy process-level records without `assessmentScope` remain compatible
+- [ ] Service/Product value comes from `serviceProductOptions` or documented fallback
+- [ ] Director field exists in `initialForm` if referenced by UI or output
+- [ ] Director is derived from selected Tribe through the approved mapping
+- [ ] Service/Product options are filtered by selected Tribe
+- [ ] Director and Service/Product are ignored by scoring, branching, classification, domain activation, and recommendations
 - [ ] Build passes with zero lint errors
 ```
 

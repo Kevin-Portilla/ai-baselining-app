@@ -3,14 +3,57 @@
 > Canonical definitions of domain entities and their relationships.
 > This is the source of truth for domain modeling in the AI Operations Baseline Assessment tool.
 
-*Last Updated: 2026-05-12*
+*Last Updated: 2026-05-14*
+
+---
+
+## AssessmentTarget
+
+### Description
+Represents the thing being assessed. The target may be a team or a process. PRD-006 makes Team the default new assessment scope while process-level details remain available as supporting context.
+
+### Type
+Aggregate Root Candidate
+
+### Attributes
+| Attribute | Type | Required | Description |
+|-----------|------|----------|-------------|
+| assessmentScope | String | Yes | Scope of the final diagnosis: `Team` or `Process` |
+| teamName | String | Required for Team scope unless area, squad, or tribe identifies the team | Team being assessed |
+| area | String | No | Business or operational area |
+| squad | String | No | Squad or delivery group |
+| managerName | String | No | Manager or lead for the evaluated team/process |
+| director | String | No | Director derived from the selected Tribe |
+| serviceProduct | String | No | Selected predefined service/product filtered by selected Tribe |
+| processName | String | Required for Process scope | Process represented by a process-level assessment; optional supporting context for team scope |
+| processContext | ProcessAssessment | No | Supporting process details when scope is team-level |
+| maturityLevel | String | Computed | Recommended maturity level for the selected assessment scope |
+
+### Invariants
+- Final maturity output must clearly identify whether it represents a team or a process.
+- New assessments default to Team scope.
+- Team-level assessments may include process fields as supporting context, but the final diagnosis is scoped to the team.
+- Legacy records without `assessmentScope` are treated as Process scope when `processName` exists and no `teamName` exists.
+- Director is derived from the selected Tribe and persisted as assessment metadata.
+- Service/Product values come from the static v1 catalog in `formConfig.js` or a dedicated frontend catalog module until a backend/API catalog ADR is approved.
+- Service/Product options are filtered by selected Tribe.
+- Director and Service/Product are metadata only and do not affect maturity logic.
+- Notes and Not Applicable responses do not create positive maturity evidence.
+
+### Business Rules
+- BR-009: Notes Are Informational Only
+- BR-010: Not Applicable Must Not Inflate Maturity
+- BR-011: Team-Level Diagnosis Support
+- BR-012: Service/Product Catalog Field
+- BR-013: Director Is Derived Metadata
+- BR-014: Director and Service/Product Do Not Affect Maturity Logic
 
 ---
 
 ## ProcessAssessment
 
 ### Description
-The primary domain entity. Represents a single assessment of one operational process by one respondent. Contains all metadata, maturity answers, and the calculated maturity level.
+The current v1 domain entity. Represents a single assessment of one operational process by one respondent. Contains all metadata, maturity answers, and the calculated maturity level. Under PRD-006, this may remain as a supported process-level target or become supporting context under `AssessmentTarget`.
 
 ### Type
 Aggregate Root
@@ -20,6 +63,7 @@ Aggregate Root
 |-----------|------|----------|-------------|
 | id | UUID | Yes (future) | Unique identifier — not yet implemented in v1 (local state only) |
 | tribe | String | No | Organizational tribe (e.g. "Intelligent Automation") |
+| director | String | No | Director auto-populated from selected Tribe |
 | role | String | No | Respondent role type |
 | processName | String | No | Name of the process being assessed |
 | processType | String | No | Category of the process |
@@ -69,6 +113,9 @@ Each group is a subset of `ProcessAssessment` — attributes that only apply whe
 - `aiUsage` is the primary branching signal — must be set before any level-specific fields are meaningful.
 - `maturityLevel` is always derived from `aiUsage` + supplementary signals; never set directly by respondent input (only via `maturityOverride`).
 - All array fields default to `[]`, all string fields default to `""`.
+- Notes fields are informational only and do not affect maturity or branch routing.
+- Not Applicable / fully negative responses do not count as positive maturity evidence.
+- Director and Service/Product are metadata only and do not affect scoring, maturity classification, branch routing, or domain activation.
 
 ### Lifecycle
 Draft (fields being filled) → Complete (all relevant fields answered) → Exported (JSON downloaded)
@@ -78,6 +125,10 @@ Draft (fields being filled) → Complete (all relevant fields answered) → Expo
 - BR-002: Option Set Scoping per Level
 - BR-004: Evidence Field at Every Level
 - BR-007: Field Initialization for All Form Fields
+- BR-009: Notes Are Informational Only
+- BR-010: Not Applicable Must Not Inflate Maturity
+- BR-013: Director Is Derived Metadata
+- BR-014: Director and Service/Product Do Not Affect Maturity Logic
 
 ---
 
@@ -172,6 +223,68 @@ When a backend is added the following entities will be introduced:
 - **Assessor** — The user performing the assessment (auth identity)
 - **AssessmentSession** — Groups multiple `ProcessAssessment` records into one review session
 - **OrganizationSnapshot** — Aggregate of all `ProcessAssessment` records for reporting
+
+---
+
+## Notes Fields
+
+Existing `*Other` fields should be treated as proposed Notes fields until renamed. Notes are informational-only and must not affect scoring, branching, classification, completion, dashboard aggregation, or recommendations.
+
+---
+
+## OrganizationCatalog (Proposed for PRD-006)
+
+### Description
+Reference data that maps each approved Tribe to its Director and available Services/Products. For v1, this should remain static local data. If catalog data comes from a backend or external system, ADR-004 must be updated or superseded.
+
+### Type
+Reference Data / Catalog
+
+### Attributes
+| Attribute | Type | Required | Description |
+|-----------|------|----------|-------------|
+| tribe | String | Yes | Canonical Tribe label |
+| director | String | Yes | Director associated with the Tribe |
+| servicesProducts | String[] | Yes | Services/Products selectable for the Tribe |
+
+### Director Mapping
+| Tribe | Director |
+|-------|----------|
+| Client Services Tribe | Andrey Brenes |
+| Automation Tribe | Jonathan Herrera |
+| Infrastructure Tribe | Fernando Golcher |
+| Development Tribe | Laura Monge |
+| Implementations Tribe | Harold Castillo |
+| Professional Services | Adrian Duarte |
+
+### Invariants
+- Director is derived from the selected Tribe.
+- Services/Products are filtered by the selected Tribe.
+- Unknown or unavailable services/products must have a defined fallback.
+- Director and Service/Product selection are metadata and must not directly change maturity scoring, classification, branch routing, domain activation, or generated/derived output values.
+
+---
+
+## ServiceProductCatalog (Legacy / Superseded by OrganizationCatalog)
+
+### Description
+A predefined list of services/products that can be selected in the assessment metadata. This concept is superseded by `OrganizationCatalog` because Services/Products must now be filtered by selected Tribe. For v1, this may be static frontend reference data. If catalog data comes from a backend or external system, ADR-004 must be updated or superseded.
+
+### Type
+Reference Data / Catalog
+
+### Attributes
+| Attribute | Type | Required | Description |
+|-----------|------|----------|-------------|
+| id | String | Yes (future) | Stable catalog identifier |
+| name | String | Yes | Display name |
+| status | String | No | Active, inactive, deprecated, or similar |
+| owner | String | No | Catalog owner or maintaining team |
+
+### Invariants
+- The catalog source must be documented.
+- Unknown or unavailable services/products must have a defined fallback.
+- Service/Product selection is metadata and must not directly change maturity scoring.
 
 ---
 

@@ -1,11 +1,13 @@
 # Component Map
 
 **Project:** AI Operations Baseline Assessment
-**Last Updated:** 2026-05-12
+**Last Updated:** 2026-05-14
 
 ---
 
 ## Component Tree
+
+PRD-006 planning update: `FormSelect`, `ToggleGrid`, `SurveyView`, `NeedsValidation`, `DomainCards`, `App.jsx`, `DashboardView`, `ClassificationCard`, and future export helpers are affected by Notes, Not Applicable, team-level assessment scope, Director mapping, and Tribe-filtered Service/Product catalog requirements.
 
 ```
 main.jsx
@@ -125,7 +127,7 @@ main.jsx
 ### `ToggleGrid.jsx` — Multi-Select Toggle Grid
 - Receives: `label`, `options[]`, `value[]`, `onChange`, `otherValue?`, `onOtherChange?`
 - Renders: grid of toggle buttons; selected = blue fill
-- Handles "Other" option with a free-text input
+- Handles "Notes" option with a free-text input while preserving legacy `"Other"` values as Notes
 - Stateless — controlled component
 
 ### `Icon.jsx` — Dynamic Icon Renderer
@@ -163,9 +165,11 @@ App.jsx
 
 | File | Exports | Purpose |
 |------|---------|---------|
-| `data/formConfig.js` | `initialForm`, `tribes`, `roleTypes`, `processTypeOptions`, `frequencies`, `criticalityOptions`, `clientDataOptions`, `aiUsageOptions` | All dropdown options + form field initial state |
+| `data/formConfig.js` | `initialForm`, `tribes`, Director mapping, Tribe-filtered Service/Product catalog, `roleTypes`, `processTypeOptions`, `frequencies`, `criticalityOptions`, `clientDataOptions`, `aiUsageOptions` | All dropdown options + form field initial state |
 | `data/questions.js` | `SECTION_QUESTIONS`, `NEEDS_VALIDATION_QUESTIONS`, `FINAL_QUESTIONS` | All survey questions per section |
 | `data/levelConfig.js` | `usageToLevel`, `sectionLabels`, `levelDescriptions`, `levelShortLabels`, `levelIcons`, `levelPillClass`, `branchingLevels`, `strategicStages`, `domains` | Level metadata, domain structure, UI config |
 | `data/sampleProcesses.js` | `sampleProcesses` | 50 pre-built assessment records for dashboard |
-| `logic/maturity.js` | `getCurrentSection`, `calculateLevel` | Branching routing + score computation |
+| `logic/maturity.js` | `getCurrentSection`, `calculateLevel`, `computeDomainActive` | Branch routing, score computation, and domain/quadrant activation using positive evidence only |
+| `logic/assessmentTarget.js` | `getAssessmentTarget`, `normalizeAssessmentScope`, `isAssessmentContextValid`, `computeAssessmentCompletion` | Team/process assessment target compatibility, validation, labels, and completion |
+| `logic/assessmentOutput.js` | `prepareAssessmentOutput`, `buildScoredDiagnosticAnswers`, `collectNotes` | Output preparation with Notes separated from scored diagnostic answers and team/process target metadata |
 | `lib/utils.js` | `cn` | Tailwind class merging utility |

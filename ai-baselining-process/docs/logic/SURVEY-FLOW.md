@@ -1,11 +1,13 @@
 # Survey Flow
 
 **Project:** AI Operations Baseline Assessment
-**Last Updated:** 2026-05-12
+**Last Updated:** 2026-05-14
 
 ---
 
 ## High-Level Flow
+
+PRD-006 planning update: Section 1 must support team/process assessment scope, a Director field derived from selected Tribe, and a Service/Product field filtered by selected Tribe. Diagnostic sections must support Not Applicable / fully negative responses. Notes, Director, and Service/Product metadata remain informational/contextual only; they must not affect branching, scoring, recommended classification, maturity level, domain activation, or generated/derived output values.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -223,6 +225,22 @@ Header → progress bar width = completion%
 ```
 
 > Note: The `evidence` field in the completion calc references a non-existent field. This is a known bug — see ACTIVE_CONTEXT.md backlog.
+
+---
+
+## Director and Service/Product Metadata Flow
+
+```
+selected Tribe
+       |
+       +-- Director auto-populates from approved Tribe mapping
+       |
+       +-- Service/Product options filter to that Tribe
+              |
+              +-- invalid prior Service/Product selection is cleared
+```
+
+Director and Service/Product are saved and shown with metadata, but are not branch-routing or scoring inputs.
 
 ---
 

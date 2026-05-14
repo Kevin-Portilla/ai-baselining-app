@@ -10,7 +10,7 @@ import {
 } from "@/data/levelConfig";
 import { Icon } from "@/components/Icon";
 
-export const ClassificationCard = ({ recommendedLevel, currentSection }) => {
+export const ClassificationCard = ({ recommendedLevel, currentSection, assessmentTarget }) => {
   const isNeedsValidation = currentSection === "needs-validation";
   const pillClass = levelPillClass[recommendedLevel] || "bg-slate-700";
   const pillIconClass = isNeedsValidation ? "bg-amber-500/30 text-amber-900" : "bg-white/20 text-white";
@@ -31,6 +31,11 @@ export const ClassificationCard = ({ recommendedLevel, currentSection }) => {
       <p className="text-[11px] text-slate-400 mt-1.5 leading-relaxed relative z-10">
         Based on governance, technology, and execution indicators.
       </p>
+      {assessmentTarget && (
+        <p className="text-[11px] text-blue-200 mt-2 leading-relaxed relative z-10">
+          Evaluating {assessmentTarget.scope.toLowerCase()}: <span className="font-bold text-white">{assessmentTarget.label}</span>
+        </p>
+      )}
 
       <AnimatePresence mode="wait">
         <motion.div

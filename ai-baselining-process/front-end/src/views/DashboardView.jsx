@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import { levelShortLabels } from "@/data/levelConfig";
 import { sampleProcesses } from "@/data/sampleProcesses";
+import { getAssessmentTarget } from "@/logic/assessmentTarget";
 
 // ── Helper: count frequency of items in array/scalar fields across processes ──
 function countField(processes, fieldName) {
@@ -159,6 +160,7 @@ const outcomeData = countField(sampleProcesses, "outcomeAreas");
 // ── Main Component ─────────────────────────────────────────────────────────────
 
 export const DashboardView = ({ form, recommendedLevel, currentSection, completion }) => {
+  const assessmentTarget = getAssessmentTarget(form);
   const isAssessed = currentSection && currentSection !== "screening";
   const currentLevelNum = isAssessed ? Number(recommendedLevel) : null;
   const levelColor =
@@ -169,10 +171,10 @@ export const DashboardView = ({ form, recommendedLevel, currentSection, completi
   const comparisonText =
     currentLevelNum !== null
       ? currentLevelNum > avgNum
-        ? `Your process (L${currentLevelNum}) is above the average of ${avgNum}`
+        ? `Your ${assessmentTarget.scope.toLowerCase()} (L${currentLevelNum}) is above the average of ${avgNum}`
         : currentLevelNum < avgNum
-        ? `Your process (L${currentLevelNum}) is below the average of ${avgNum}`
-        : `Your process (L${currentLevelNum}) is at the average of ${avgNum}`
+        ? `Your ${assessmentTarget.scope.toLowerCase()} (L${currentLevelNum}) is below the average of ${avgNum}`
+        : `Your ${assessmentTarget.scope.toLowerCase()} (L${currentLevelNum}) is at the average of ${avgNum}`
       : null;
 
   return (
@@ -314,7 +316,10 @@ export const DashboardView = ({ form, recommendedLevel, currentSection, completi
               <div>
                 <p className="text-slate-100 font-semibold">{currentLevelLabel}</p>
                 <p className="text-slate-400 text-sm">
-                  {form?.processName || "Unnamed process"}
+                  {assessmentTarget.label}
+                </p>
+                <p className="text-slate-500 text-xs">
+                  {assessmentTarget.scope} assessment
                 </p>
               </div>
             </div>
@@ -352,10 +357,10 @@ export const DashboardView = ({ form, recommendedLevel, currentSection, completi
               </svg>
             </div>
             <p className="text-slate-100 font-semibold text-sm">
-              Compare Your Process
+              Compare Your Team
             </p>
             <p className="text-slate-400 text-sm max-w-xs">
-              Complete the survey to compare your process against the 50-process
+              Complete the survey to compare your team or process against the 50-process
               baseline.
             </p>
           </div>

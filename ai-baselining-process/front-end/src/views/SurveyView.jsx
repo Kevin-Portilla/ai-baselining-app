@@ -1,9 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 import {
-  tribes,
+  assessmentScopeOptions,
   roleTypes,
   frequencies,
   criticalities,
@@ -11,9 +11,10 @@ import {
   clientDataOptions,
   aiUsageOptions,
 } from "@/data/formConfig";
+import { AI_BASELINE_TRIBES, getServicesProductsByTribe } from "@/data/aiBaselineCatalog";
 import { SECTION_QUESTIONS } from "@/data/questions";
 import { domains } from "@/data/levelConfig";
-import { Settings } from "lucide-react";
+import { Settings, Save } from "lucide-react";
 
 import { FormSelect } from "@/components/FormSelect";
 import { ToggleGrid } from "@/components/ToggleGrid";
@@ -21,12 +22,64 @@ import { DomainCards } from "@/components/DomainCards";
 import { ClassificationCard } from "@/components/ClassificationCard";
 import { BranchingPreview } from "@/components/BranchingPreview";
 import { NeedsValidation } from "@/components/NeedsValidation";
+import { getAssessmentTarget } from "@/logic/assessmentTarget";
 
 export const SurveyView = ({ form, updateField, currentSection, recommendedLevel, domainActive }) => {
   const [step, setStep] = useState(1);
   const isActive = currentSection !== "screening";
   const isNeedsValidation = currentSection === "needs-validation";
   const questions = SECTION_QUESTIONS[currentSection] || null;
+  const assessmentTarget = getAssessmentTarget(form);
+  const isTeamAssessment = assessmentTarget.isTeam;
+  const serviceProductOptions = useMemo(
+    () => getServicesProductsByTribe(form.tribe),
+    [form.tribe]
+  );
+
+  const [questionLabels, setQuestionLabels] = useState(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      return JSON.parse(localStorage.getItem("surveyQuestionLabels")) || {};
+    } catch {
+      return {};
+    }
+  });
+  const [activeQuestionEditId, setActiveQuestionEditId] = useState(null);
+  const [editLabelValue, setEditLabelValue] = useState("");
+  const activeEditRef = useRef(null);
+
+  useEffect(() => {
+    if (!activeQuestionEditId) return;
+
+    const handleClickOutside = (event) => {
+      if (activeEditRef.current && !activeEditRef.current.contains(event.target)) {
+        cancelQuestionLabelEdit();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [activeQuestionEditId]);
+
+  const getQuestionLabel = (q) => questionLabels[q.id] ?? q.label;
+  const saveQuestionLabel = (qId, label) => {
+    const next = { ...questionLabels, [qId]: label };
+    setQuestionLabels(next);
+    localStorage.setItem("surveyQuestionLabels", JSON.stringify(next));
+  };
+  const startQuestionLabelEdit = (q) => {
+    setActiveQuestionEditId(q.id);
+    setEditLabelValue(getQuestionLabel(q));
+  };
+  const cancelQuestionLabelEdit = () => setActiveQuestionEditId(null);
+  const commitQuestionLabelEdit = (qId) => {
+    if (!editLabelValue.trim()) {
+      cancelQuestionLabelEdit();
+      return;
+    }
+    saveQuestionLabel(qId, editLabelValue.trim());
+    setActiveQuestionEditId(null);
+  };
 
   // Clamp step to valid range when section changes (avoids out-of-range step)
   const effectiveStep = isActive ? step : 1;
@@ -86,17 +139,73 @@ export const SurveyView = ({ form, updateField, currentSection, recommendedLevel
                 >
                   <div className="flex items-center justify-between border-b border-slate-100 pb-5">
                     <div>
-                      <h2 className="text-2xl font-black text-slate-900 tracking-tight">Process Context</h2>
-                      <p className="text-[10px] text-blue-600 mt-0.5 uppercase font-bold tracking-widest">General Operational Data</p>
+                      <h2 className="text-2xl font-black text-slate-900 tracking-tight">Assessment Context</h2>
+                      <p className="text-[10px] text-blue-600 mt-0.5 uppercase font-bold tracking-widest">Team-level diagnosis with optional process context</p>
                     </div>
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-5">
-                    <FormSelect label="Tribe" value={form.tribe} onChange={(v) => updateField("tribe", v)} options={tribes} placeholder="Select..." />
+                    <FormSelect label="Assessment scope" value={form.assessmentScope} onChange={(v) => updateField("assessmentScope", v)} options={assessmentScopeOptions} placeholder="Select..." highlight />
+                    <FormSelect label="Tribe" value={form.tribe} onChange={(v) => updateField("tribe", v)} options={AI_BASELINE_TRIBES} placeholder="Select..." />
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-5">
+                    <div className="space-y-1.5">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">Team</label>
+                      <input
+                        className="w-full border border-slate-200 bg-slate-50/50 rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all hover:bg-white"
+                        placeholder="Example: Client Operations Enablement"
+                        value={form.teamName}
+                        onChange={(e) => updateField("teamName", e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">Area</label>
+                      <input
+                        className="w-full border border-slate-200 bg-slate-50/50 rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all hover:bg-white"
+                        placeholder="Example: Managed Operations"
+                        value={form.area}
+                        onChange={(e) => updateField("area", e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-5">
+                    <div className="space-y-1.5">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">Director</label>
+                      <input
+                        className="w-full border border-slate-200 bg-slate-100/70 rounded-xl p-3 text-sm text-slate-700 focus:outline-none cursor-not-allowed"
+                        placeholder="Auto-populated from Tribe"
+                        value={form.director}
+                        readOnly
+                      />
+                    </div>
+                    <FormSelect
+                      label="Service / Product"
+                      value={form.serviceProduct}
+                      onChange={(v) => updateField("serviceProduct", v)}
+                      options={serviceProductOptions}
+                      placeholder={form.tribe ? "Select..." : "Select a Tribe first"}
+                      disabled={!form.tribe}
+                    />
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-5">
+                    <div className="space-y-1.5">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">Squad</label>
+                      <input
+                        className="w-full border border-slate-200 bg-slate-50/50 rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all hover:bg-white"
+                        placeholder="Example: AI Enablement Squad"
+                        value={form.squad}
+                        onChange={(e) => updateField("squad", e.target.value)}
+                      />
+                    </div>
                     <FormSelect label="Role type" value={form.role} onChange={(v) => updateField("role", v)} options={roleTypes} placeholder="Select..." />
                   </div>
 
-                  <FormSelect label="Process Type" value={form.processType} onChange={(v) => updateField("processType", v)} options={processTypeOptions} placeholder="Select..." />
+                  <div className="grid md:grid-cols-2 gap-5">
+                    <FormSelect label="Process Type" value={form.processType} onChange={(v) => updateField("processType", v)} options={processTypeOptions} placeholder={isTeamAssessment ? "Optional..." : "Select..."} />
+                  </div>
 
                   <div className="grid md:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
@@ -121,10 +230,10 @@ export const SurveyView = ({ form, updateField, currentSection, recommendedLevel
 
                   <div className="grid md:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
-                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">Process name</label>
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">{isTeamAssessment ? "Supporting process name" : "Process name"}</label>
                       <input
                         className="w-full border border-slate-200 bg-slate-50/50 rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all hover:bg-white"
-                        placeholder="Example: SecureNow report validation"
+                        placeholder={isTeamAssessment ? "Optional process context" : "Example: SecureNow report validation"}
                         value={form.processName}
                         onChange={(e) => updateField("processName", e.target.value)}
                       />
@@ -146,10 +255,10 @@ export const SurveyView = ({ form, updateField, currentSection, recommendedLevel
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">Brief process description</label>
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">{isTeamAssessment ? "Team / process context" : "Brief process description"}</label>
                     <textarea
                       className="w-full border border-slate-200 bg-slate-50/50 rounded-xl p-3 text-sm text-slate-900 min-h-[80px] resize-y focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all hover:bg-white"
-                      placeholder="Describe the operational workflow..."
+                      placeholder={isTeamAssessment ? "Describe how the team operates and any supporting process context..." : "Describe the operational workflow..."}
                       value={form.processDescription}
                       onChange={(e) => updateField("processDescription", e.target.value)}
                     />
@@ -189,41 +298,97 @@ export const SurveyView = ({ form, updateField, currentSection, recommendedLevel
                     </div>
 
                     <div className="space-y-8 py-4">
-                      {domainQuestions.map((q) => (
-                        <div key={q.id} className="space-y-2">
-                          {q.type === "select" && (
-                            <FormSelect
-                              label={q.label}
-                              value={form[q.field] || ""}
-                              onChange={(v) => updateField(q.field, v)}
-                              options={q.options}
-                              placeholder="Select…"
-                              otherValue={q.otherField ? form[q.otherField] : undefined}
-                              onOtherChange={q.otherField ? (v) => updateField(q.otherField, v) : undefined}
-                            />
-                          )}
-                          {q.type === "toggle" && (
-                            <ToggleGrid
-                              label={q.label}
-                              options={q.options}
-                              value={form[q.field] || []}
-                              onChange={(v) => updateField(q.field, v)}
-                              otherValue={q.otherField ? form[q.otherField] : undefined}
-                              onOtherChange={q.otherField ? (v) => updateField(q.otherField, v) : undefined}
-                            />
-                          )}
-                          {q.type === "input" && (
-                            <div className="space-y-1.5">
-                              <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">{q.label}</label>
-                              <input
-                                className="w-full border border-slate-200 bg-white rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/10"
-                                value={form[q.field] || ""}
-                                onChange={(e) => updateField(q.field, e.target.value)}
-                              />
+                      {domainQuestions.map((q) => {
+                        const label = getQuestionLabel(q);
+                        const isEditing = activeQuestionEditId === q.id;
+                        const hasLabelChanged = editLabelValue.trim() !== label;
+
+                        return (
+                          <div key={q.id} className="space-y-2">
+                            <div ref={isEditing ? activeEditRef : null} className="flex items-center justify-between gap-3">
+                              {isEditing ? (
+                                <input
+                                  className="flex-1 min-w-0 max-w-[calc(100%-90px)] border border-blue-300 bg-blue-50 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                                  value={editLabelValue}
+                                  onChange={(e) => setEditLabelValue(e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                      e.preventDefault();
+                                      commitQuestionLabelEdit(q.id);
+                                    }
+                                    if (e.key === "Escape") {
+                                      cancelQuestionLabelEdit();
+                                    }
+                                  }}
+                                  autoFocus
+                                />
+                              ) : (
+                                <p
+                                  className="flex-1 min-w-0 cursor-text text-[10px] font-black uppercase tracking-widest text-slate-500"
+                                  onDoubleClick={() => startQuestionLabelEdit(q)}
+                                >
+                                  {label}
+                                </p>
+                              )}
+
+                              <div className="flex items-center gap-2">
+                                {isEditing ? (
+                                  <>
+                                    {hasLabelChanged && (
+                                      <button
+                                        type="button"
+                                        onClick={() => commitQuestionLabelEdit(q.id)}
+                                        className="rounded-full border border-blue-200 bg-blue-50 p-2 text-blue-700 hover:bg-blue-100"
+                                        aria-label="Save question label"
+                                      >
+                                        <Save size={14} />
+                                      </button>
+                                    )}
+                                    <button
+                                      type="button"
+                                      onClick={() => cancelQuestionLabelEdit()}
+                                      className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:bg-slate-100"
+                                    >
+                                      Cancel
+                                    </button>
+                                  </>
+                                ) : null}
+                              </div>
                             </div>
-                          )}
-                        </div>
-                      ))}
+
+                            {q.type === "select" && (
+                              <FormSelect
+                                label=""
+                                value={form[q.field] || ""}
+                                onChange={(v) => updateField(q.field, v)}
+                                options={q.options}
+                                placeholder="Select…"
+                                otherValue={q.otherField ? form[q.otherField] : undefined}
+                                onOtherChange={q.otherField ? (v) => updateField(q.otherField, v) : undefined}
+                              />
+                            )}
+                            {q.type === "toggle" && (
+                              <ToggleGrid
+                                label=""
+                                options={q.options}
+                                value={form[q.field] || []}
+                                onChange={(v) => updateField(q.field, v)}
+                                otherValue={q.otherField ? form[q.otherField] : undefined}
+                                onOtherChange={q.otherField ? (v) => updateField(q.otherField, v) : undefined}
+                              />
+                            )}
+                            {q.type === "input" && (
+                              <div className="space-y-1.5">
+                                <input
+                                  className="w-full border border-slate-200 bg-white rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/10"
+                                  value={form[q.field] || ""}
+                                  onChange={(e) => updateField(q.field, e.target.value)}
+                                />
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
                   </motion.div>
                 );
@@ -283,6 +448,7 @@ export const SurveyView = ({ form, updateField, currentSection, recommendedLevel
         <ClassificationCard
           recommendedLevel={recommendedLevel}
           currentSection={currentSection}
+          assessmentTarget={assessmentTarget}
         />
         <BranchingPreview currentSection={currentSection} />
       </div>

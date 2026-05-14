@@ -1,21 +1,21 @@
-// ── ToggleGrid.jsx — multi-select toggle button grid ─────────────────────────
+// ToggleGrid.jsx - multi-select toggle button grid
 
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { isNotesOption, isOptionSelected, toggleOptionSelection } from "@/data/responseOptions";
 
-export const ToggleGrid = ({ label, options, value, onChange, otherValue, onOtherChange }) => {
-  const toggle = (opt) =>
-    onChange(value.includes(opt) ? value.filter((v) => v !== opt) : [...value, opt]);
+export const ToggleGrid = ({ label, options, value = [], onChange, otherValue, onOtherChange }) => {
+  const toggle = (opt) => onChange(toggleOptionSelection(value, opt));
 
-  const hasOther = options.includes("Other");
-  const otherSelected = value.includes("Other");
+  const hasNotes = options.some(isNotesOption);
+  const notesSelected = value.some(isNotesOption);
 
   return (
     <div className="space-y-3">
       {label && <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">{label}</p>}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {options.map((opt) => {
-          const isSelected = value.includes(opt);
+          const isSelected = isOptionSelected(value, opt);
           return (
             <button
               key={opt}
@@ -31,8 +31,8 @@ export const ToggleGrid = ({ label, options, value, onChange, otherValue, onOthe
               <div className="flex items-center gap-2.5">
                 <div className={cn(
                   "w-4 h-4 rounded-full border flex items-center justify-center shrink-0 transition-all",
-                  isSelected 
-                    ? "bg-white border-white" 
+                  isSelected
+                    ? "bg-white border-white"
                     : "bg-white border-slate-300 group-hover:border-blue-400"
                 )}>
                   {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-blue-600" />}
@@ -44,7 +44,7 @@ export const ToggleGrid = ({ label, options, value, onChange, otherValue, onOthe
         })}
       </div>
       <AnimatePresence>
-        {hasOther && otherSelected && onOtherChange && (
+        {hasNotes && notesSelected && onOtherChange && (
           <motion.div
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
@@ -53,8 +53,9 @@ export const ToggleGrid = ({ label, options, value, onChange, otherValue, onOthe
           >
             <input
               autoFocus
+              aria-label="Notes"
               className="w-full border border-blue-200 bg-blue-50/30 rounded-xl p-3 text-sm text-slate-900 placeholder:text-blue-400/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10 mt-1.5"
-              placeholder='Please describe what "Other" includes…'
+              placeholder="Add notes for context..."
               value={otherValue || ""}
               onChange={(e) => onOtherChange(e.target.value)}
             />

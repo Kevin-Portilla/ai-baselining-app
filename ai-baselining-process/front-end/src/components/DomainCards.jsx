@@ -1,6 +1,7 @@
 // ── DomainCards.jsx — Dark Roadmap for Intelligent Era Matrix ────────────────
 
 import { domains, strategicStages } from "@/data/levelConfig";
+import { hasPositiveResponse } from "@/data/responseOptions";
 import { cn } from "@/lib/utils";
 import {
   Target, Rocket, Sparkles,
@@ -158,8 +159,7 @@ export const DomainCards = ({ domainActive, form }) => (
                   <div className="space-y-1">
                     {stageData.subcategories.map((sub, sIdx) => {
                       const isSubActive = sub.fields?.some((f) => {
-                        const val = form[f];
-                        return Array.isArray(val) ? val.length > 0 : !!val;
+                        return hasPositiveResponse(form[f]);
                       }) ?? false;
 
                       return (
